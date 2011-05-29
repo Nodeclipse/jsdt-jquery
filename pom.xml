@@ -35,11 +35,11 @@
 
   <distributionManagement>
     <repository>
-      <id>contrails-nexus-repo</id>
+      <id>jsdt-jquery-eclipse-labs-repo</id>
       <url>dav:https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/releases</url>
     </repository>
     <site>
-      <id>contrails-nexus-site</id>
+      <id>jsdt-jquery-eclipse-labs-site</id>
       <url>dav:https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/releases</url>
     </site>
   </distributionManagement>
