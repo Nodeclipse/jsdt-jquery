@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipselabs.jsdt.jquery_feature_1.0.0.qualifier.jar" id="org.eclipselabs.jsdt.jquery_feature" version="1.0.0.qualifier">
+      <category name="org.eclipselabs.jsdt.category"/>
+   </feature>
+   <category-def name="org.eclipselabs.jsdt.category" label="JSDT jQuery"/>
+</site>
