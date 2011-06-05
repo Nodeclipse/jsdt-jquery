@@ -33,13 +33,9 @@
 
   <distributionManagement>
     <repository>
-      <id>jsdt-jquery-eclipse-labs-repo</id>
-      <url>dav:https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/releases</url>
+    <id>google-code-local-repo</id>
+    <url>file:///Users/marschall/Documents/Netcetera/workspace/releases</url>
     </repository>
-    <site>
-      <id>jsdt-jquery-eclipse-labs-site</id>
-      <url>dav:https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/releases</url>
-    </site>
   </distributionManagement>
 
   <developers>

@@ -1,0 +1,9 @@
+Execution
+- remove .qualifier from MANIFEST.MF
+- remove .qualifier from feature.xml (2 times)
+- commit
+- svn co https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/trunk jsdt-jquery
+- cd jsdt-jquery
+- mvn release:prepare release:perform -Dusername=kenaiUser -Dpassword=kenaiPassword
+- increment versions in MANIFEST.MF
+- increment versions in feature.xml
