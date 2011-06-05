@@ -12,3 +12,7 @@ Execution
 - increment versions in MANIFEST.MF
 - increment versions in feature.xml
 - check in the releases folder
+
+- check out https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/updatesite
+- unzip https://svn.codespot.com/a/eclipselabs.org/jsdt-jquery/releases/org/eclipselabs/jsdt/jquery/org.eclipselabs.jsdt.updatesite/version/org.eclipselabs.jsdt.updatesite-version.zip
+- check in
