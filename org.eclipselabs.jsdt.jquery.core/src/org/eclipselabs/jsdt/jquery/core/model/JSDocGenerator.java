@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.apache.commons.lang.StringUtils;
+import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
 import org.eclipselabs.jsdt.jquery.api.Version;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryArgument;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryDocumentation;
@@ -36,25 +36,27 @@ import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
 
 public class JSDocGenerator implements MemberVisitor<Void> {
+  
+  private static final Map<String, String> DEFAULT_VALUES;
+  
+  static {
+      DEFAULT_VALUES = new HashMap<String, String>();
+      DEFAULT_VALUES.put("String", "\"\"");
+      DEFAULT_VALUES.put("Object", "{}");
+      DEFAULT_VALUES.put("Map", "{}");
+      DEFAULT_VALUES.put("Boolean", "true");
+      DEFAULT_VALUES.put("Number", "1");
+      DEFAULT_VALUES.put("Element", "null");
+      DEFAULT_VALUES.put("Anything", "{}");
+  }
+  
+  private static final Version VERSION_WITH_DEFERRED = SimpleVersion.fromString("1.5");
 
   private Writer output;
-
-  private static final Map<String, String> DEFAULT_VALUES;
 
   private boolean noConflict;
 
   private Version maximumVersion;
-
-  static {
-    DEFAULT_VALUES = new HashMap<String, String>();
-    DEFAULT_VALUES.put("String", "\"\"");
-    DEFAULT_VALUES.put("Object", "{}");
-    DEFAULT_VALUES.put("Map", "{}");
-    DEFAULT_VALUES.put("Boolean", "true");
-    DEFAULT_VALUES.put("Number", "1");
-    DEFAULT_VALUES.put("Element", "null");
-    DEFAULT_VALUES.put("Anything", "{}");
-  }
 
   public void write(Collection<JQueryMember> members, boolean noConflict, Writer output, Version maximumVersion) throws IOException {
     try {
@@ -68,11 +70,22 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     this.noConflict = noConflict;
     this.output = output;
     this.maximumVersion = maximumVersion;
+    
+    this.writeJQueryObject();
+    MemberVisitor<Void> instanceVisitor = new InstanceSideVisitor<Void>(this);
+    for (JQueryMember member : members) {
+        member.accept(instanceVisitor);
+    }
+    
     Function constructor = this.findConstructor(members);
     this.writeConstructor(constructor);
-    for (JQueryMember member : members) {
-      member.accept(this);
-    }
+    // waiting for the following bug to be fixed
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=362403
+//    this.writeDeferredConsturctor();
+//    MemberVisitor<Void> classVisitor = new ClassSideVisitor<Void>(this);
+//    for (JQueryMember member : members) {
+//      member.accept(classVisitor);
+//    }
   }
 
   private Function findConstructor(Collection<JQueryMember> members) {
@@ -136,23 +149,47 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
   private void writeConstructor(Function constructor) {
     this.writeConstructor(constructor, "jQuery");
-    if (!noConflict) {
+    if (!this.noConflict) {
       this.writeConstructor(constructor, "$");
     }
   }
 
   private void writeConstructor(Function constructor, String globalVariableName) {
+      
     this.writeStart();
     this.writeCommentLine(constructor.getDescription());
+    this.writeTag("returns", '{' + JQueryMember.JQUERY_OBJECT + '}');
     this.writeEnd();
+    
     this.writeLine("function " + globalVariableName + "() {};");
   }
+  
+  private void writeJQueryObject() {
+      this.writeLine("var " + JQueryMember.JQUERY_OBJECT + " = { };");
+  }
+  
 
-  private boolean isJQueryObject(String owner) {
+  private void writeDeferredConsturctor() {
+    if (this.maximumVersion.compareTo(VERSION_WITH_DEFERRED) >= 0) {
+      this.writeDeferredConsturctor("jQuery");
+      if (!this.noConflict) {
+        this.writeDeferredConsturctor("$");
+      }
+    }
+  }
+
+  private void writeDeferredConsturctor(String globalVariableName) {
+    this.writeStart();
+    this.writeTag("returns", "{Promise}");
+    this.writeEnd();
+    this.writeLine(globalVariableName + ".Deferred = function() {};");
+  }
+
+  static boolean isJQueryObject(String owner) {
     return JQueryMember.JQUERY_OBJECT.equals(owner);
   }
 
-  private boolean isJQueryStatic(String owner) {
+  static boolean isJQueryStatic(String owner) {
     return "jQuery".equals(owner);
   }
 
@@ -165,7 +202,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
     if (writeDoc) {
       writeFunction(function, owner, "jQuery");
-      if (!noConflict && (isStatic || isObject)) {
+      if (!this.noConflict && isStatic) {
         writeFunction(function, owner, "$");
       }
     } else {
@@ -192,7 +229,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
         this.writeSignature(function.getName(), signature, null);
       }
       if (!StringUtils.isEmpty(returnType)) {
-        this.writeTag("returns", '{' + fixMultipleTypes(returnType) + '}');
+        this.writeTag("returns", '{' + fixReturnTypes(returnType) + '}');
       }
       this.writeEnd();
       //if (signatures.size() > 1) {
@@ -226,8 +263,8 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
   private void writeIdentifier(String owner, String jQueryGlobalObjectName) {
     if (isJQueryObject(owner)) {
-      this.write(jQueryGlobalObjectName);
-      this.write(".prototype.");
+      this.write(JQueryMember.JQUERY_OBJECT);
+      this.write(".");
     } else if(isJQueryStatic(owner)) {
       this.write(jQueryGlobalObjectName);
       this.write(".");
@@ -300,6 +337,18 @@ public class JSDocGenerator implements MemberVisitor<Void> {
       }
     }
   }
+  
+  private String fixPropertyTypes(String type) {
+    return fixMultipleTypes(type);
+  }
+  
+  private String fixReturnTypes(String type) {
+      if ("jQuery".equals(type)) {
+          return JQueryMember.JQUERY_OBJECT;
+      } else {
+          return fixMultipleTypes(type);
+      } 
+  }
 
   private String fixMultipleTypes(String type) {
     //buffer.append(StringUtils.replaceChars(type, ',', '|')); // different types may be allowed eg. String,Number
@@ -327,7 +376,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
     if (writeDoc) {
       writeProperty(property, owner, "jQuery");
-      if (!noConflict && (isStatic || isObject)) {
+      if (!this.noConflict && isStatic) {
         writeProperty(property, owner, "$");
       }
     } else {
@@ -343,7 +392,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     this.writeCommentLine(property.getDescription());
     String returnType = property.getReturnType();
     if (!StringUtils.isEmpty(returnType)) {
-      this.writeTag("type", '{' + fixMultipleTypes(returnType) + '}');
+      this.writeTag("type", '{' + fixPropertyTypes(returnType) + '}');
     }
     this.writeEnd();
 
@@ -434,6 +483,62 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     } catch (IOException e) {
       throw new RuntimeException("output failed", e);
     }
+  }
+  
+  static final class ClassSideVisitor<P> implements MemberVisitor<P> {
+      
+    private final MemberVisitor<P>  delegate;
+
+    ClassSideVisitor(MemberVisitor<P> delegate) {
+      this.delegate = delegate;
+    }
+
+    @Override
+    public P visitFuntion(Function function) {
+      if (isJQueryStatic(function.getOwner())) {
+        return this.delegate.visitFuntion(function); 
+      } else {
+        return null;
+      }
+    }
+
+    @Override
+    public P visitProperty(Property property) {
+      if (isJQueryStatic(property.getOwner())) {
+        return this.delegate.visitProperty(property);
+      } else {
+        return null;
+      }
+    }
+      
+  }
+  
+  static final class InstanceSideVisitor<P> implements MemberVisitor<P> {
+      
+      private final MemberVisitor<P>  delegate;
+      
+      InstanceSideVisitor(MemberVisitor<P> delegate) {
+        this.delegate = delegate;
+      }
+      
+      @Override
+      public P visitFuntion(Function function) {
+        if (isJQueryObject(function.getOwner())) {
+          return this.delegate.visitFuntion(function);
+        } else {
+            return null;
+        }
+      }
+      
+      @Override
+      public P visitProperty(Property property) {
+        if (isJQueryObject(property.getOwner())) {
+           return this.delegate.visitProperty(property);
+         } else {
+           return null;
+         }
+      }
+      
   }
 
 }

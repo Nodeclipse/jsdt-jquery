@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 
 public final class JQueryApiPlugin extends Plugin {
   
-  static final int MAX_MINOR = 6;
+  static final int MAX_MINOR = 7;
   
   static final List<Version> ALL_VERSIONS;
   

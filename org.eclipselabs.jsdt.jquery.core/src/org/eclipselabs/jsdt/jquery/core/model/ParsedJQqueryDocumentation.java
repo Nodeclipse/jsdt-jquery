@@ -33,7 +33,7 @@ final class ParsedJQqueryDocumentation implements JQueryDocumentation {
   ParsedJQqueryDocumentation(Collection<JQueryMember> members, Collection<Selector> selectors) {
     this.members = members;
     this.selectors = selectors;
-    this.support = JQueryApiPlugin.getDefault().getJQuerySupport();
+    this.support = JQueryApiPlugin.getJQuerySupport();
   }
 
   /**

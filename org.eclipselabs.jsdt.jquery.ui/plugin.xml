@@ -13,11 +13,19 @@
          point="org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer">
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
-            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.6">
+            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.0">
+      </JsGlobalScopeUIInitializer>
+      <JsGlobalScopeUIInitializer
+            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
+            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.2">
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
             id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.5">
+      </JsGlobalScopeUIInitializer>
+      <JsGlobalScopeUIInitializer
+            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
+            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.6">
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
@@ -29,19 +37,11 @@
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
-            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.2">
-      </JsGlobalScopeUIInitializer>
-      <JsGlobalScopeUIInitializer
-            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
             id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.1">
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
-            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.0">
-      </JsGlobalScopeUIInitializer>
-      <JsGlobalScopeUIInitializer
-            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
-            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.6">
+            id="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.7">
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
@@ -49,7 +49,15 @@
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
+            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.6">
+      </JsGlobalScopeUIInitializer>
+      <JsGlobalScopeUIInitializer
+            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
             id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.4">
+      </JsGlobalScopeUIInitializer>
+      <JsGlobalScopeUIInitializer
+            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
+            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.0">
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
@@ -57,15 +65,15 @@
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
-            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.2">
-      </JsGlobalScopeUIInitializer>
-      <JsGlobalScopeUIInitializer
-            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
             id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.1">
       </JsGlobalScopeUIInitializer>
       <JsGlobalScopeUIInitializer
             class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
-            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.0">
+            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.2">
+      </JsGlobalScopeUIInitializer>
+      <JsGlobalScopeUIInitializer
+            class="org.eclipselabs.jsdt.jquery.ui.libraries.JQueryUiInitializer"
+            id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.7">
       </JsGlobalScopeUIInitializer>
    </extension>
 
