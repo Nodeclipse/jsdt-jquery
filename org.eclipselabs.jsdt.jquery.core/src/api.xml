@@ -89,10 +89,1070 @@
       <category name="Version 1.5"/>
       <category name="Version 1.5.1"/>
       <category name="Version 1.6"/>
+      <category name="Version 1.7"/>
     </category>
   </categories>
     <entries>
-    <entry type='method' name="jQuery.isNumeric" return="Boolean">
+    <entry name="callbacks.fired" type="method" return="Boolean">
+  <signature>
+    <added>1.7</added>
+  </signature>
+  <desc>Determine if the callbacks have already been called at least once.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.fired()</code> to determine if the callbacks in a list have been called at least once:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( 'foo:' + value );
+}
+
+var callbacks = $.Callbacks();
+
+// add the function 'foo' to the list
+callbacks.add( foo );
+
+// fire the items on the list
+callbacks.fire( 'hello' ); // outputs: 'foo: hello'
+callbacks.fire( 'world '); // outputs: 'foo: world'
+
+// test to establish if the callbacks have been called
+console.log( callbacks.fired() );
+</pre>
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="jQuery.Callbacks" type="method" return="">
+  <signature>
+    <added>1.7</added>
+    <argument name="flags" type="String">
+      <desc>An optional list of space-separated flags that change how the callback list behaves. 
+      <p>Possible flags:</p>
+        <ul>
+            <li><code>once</code>: Ensures the callback list can only be fired once (like a Deferred).</li>
+            <li><code>memory</code>: Keep track of previous values and will call any callback added after the list has been fired right away with the latest "memorized" values (like a Deferred).</li>
+            <li><code>unique</code>: Ensures a callback can only be added once (so there are no duplicates in the list).</li>
+            <li><code>stopOnFalse</code>: Interrupts callings when a callback returns false.</li>
+        </ul>
+        <p>By default a callback list will act like an event callback list and can be "fired" multiple times.</p>
+  </desc>
+    </argument>
+  </signature>
+  <desc>
+A multi-purpose callbacks list object that provides a powerful way to manage callback lists. 
+  </desc>
+  <longdesc>
+    <p>The <code>$.Callbacks()</code> function is internally used to provide the base functionality behind the jQuery <code>$.ajax()</code> and <code>$.Deferred()</code> components. It can be used as a similar base to define functionality for new components.</p>
+    <p><code>$.Callbacks()</code> support a number of methods including <code><a href="/callbacks.add/">callbacks.add()</a></code>,<code><a href="/callbacks.remove/">callbacks.remove()</a></code>, <code><a href="/callbacks.fire/">callbacks.fire()</a></code> and <code><a href="/callbacks.disable/">callbacks.disable()</a></code>.</p>
+    <h2 id="getting-started">Getting started</h2>
+
+    <p>The following are two sample methods named <code>fn1</code> and <code>fn2</code>:</p>
+    <pre>
+    var fn1 = function( value ){
+            console.log( value );
+    }
+
+    var fn2 = function( value ){
+            fn1(&#39;fn2 says:&#39; + value);
+            return false;
+    }
+    </pre>
+    <p>These can be added as callbacks to a<code>$.Callbacks</code> list and invoked follows:</p>
+    <pre>
+    var callbacks = $.Callbacks();
+    callbacks.add( fn1 );
+    callbacks.fire( &#39;foo!&#39; ); // outputs: foo!
+
+    callbacks.add( fn2 );
+    callbacks.fire( &#39;bar!&#39; ); // outputs: bar!, fn2 says: bar!
+    </pre>
+
+    <p>The result of this is that it becomes simple to construct complex lists of callbacks where input values can be passed through to as many functions as needed with ease.</p>
+    <p>Two specific methods were being used above: <code>.add()</code> and <code>.fire()</code> .add() supports adding new callbacks to the callback list, whilst fire() provides a way to pass arguments to be processed by the callbacks in the same list.</p>
+    <p>Another method supported by <code>$.Callbacks</code> is remove(), which has the ability to remove a particular callback from the callback list. Here&#39;s a practical example of .remove() being used:</p>
+    <pre>
+    var callbacks = $.Callbacks();
+    callbacks.add( fn1 );
+    callbacks.fire( &#39;foo!&#39; ); // outputs: foo!
+
+    callbacks.add( fn2 );
+    callbacks.fire( &#39;bar!&#39; ); // outputs: bar!, fn2 says: bar!
+
+    callbacks.remove(fn2);
+    callbacks.fire( &#39;foobar&#39; ); 
+
+    // only outputs foobar, as fn2 has been removed.
+    </pre>
+
+
+<h2 id="supported-flags">Supported Flags</h2>
+
+
+<p><code>Flags</code> is an optional argument to <code>$.Callbacks()</code>, structured as a list of space-separated strings that change how the callback list behaves (eg. <code>$.Callbacks( 'unique stopOnFalse' )</code>).</p>
+
+<p>For examples of how <code>flags</code> should ideally be used, see below:</p>
+
+<p><code>$.Callbacks( 'once' )</code>:</p>
+
+<pre>var callbacks = $.Callbacks( &quot;once&quot; );
+callbacks.add( fn1 );
+callbacks.fire( &#39;foo&#39; );
+callbacks.add( fn2 );
+callbacks.fire( &#39;bar&#39; );
+callbacks.remove( fn2 );
+callbacks.fire( &#39;foobar&#39; );
+
+/*
+output: 
+foo
+*/
+</pre>
+
+
+<p><code>$.Callbacks( 'memory' )</code>:</p>
+<pre>var callbacks = $.Callbacks( &#39;memory&#39; );
+callbacks.add( fn1 );
+callbacks.fire( &#39;foo&#39; );
+callbacks.add( fn2 );
+callbacks.fire( &#39;bar&#39; );
+callbacks.remove( fn2 );
+callbacks.fire( &#39;foobar&#39; );
+
+/*
+output:
+foo
+fn2 says:foo
+bar
+fn2 says:bar
+foobar
+*/
+</pre>
+
+
+<p><code>$.Callbacks( 'unique' )</code>:</p>
+<pre>var callbacks = $.Callbacks( &#39;unique&#39; );
+callbacks.add( fn1 );
+callbacks.fire( &#39;foo&#39; );
+callbacks.add( fn1 ); // repeat addition
+callbacks.add( fn2 );
+callbacks.fire( &#39;bar&#39; );
+callbacks.remove( fn2 );
+callbacks.fire( &#39;foobar&#39; );
+
+/*
+output:
+foo
+bar
+fn2 says:bar
+foobar
+*/
+</pre>
+
+
+<p><code>$.Callbacks( 'stopOnFalse' )</code>:</p>
+<pre>var fn1 = function( value ){
+    console.log( value );
+    return false;
+}
+
+var fn2 = function( value ){
+    fn1(&#39;fn2 says:&#39; + value);
+    return false;
+}
+
+var callbacks = $.Callbacks( &#39;stopOnFalse&#39;);
+callbacks.add( fn1 );
+callbacks.fire( &#39;foo&#39; );
+callbacks.add( fn2 );
+callbacks.fire( &#39;bar&#39; );
+callbacks.remove( fn2 );
+callbacks.fire( &#39;foobar&#39; );
+
+/*
+output:
+foo
+bar
+foobar
+*/
+</pre>
+
+
+<p>Because $.Callbacks() supports a list of flags rather than just one, setting several flags has a cumulative effect similar to &#39;&amp;&amp;&#39;. This means it's possible to combine flags to create callback lists that are say, both <i>unique</i> and <i>ensure if list was already fired, adding more callbacks will have it called with the latest fired value</i> (i.e. <code>$.Callbacks(&quot;unique memory&quot;)</code>).</p>
+
+<p><code>$.Callbacks( 'unique memory' )</code>:</p>
+
+<pre>var fn1 = function( value ){
+    console.log( value );
+    return false;
+}
+
+var fn2 = function( value ){
+    fn1(&#39;fn2 says:&#39; + value);
+    return false;
+}
+    
+var callbacks = $.Callbacks( &#39;unique memory&#39; );
+callbacks.add( fn1 );
+callbacks.fire( &#39;foo&#39; );
+callbacks.add( fn1 ); // repeat addition
+callbacks.add( fn2 );
+callbacks.fire( &#39;bar&#39; );
+callbacks.add( fn2 );
+callbacks.fire( &#39;baz&#39; );
+callbacks.remove( fn2 );
+callbacks.fire( &#39;foobar&#39; );
+
+/*
+output:
+foo
+fn2 says:foo
+bar
+fn2 says:bar
+baz
+fn2 says:baz
+foobar
+*/
+</pre>
+
+
+<p>Flag combinations are internally used with <code>$.Callbacks()</code> in jQuery for the <code>.done()</code> and <code>.fail()</code> buckets on a Deferred - both of which use <code>$.Callbacks('memory once')</code>.</p>
+<p>$.Callbacks methods can also be detached, should there be a need to define short-hand versions for convenience:</p>
+
+<pre>var callbacks = $.Callbacks();
+var add = callbacks.add;
+var remove = callbacks.remove;
+var fire = callbacks.fire;
+
+
+add( fn1 );
+fire( &#39;hello world&#39;);
+remove( fn1 );
+</pre>
+
+
+<h2>$.Callbacks, $.Deferred and Pub/Sub</h2>
+
+
+<p>The general idea behind pub/sub (the Observer pattern) is the promotion of loose coupling in applications. Rather than single objects calling on the methods of other objects, an object instead subscribes to a specific task or activity of another object and is notified when it occurs. Observers are also called Subscribers and we refer to the object being observed as the Publisher (or the subject). Publishers notify subscribers when events occur</p>
+
+
+<p>As a demonstration of the component-creation capabilities of <code>$.Callbacks()</code>, it's possible to implement a Pub/Sub system using only callback lists. Using <code>$.Callbacks</code> as a topics queue, a system for publishing and subscribing to topics can be implemented as follows:</p>
+
+
+<pre>var topics = {};
+
+jQuery.Topic = function( id ) {
+        var callbacks,
+                method,
+                topic = id &amp;&amp; topics[ id ];
+        if ( !topic ) {
+                callbacks = jQuery.Callbacks();
+                topic = {
+                        publish: callbacks.fire,
+                        subscribe: callbacks.add,
+                        unsubscribe: callbacks.remove
+                };
+                if ( id ) {
+                        topics[ id ] = topic;
+                }
+        }
+        return topic;
+};
+</pre>
+
+
+<p>This can then be used by parts of your application to publish and subscribe to events of interest quite easily:</p>
+
+<pre>// Subscribers
+$.Topic( &#39;mailArrived&#39; ).subscribe( fn1 );
+$.Topic( &#39;mailArrived&#39; ).subscribe( fn2 );
+$.Topic( &#39;mailSent&#39; ).subscribe( fn1 );
+
+// Publisher
+$.Topic( &#39;mailArrived&#39; ).publish( &#39;hello world!&#39; );
+$.Topic( &#39;mailSent&#39; ).publish( &#39;woo! mail!&#39; );
+
+//  Here, &#39;hello world!&#39; gets pushed to fn1 and fn2
+//  when the &#39;mailArrived&#39; notification is published
+//  with &#39;woo! mail!&#39; also being pushed to fn1 when
+//  the &#39;mailSent&#39; notification is published. 
+
+/*
+output:
+hello world!
+fn2 says: hello world!
+woo! mail!
+*/
+</pre>
+
+
+<p>Whilst this is useful, the implementation can be taken further. Using <code>$.Deferreds</code>,  it's possible to ensure publishers only publish notifications for subscribers once particular tasks have been completed (resolved). See the below code sample for some further comments on how this could be used in practice:</p>
+
+<pre>// subscribe to the mailArrived notification
+$.Topic( &#39;mailArrived&#39; ).subscribe( fn1 );
+
+// create a new instance of Deferreds
+var dfd = $.Deferred();
+
+// define a new topic (without directly publishing)
+var topic = $.Topic( &#39;mailArrived&#39; );
+
+// when the deferred has been resolved, publish a 
+// notification to subscribers
+dfd.done( topic.publish );
+
+// Here the Deferred is being resolved with a message
+// that will be passed back to subscribers. It's possible to
+// easily integrate this into a more complex routine
+// (eg. waiting on an ajax call to complete) so that
+// messages are only published once the task has actually
+// finished.
+dfd.resolve( &#39;its been published!&#39; );
+</pre>
+
+
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+
+<entry name="callbacks.locked" type="method" return="Boolean">
+  <signature>
+    <added>1.7</added>
+  </signature>
+  <desc>Determine if the callbacks list has been locked.</desc>
+  <longdesc>
+
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.locked()</code> to determine the lock-state of a callback list:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( 'foo:' + value);
+}
+
+var callbacks = $.Callbacks();
+
+// add the logging function to the callback list
+callbacks.add( foo );
+
+// fire the items on the list, passing an argument
+callbacks.fire( 'hello' );
+// outputs 'foo: hello'
+
+// lock the callbacks list
+callbacks.lock();
+
+// test the lock-state of the list
+console.log ( callbacks.locked() ); //true
+</pre>
+
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.empty" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+  </signature>
+  <desc>Remove all of the callbacks from a list.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.empty()</code> to empty a list of callbacks:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value1, value2 ){
+    console.log( 'foo:' + value1 + ',' + value2 );
+}
+
+// another function to also be added to the list
+var bar = function( value1, value2 ){
+    console.log( 'bar:' + value1 + ',' + value2 );
+}
+
+var callbacks = $.Callbacks();
+
+// add the two functions
+callbacks.add( foo );
+callbacks.add( bar );
+
+// empty the callbacks list
+callbacks.empty();
+
+// check to ensure all callbacks have been removed
+console.log( callbacks.has( foo ) ); // false
+console.log( callbacks.has( bar ) ); // false
+</pre>
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.lock" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+  </signature>
+  <desc>Lock a callback list in its current state.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.lock()</code> to lock a callback list to avoid further changes being made to the list state:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( 'foo:' + value);
+}
+
+var callbacks = $.Callbacks();
+
+// add the logging function to the callback list
+callbacks.add( foo );
+
+// fire the items on the list, passing an argument
+callbacks.fire( 'hello' );
+// outputs 'foo: hello'
+
+// lock the callbacks list
+callbacks.lock();
+
+// try firing the items again
+callbacks.fire( 'world' );
+
+// as the list was locked, no items
+// were called so 'world' isn't logged
+</pre>
+
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.fire" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+    <argument name="arguments" type="">
+      <desc>The argument or list of arguments to pass back to the callback list.</desc>
+    </argument>
+  </signature>
+  <desc>Call all of the callbacks with the given arguments</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.fire()</code> to invoke the callbacks in a list with any arguments that have been passed:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( 'foo:' + value );
+}
+
+var callbacks = $.Callbacks();
+
+// add the function 'foo' to the list
+callbacks.add( foo );
+
+// fire the items on the list
+callbacks.fire( 'hello' ); // outputs: 'foo: hello'
+callbacks.fire( 'world '); // outputs: 'foo: world'
+
+// add another function to the list
+var bar = function( value ){
+    console.log( 'bar:' + value );
+} 
+
+// add this function to the list
+callbacks.add( bar );
+
+// fire the items on the list again
+callbacks.fire( 'hello again' );
+// outputs:
+// 'foo: hello again'
+// 'bar: hello again'
+</pre>
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.remove" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+    <argument name="callbacks" type="Function">
+      <desc>A function, or array of functions, that are to be removed from the callback list.</desc>
+    </argument>
+  </signature>
+  <desc>Remove a callback or a collection of callbacks from a callback list.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.remove()</code> to remove callbacks from a callback list:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( 'foo:' + value );
+}
+
+var callbacks = $.Callbacks();
+
+// add the function 'foo' to the list
+callbacks.add( foo );
+
+// fire the items on the list
+callbacks.fire( 'hello' ); // outputs: 'foo: hello'
+
+// remove 'foo' from the callback list
+callbacks.remove( foo );
+
+// fire the items on the list again
+callbacks.fire( 'world' );  
+
+// nothing output as 'foo' is no longer in the list
+</pre>
+
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.add" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+    <argument name="callbacks" type="Function">
+      <desc>A function, or array of functions, that are to be added to the callback list.</desc>
+    </argument>
+  </signature>
+  <desc>Add a callback or a collection of callbacks to a callback list.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.add()</code> to add new callbacks to a callback list:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( 'foo:' + value );
+}
+
+// another function to also be added to the list
+var bar = function( value ){
+    console.log( 'bar:' + value );
+}
+
+var callbacks = $.Callbacks();
+
+// add the function 'foo' to the list
+callbacks.add( foo );
+
+// fire the items on the list
+callbacks.fire( 'hello' );  
+// outputs: 'foo: hello'
+
+// add the function 'bar' to the list
+callbacks.add( bar );
+
+// fire the items on the list again
+callbacks.fire( 'world' );  
+
+// outputs:
+// 'foo: world'
+// 'bar: world'
+</pre>
+
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.disable" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+  </signature>
+  <desc>Disable a callback list from doing anything more.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.disable()</code> to disable further calls being made to a callback list:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value ){
+    console.log( value );
+}
+
+var callbacks = $.Callbacks();
+
+// add the above function to the list
+callbacks.add( foo );
+
+// fire the items on the list
+callbacks.fire( 'foo' ); // outputs: foo
+
+// disable further calls being possible
+callbacks.disable();
+
+// attempt to fire with 'foobar' as an argument
+callbacks.fire( 'foobar' ); // foobar isn't output
+</pre>
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+
+<entry name="callbacks.has" type="method" return="Boolean">
+  <signature>
+    <added>1.7</added>
+    <argument name="callback" type="Function">
+      <desc>The callback to search for.</desc>
+    </argument>
+  </signature>
+  <desc>Determine whether a supplied callback is in a list</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.has()</code> to check if a callback list contains a specific callback:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var foo = function( value1, value2 ){
+    console.log( 'Received:' + value1 + ',' + value2 );
+}
+
+// a second function which will not be added to the list
+var bar = function( value1, value2 ){
+    console.log( 'foobar');
+}
+
+var callbacks = $.Callbacks();
+
+// add the log method to the callbacks list
+callbacks.add( foo );
+
+// determine which callbacks are in the list
+
+console.log( callbacks.has( foo ) ); // true
+console.log( callbacks.has( bar ) ); // false
+</pre>
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="callbacks.fireWith" type="method" return="undefined">
+  <signature>
+    <added>1.7</added>
+    <argument name="context" optional="true">
+      <desc>A reference to the context in which the callbacks in the list should be fired.</desc>
+    </argument>
+    <argument name="args" optional="true">
+      <desc>An argument, or array of arguments, to pass to the callbacks in the list.</desc>
+    </argument>
+  </signature>
+  <desc>Call all callbacks in a list with the given context and arguments.</desc>
+  <longdesc>
+<h2 id="example-1">Example</h2>
+<p>Using <code>callbacks.fireWith()</code> to fire a list of callbacks with a specific context and an array of arguments:</p>
+<pre>
+// a sample logging function to be added to a callbacks list
+var log = function( value1, value2 ){
+    console.log( 'Received:' + value1 + ',' + value2 );
+}
+
+var callbacks = $.Callbacks();
+
+// add the log method to the callbacks list
+callbacks.add( log );
+
+// fire the callbacks on the list using the context 'window'
+// and an arguments array
+
+callbacks.fireWith( window, ['foo','bar']);
+
+// outputs: Received: foo, bar
+</pre>
+  </longdesc>
+<category name="Callbacks Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="deferred.progress" type="method" return="Deferred">
+  <signature>
+    <added>1.7</added>
+    <argument name="progressCallbacks" type="Function">
+      <desc>
+        A function, or array of functions, that is called when the Deferred generates progress notifications.
+      </desc>
+    </argument>
+  </signature>
+  <desc> Add handlers to be called when the Deferred object generates progress notifications.</desc>
+  <longdesc> <p>The argument can be either a single function or an array of functions. When the Deferred generates progress notifications by calling <code>notify</code> or <code>notifyWith</code>, the <code>progressCallbacks</code> are called. Since <code>deferred.progress()</code> returns the Deferred object, other methods of the Deferred object can be chained to this one. When the Deferred is resolved or rejected, progress callbacks will no longer be called. For more information, see the documentation for <a href="/category/deferred-object/">Deferred object</a>.</p>  </longdesc>
+  <category name="Deferred Object"/>
+<category name="Version 1.7"/>
+</entry>
+<entry name="deferred.notifyWith" type="method" return="Deferred">
+    <signature>
+        <added>1.7</added>
+         <argument name="context" type="Object">
+           <desc>
+             Context passed to the progressCallbacks as the <code>this</code> object.
+           </desc>
+         </argument>
+         <argument name="args" type="Object" optional="true">
+           <desc>
+             Optional arguments that are passed to the progressCallbacks.
+           </desc>
+         </argument>
+    </signature>
+    <desc> Call the progressCallbacks on a Deferred object with the given context and <code>args</code>. </desc>
+<longdesc>
+<p>Normally, only the creator of a Deferred should call this method; you can prevent other code from changing the Deferred's state or reporting status by returning a restricted Promise object through deferred.promise().</p>
+<p>When <code>deferred.notifyWith</code> is called, any progressCallbacks added by <a href="http://api.jquery.com/deferred.then/"><code>deferred.then</code></a> or <a href="http://api.jquery.com/deferred.progress/"><code>deferred.progress</code></a> are called. Callbacks are executed in the order they were added. Each callback is passed the <code>args</code> from the <code>.notifyWith()</code>. Any calls to <code>.notifyWith()</code> after a Deferred is resolved or rejected (or any progressCallbacks added after that) are ignored. For more information, see the documentation for <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a>.</p>
+
+</longdesc>
+<category name="Deferred Object"/>
+<category name="Version 1.7"/>
+</entry>
+
+<entry name="deferred.notify" type="method" return="Deferred">
+    <signature>
+        <added>1.7</added>
+         <argument name="args" type="Object">
+           <desc>
+             Optional arguments that are passed to the progressCallbacks.
+           </desc>
+         </argument>
+    </signature>
+    <desc> Call the progressCallbacks on a Deferred object with the given <code>args</code>. </desc>
+<longdesc>
+<p>Normally, only the creator of a Deferred should call this method; you can prevent other code from changing the Deferred's state or reporting status by returning a restricted Promise object through deferred.promise().</p>
+<p>When <code>deferred.notify</code> is called, any progressCallbacks added by <a href="http://api.jquery.com/deferred.then/"><code>deferred.then</code></a> or <a href="http://api.jquery.com/deferred.progress/"><code>deferred.progress</code></a> are called. Callbacks are executed in the order they were added. Each callback is passed the <code>args</code> from the <code>.notify()</code>. Any calls to <code>.notify()</code> after a Deferred is resolved or rejected (or any progressCallbacks added after that) are ignored. For more information, see the documentation for <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a>.</p>
+
+</longdesc>
+<category name="Deferred Object"/>
+<category name="Version 1.7"/>
+</entry>
+
+<entry type='method' name="off" return="jQuery">
+  <desc>Remove an event handler.</desc>
+  <signature>
+    <added>1.7</added>
+    <argument name="events" type="String">
+      <desc>One or more space-separated event types and optional namespaces, or just namespaces, such as "click", "keydown.myPlugin", or ".myPlugin".</desc>
+    </argument>
+    <argument name="selector" type="String" optional="true">
+      <desc>A selector which should match the one originally passed to <code>.on()</code> when attaching event handlers.</desc>
+    </argument>
+    <argument name="handler" type="Function" optional="true">
+      <desc>A handler function previously attached for the event(s), or the special value <code>false</code>.</desc>
+    </argument>
+  </signature>
+  <signature>
+    <added>1.7</added>
+    <argument name="events-map" type="Map">
+      <desc>A map where the string keys represent one or more space-separated event types and optional namespaces, and the values represent handler functions previously attached for the event(s).</desc>
+    </argument>
+    <argument name="selector" type="String" optional="true">
+       <desc>A selector which should match the one originally passed to <code>.on()</code> when attaching event handlers.</desc>
+    </argument>
+  </signature>
+<longdesc>
+  <p>The <code>off()</code> method removes event handlers that were attached with <a href="http://api.jquery.com/on"><code>.on()</code></a>. See the discussion of delegated and directly bound events on that page for more information. Specific event handlers can be removed on elements by providing combinations of event names, namespaces, selectors, or handler function names. <strong>When multiple filtering arguments are given, all of the arguments provided must match for the event handler to be removed.</strong></p>
+  
+  <p>If a simple event name such as <code>"click"</code> is provided, <em>all</em> events of that type (both direct and delegated) are removed from the elements in the jQuery set. When writing code that will be used as a plugin, or simply when working with a large code base, best practice is to attach and remove events using namespaces so that the code will not inadvertently remove event handlers attached by other code. All events of all types in a specific namespace can be removed from an element by providing just a namespace, such as <code>".myPlugin"</code>. At minimum, either a namespace or event name must be provided.</p>
+  
+  <p>To remove specific delegated event handlers, provide a <code>selector</code> argument. The selector string must exactly match the one passed to <code>.on()</code> when the event handler was attached. To remove all delegated events from an element without removing non-delegated events, use the special value <code>"**"</code>.</p>
+
+  <p>A handler can also be removed by specifying the function name in the <code>handler</code> argument. When jQuery attaches an event handler, it assigns a unique id to the handler function. Handlers proxied by <a href="http://api.jquery.com/jQuery.proxy"><code>jQuery.proxy()</code></a> or a similar mechanism will all have the same unique id (the proxy function), so passing proxied handlers to <code>.off</code> may remove more handlers than intended. In those situations it is better to attach and remove event handlers using namespaces.</p>
+  
+  <p>As with <code>.on()</code>, you can pass an <code>events-map</code> argument instead of specifying the <code>events</code> and <code>handler</code> as separate arguments. The keys are events and/or namespaces; the values are handler functions or the special value <code>false</code>.</p>
+
+</longdesc>
+            <example>
+                <desc>Add and remove event handlers on the colored button.</desc>
+                <code><![CDATA[
+function aClick() {
+  $("div").show().fadeOut("slow");
+}
+$("#bind").click(function () {
+  $("body").on("click", "#theone", aClick)
+    .find("#theone").text("Can Click!");
+});
+$("#unbind").click(function () {
+  $("body").off("click", "#theone", aClick)
+    .find("#theone").text("Does nothing...");
+});
+]]></code>
+                <css><![CDATA[
+button { margin:5px; }
+button#theone { color:red; background:yellow; }
+]]></css>
+                <html><![CDATA[<button id="theone">Does nothing...</button>
+<button id="bind">Add Click</button>
+<button id="unbind">Remove Click</button>
+<div style="display:none;">Click!</div>]]></html>
+            </example>
+            <example>
+                <desc>Remove all event handlers from all paragraphs:</desc>
+                <code><![CDATA[$("p").off()]]></code>
+            </example>
+            <example>
+                <desc>Remove all delegated click handlers from all paragraphs:</desc>
+                <code><![CDATA[$("p").off( "click", "**" )]]></code>
+            </example>
+            <example>
+                <desc>Remove just one previously bound handler by passing it as the third argument:</desc>
+                <code><![CDATA[var foo = function () {
+  // code to handle some kind of event
+};
+
+// ... now foo will be called when paragraphs are clicked ...
+$("body").on("click", "p", foo);
+
+
+// ... foo will no longer be called.
+$("body").off("click", "p", foo); ]]></code>
+            </example>
+            <example>
+                <desc>Unbind all delegated event handlers by their namespace:</desc>
+                <code><![CDATA[var validate = function () {
+  // code to validate form entries
+};
+
+// delegate events under the ".validator" namespace
+$("form").on("click.validator", "button", validate);
+
+$("form").on("keypress.validator", "input[type='text']", validate); 
+
+// remove event handlers in the ".validator" namespace
+
+$("form").off(".validator");]]></code>
+            </example>            
+<category name="Event Handler Attachment"/>
+<category name="Version 1.7"/>
+</entry>
+
+<entry name="deferred.state" type="method" return="String">
+  <signature>
+    <added>1.7</added>
+  </signature>
+  <desc>Determine the current state of a Deferred object. </desc>
+  <longdesc>
+    <p>The deferred.state() method returns a string representing the current state of the Deferred object. The Deferred object can be in one of three states:</p>
+    <ul>
+      <li><strong>"pending"</strong>: The Deferred object is not yet in a completed state (neither "rejected" nor "resolved").</li>
+      <li><strong>"resolved"</strong>: The Deferred object is in the resolved state, meaning that either <a href="http://api.jquery.com/deferred.resolve/"><code>deferred.resolve()</code></a> or <a href="http://api.jquery.com/deferred.resolveWith/"><code>deferred.resolveWith()</code></a> has been called for the object and the doneCallbacks have been called (or are in the process of being called). </li>
+      <li><strong>"rejected"</strong>: The Deferred object is in the rejected state, meaning that either <a href="http://api.jquery.com/deferred.reject/"><code>deferred.reject()</code></a> or <a href="http://api.jquery.com/deferred.rejectWith/"><code>deferred.rejectWith()</code></a> has been called for the object and the failCallbacks have been called (or are in the process of being called).</li>
+    </ul>
+    <p>This method is primarily useful for debugging to determine, for example, whether a Deferred has already been resolved even though you are inside code that intended to reject it.</p>
+  </longdesc>
+<category name="Deferred Object"/>
+<category name="Version 1.7"/>
+</entry>
+
+<entry type='method' name="on" return="jQuery">
+  <desc>Attach an event handler function for one or more events to the selected elements.</desc>
+  <signature>
+    <added>1.7</added>
+    <argument name="events" type="String">
+      <desc>One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".</desc>
+    </argument>
+    <argument name="selector" type="String" optional="true">
+      <desc>A selector string to filter the descendants of the selected elements that trigger the event. If the selector is <code>null</code> or omitted, the event is always triggered when it reaches the selected element.</desc>
+    </argument>
+    <argument name="data" type="Anything" optional="true">
+      <desc>Data to be passed to the handler in <a href="/event.data"><code>event.data</code></a> when an event is triggered.</desc>
+    </argument>
+    <argument name="handler" type="Function">
+      <desc>A function to execute when the event is triggered. The value <code>false</code> is also allowed as a shorthand for a function that simply does <code>return false</code>.</desc>
+    </argument>
+  </signature>
+  <signature>
+    <added>1.7</added>
+    <argument name="events-map" type="Map">
+      <desc>A map in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).</desc>
+    </argument>
+    <argument name="selector" type="String" optional="true">
+      <desc>A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.</desc>
+    </argument>
+    <argument name="data" type="Anything" optional="true">
+      <desc>Data to be passed to the handler in <a href="http://api.jquery.com/event.data"><code>event.data</code></a> when an event occurs.</desc>
+    </argument>
+  </signature>
+<longdesc>
+
+<p>The <code>.on()</code> method attaches event handlers to the currently selected set of elements in the jQuery object. As of jQuery 1.7, the <code>.on()</code> method provides all functionality required for attaching event handlers. For equivalents to older jQuery event methods, see <a href="http://api.jquery.com/bind"><code>.bind()</code></a>,  <a href="http://api.jquery.com/delegate"><code>.delegate()</code></a>, and <a href="http://api.jquery.com/live"><code>.live()</code></a>. To remove events bound with <code>.on()</code>, see <a href="http://api.jquery.com/off"><code>.off()</code></a>. To attach an event that runs only once and then removes itself, see <a href="http://api.jquery.com/one"><code>.one()</code></a></p>
+
+<h2 id="event-names">Event names and namespaces</h2>
+
+<p>Any event names can be used for the <code>events</code> argument. jQuery will pass through the browser's standard JavaScript event types, calling the <code>handler</code> function when the browser generates events due to user actions such as <code>click</code>. In addition, the <a href="http://api.jquery.com/trigger"><code>.trigger()</code></a> method can trigger both standard browser event names and custom event names to call attached handlers.</p>
+
+<p>An event name can be qualified by <em>event namespaces</em> that simplify removing or triggering the event. For example, <code>"click.myPlugin.simple"</code> defines both the myPlugin and simple namespaces for this particular click event. A click event handler attached via that string could be removed with <code>.off("click.myPlugin")</code> or <code>.off("click.simple")</code> without disturbing other click handlers attached to the elements. Namespaces are similar to CSS classes in that they are not hierarchical; only one name needs to match. Namespaces beginning with an underscore are reserved for jQuery's use.</p>
+
+<p>In the second form of <code>.on()</code>, the <code>events-map</code> argument is a JavaScript Object, or "map". The keys are strings in the same form as the <code>events</code> argument with space-separated event type names and optional namespaces. The value for each key is a function (or <code>false</code> value) that is used as the <code>handler</code> instead of the final argument to the method. In other respects, the two forms are identical in their behavior as described below.</p>
+
+<h2 id="direct-and-delegated-events">Direct and delegated events</h2>
+
+<p>The majority of browser events <em>bubble</em>, or <em>propagate</em>, from the deepest, innermost element (the <strong>event target</strong>) in the document where they occur all the way up to the body and the <code>document</code> element. In Internet Explorer 8 and lower, a few events such as <code>change</code> and <code>submit</code> do not natively bubble but jQuery patches these to bubble and create consistent cross-browser behavior. The <code>focus</code> and <code>blur</code> events are specified by the W3C to not bubble, but jQuery defines cross-browser <code>focusin</code> and <code>focusout</code> events that do bubble.</p>
+
+<p>If <code>selector</code> is omitted or is null, the event handler is referred to as <em>direct</em> or <em>directly-bound</em>. The handler is called every time an event occurs on the selected elements, whether it occurs directly on the element or bubbles from a descendant (inner) element.</p>
+
+<p>When a <code>selector</code> is provided, the event handler is referred to as <em>delegated</em>. The handler is not called when the event occurs directly on the bound element, but only for descendants (inner elements) that match the selector. jQuery bubbles the event from the event target up to the element where the handler is attached (i.e., innermost to outermost element) and runs the handler for any elements along that path matching the selector.</p>
+
+<p><strong>Event handlers are bound only to the currently selected elements; they must exist on the page at the time your code makes the call to <code>.on()</code>.</strong> To ensure the elements are present and can be selected, perform event binding inside a document ready handler for elements that are in the HTML markup on the page. If new HTML is being injected into the page, select the elements and attach event handlers <em>after</em> the new HTML is placed into the page. Or, use delegated events to attach an event handler, as described next.</p>
+
+<p>Delegated events have the advantage that they can process events from <em>descendant elements</em> that are added to the document at a later time. By picking an element that is guaranteed to be present at the time the delegated event handler is attached, you can use delegated events to avoid the need to frequently attach and remove event handlers. This element could be the container element of a view in a Model-View-Controller design, for example, or <code>document</code> if the event handler wants to monitor all bubbling events in the document. The <code>document</code> element is available in the <code>head</code> of the document before loading any other HTML, so it is safe to attach events there without waiting for the document to be ready.</p>
+
+<p>In addition to their ability to handle events on descendant elements not yet created, another advantage of delegated events is their potential for much lower overhead when many elements must be monitored. On a data table with 1,000 rows in its <code>tbody</code>, this example attaches a handler to 1,000 elements:</p>
+<pre>
+$("#dataTable tbody tr").on("click", function(event){
+	alert($(this).text());
+});
+</pre>
+<p>A delegated-events approach attaches an event handler to only one element, the tbody, and the event only needs to bubble up one level (from the clicked <code>tr</code> to <code>tbody</code>):</p>
+<pre>
+$("#dataTable tbody").on("click", "tr", function(event){
+	alert($(this).text());
+});
+</pre>
+
+<h2 id="event-handler">The event handler and its environment</h2>
+
+<p>The <code>handler</code> argument is a function (or the value <code>false</code>, see below), and is required unless the <code>events-map</code> form is used. You can provide an anonymous handler function at the point of the <code>.on()</code> call, as the examples have done above, or declare a named function and pass its name:</p>
+<pre>
+function notify() { alert("clicked"); }
+$("button").on("click", notify);
+</pre>
+
+<p>When the browser triggers an event or other JavaScript calls jQuery's <code>.trigger()</code> method, jQuery passes the handler an <a href="http://api.jquery.com/event-object"><code>event object</code></a> it can use to analyze and change the status of the event. This object is a <em>normalized subset</em> of data provided by the browser; the browser's unmodified native event object is available in <a href="http://api.jquery.com/event.originalEvent"><code>event.originalEvent</code></a>. For example, <a href="http://api.jquery.com/event.type"><code>event.type</code></a> contains the event name (e.g., "resize") and <a href="http://api.jquery.com/event.target"><code>event.target</code></a> indicates the deepest (innermost) element where the event occurred.</p>
+
+<p>By default, most events bubble up from the original event target to the <code>document</code> element. At each element along the way, jQuery calls any matching event handlers that have been attached. A handler can prevent the event from bubbling further up the document tree (and thus prevent handlers on those elements from running) by calling <code>event.stopPropagation()</code>. Any other handlers attached on the current element <em>will</em> run however. To prevent that, call <code>event.stopImmediatePropagation()</code>. (Event handlers bound to an element are called in the same order that they were bound.)</p>
+
+<p>Similarly, a handler can call <code>event.preventDefault()</code> to cancel any default action that the browser may have for this event; for example, the default action on a <code>click</code> event is to follow the link. Not all browser events have default actions, and not all default actions can be canceled. See the <a href="http://www.w3.org/TR/DOM-Level-3-Events/#event-types-list">W3C Events Specification</a> for details.</p>
+
+<p>Returning <code>false</code> from an event handler will automatically call <code>event.stopPropagation()</code> and <code>event.preventDefault()</code>. A <code>false</code> value can also be passed for the <code>handler</code> as a shorthand for <code>function(){ return false; }</code>. So, <code>$("a.disabled").on("click", false);</code> attaches an event handler to all links with class "disabled" that prevents them from being followed when they are clicked and also stops the event from bubbling. </p>
+
+<p>When jQuery calls a handler, the <code>this</code> keyword is a reference to the element where the event is being delivered; for directly bound events this is the element where the event was attached and for delegated events this is an element matching <code>selector</code>. (Note that <code>this</code> may not be equal to <code>event.target</code> if the event has bubbled from a descendant element.) To create a jQuery object from the element so that it can be used with jQuery methods, use <code>$(this)</code>.</p>
+
+<h2 id="passing-data">Passing data to the handler</h2>
+
+<p>If a <code>data</code> argument is provided to <code>.on()</code> and is not <code>null</code> or <code>undefined</code>, it is passed to the handler in the <a href="http://api.jquery.com/event.data"><code>event.data</code></a> property each time an event is triggered. The <code>data</code> argument can be any type, but if a string is used the <code>selector</code> must either be provided or explicitly passed as <code>null</code> so that the data is not mistaken for a selector. Best practice is to use an object (map) so that multiple values can be passed as properties.</p>
+
+<p>The same event handler can be bound to an element multiple times. This is especially useful when the <code>event.data</code> feature is being used, or when other unique data resides in a closure around the event handler function. For example:</p>
+<pre>
+function greet(event) { alert("Hello "+event.data.name); }
+$("button").on("click", { name: "Karl" }, greet);
+$("button").on("click", { name: "Addy" }, greet);
+</pre>
+<p>The above code will generate two different alerts when the button is clicked.</p>
+
+<p>As an alternative or in addition to the <code>data</code> argument provided to the <code>.on()</code> method, you can also pass data to an event handler using a second argument to <a href="http://api.jquery.com/trigger">.trigger()</a> or <a href="http://api.jquery.com/triggerHandler">.triggerHandler()</a>.</p>
+
+<h2 id="event-performance">Event performance</h2>
+
+<p>In most cases, an event such as <code>click</code> occurs infrequently and performance is not a significant concern. However, high frequency events such as <code>mousemove</code> or <code>scroll</code> can fire dozens of times per second, and in those cases it becomes more important to use events judiciously. Performance can be increased by reducing the amount of work done in the handler itself, caching information needed by the handler rather than recalculating it, or by rate-limiting the number of actual page updates using <code>setTimeout</code>.</p>
+
+<p>Attaching many delegated event handlers near the top of the document tree can degrade performance. Each time the event occurs, jQuery must compare all selectors of all attached events of that type to every element in the path from the event target up to the top of the document. For best performance, attach delegated events at a document location as close as possible to the target elements. Avoid excessive use of <code>document</code> or <code>document.body</code> for delegated events on large documents.</p>
+
+<p>jQuery can process simple selectors of the form <code>tag#id.class</code> very quickly when they are used to filter delegated events. So, <code>"#myForm"</code>, <code>"a.external"</code>, and <code>"button"</code> are all fast selectors. Delegated events that use more complex selectors, particularly hierarchical ones, can be several times slower--although they are still fast enough for most applications. Hierarchical selectors can often be avoided simply by attaching the handler to a more appropriate point in the document. For example, instead of <code>$("body").on("click", "#commentForm .addNew", addComment)</code> use <code>$("#commentForm").on("click", ".addNew", addComment)</code>.</p>
+
+<h2 id="additional-notes">Additional notes</h2>
+
+<p>There are shorthand methods for some events such as <a href="/click"><code>.click()</code></a> that can be used to attach or trigger event handlers. For a complete list of shorthand methods, see the <a href="http://api.jquery.com/category/events/">events category</a>.</p>
+
+<p>Although not recommended, the pseudo-event-name <code>"hover"</code> can be used as a shorthand for <code>"mouseenter mouseleave"</code>. Do not confuse it with the <a href="http//api.jquery.com/hover"><code>.hover()</code></a> method, which accepts <em>two</em> functions. There is only one handler function attached by the pseudo-event-name <code>"hover"</code>; the handler should examine <code>event.type</code> to determine whether the event is <code>mouseenter</code> or <code>mouseleave</code>.</p>
+
+<p>jQuery's event system requires that a DOM element allow attaching data via a property on the element, so that events can be tracked and delivered. The <code>object</code>, <code>embed</code>, and <code>applet</code> elements cannot attach data, and therefore cannot have jQuery events bound to them.</p>
+
+<p>The <code>error</code> event on the <code>window</code> object uses nonstandard arguments and return value conventions, so it is not supported by jQuery. Instead, assign a handler function directly to the <code>window.onerror</code> property.</p>
+
+<p>In Internet Explorer 8 and lower, the <code>paste</code> and <code>reset</code> events do not bubble and are not supported for use with delegation. They <em>can</em> be used when the event handler is directly attached to the element generating the event.</p>
+
+</longdesc>
+
+<example>
+    <desc>Display a paragraph's text in an alert when it is clicked:</desc>
+    <code><![CDATA[$("p").on("click", function(){
+alert( $(this).text() );
+});]]></code>
+</example>
+<example>
+    <desc>Pass data to the event handler, which is specified here by name:</desc>
+    <code><![CDATA[function myHandler(event) {
+alert(event.data.foo);
+}
+$("p").on("click", {foo: "bar"}, myHandler)]]></code>
+</example>
+<example>
+    <desc>Cancel a form submit action and prevent the event from bubbling up by returning <code>false</code>:</desc>
+    <code><![CDATA[$("form").on("submit", false)]]></code>
+</example>
+<example>
+    <desc>Cancel only the default action by using .preventDefault().</desc>
+    <code><![CDATA[$("form").on("submit", function(event) {
+  event.preventDefault();
+});]]></code>
+</example>
+<example>
+    <desc>Stop submit events from bubbling without preventing form submit, using .stopPropagation().</desc>
+    <code><![CDATA[$("form").on("submit", function(event) {
+  event.stopPropagation();
+});]]></code>
+</example>
+<example>
+    <desc>Attach and trigger custom (non-browser) events.</desc>
+    <code><![CDATA[
+
+$("p").on("myCustomEvent", function(e, myName, myValue){
+  $(this).text(myName + ", hi there!");
+  $("span").stop().css("opacity", 1)
+    .text("myName = " + myName)
+    .fadeIn(30).fadeOut(1000);
+});
+$("button").click(function () {
+  $("p").trigger("myCustomEvent", [ "John" ]);
+});
+
+]]></code>
+    <css><![CDATA[
+p { color:red; }
+span { color:blue; }
+]]></css>
+    <html><![CDATA[<p>Has an attached custom event.</p>
+<button>Trigger custom event</button>
+<span style="display:none;"></span>]]></html>
+</example>
+<example>
+<desc>Attach multiple event handlers simultaneously using a map.</desc>
+<code><![CDATA[$("div.test").on({
+  click: function(){
+    $(this).addClass("active");
+  },
+  mouseenter: function(){
+    $(this).addClass("inside");
+  },
+  mouseleave: function(){
+    $(this).removeClass("inside");
+  }
+});]]></code>
+</example>
+<example>
+    <desc>Click any paragraph to add another after it. Note that .on() allows a click event on any paragraph--even new ones--since the event is handled by the ever-present body element after it bubbles to there.</desc>
+    <code><![CDATA[
+    var count = 0;
+    $("body").on("click", "p", function(){
+      $(this).after("<p>Another paragraph! "+(++count)+"</p>");
+    });
+]]></code>
+  <css><![CDATA[
+  p { background:yellow; font-weight:bold; cursor:pointer; 
+      padding:5px; }
+  p.over { background: #ccc; }
+  span { color:red; }
+  ]]></css>
+  <html><![CDATA[<p>Click me!</p>
+
+  <span></span>]]></html>
+</example>
+<example>
+    <desc>Display each paragraph's text in an alert box whenever it is clicked:</desc>
+    <code><![CDATA[$("body").on("click", "p", function(){
+  alert( $(this).text() );
+});]]></code>
+</example>
+<example>
+    <desc>Cancel a link's default action using the preventDefault method.</desc>
+    <code><![CDATA[$("body").on("click", "a", function(event){
+  event.preventDefault();
+});]]></code>
+</example>
+<category name="Event Handler Attachment"/>
+<category name="Events"/>
+<category name="Version 1.7"/>
+</entry>
+<entry type='method' name="jQuery.isNumeric" return="Boolean">
 	<desc>Determines whether its argument is a number.</desc>
     <signature>
       <added>1.7</added>
@@ -178,9 +1238,27 @@ $( "#content" ).delegate( "*", "focus blur", function( event ) {
       </desc>
     </argument>
   </signature>
+  <signature>
+    <added>1.7</added>
+    <argument name="doneFilter" type="Function" optional="true">
+      <desc>
+        An optional function that is called when the Deferred is resolved.
+      </desc>
+    </argument>
+    <argument name="failFilter" type="Function" optional="true">
+      <desc>
+        An optional function that is called when the Deferred is rejected.
+      </desc>
+    </argument>
+    <argument name="progressFilter" type="Function" optional="true">
+      <desc>
+        An optional function that is called when the Deferred is rejected.
+      </desc>
+    </argument>
+  </signature>
   <desc> Utility method to filter and/or chain Deferreds.  </desc>
   <longdesc>
-    <p>The <code>deferred.pipe()</code> method returns a new promise that filters the status and values of a deferred through a function.  The <code>doneFilter</code> and <code>failFilter</code> functions filter the original deferred's resolved / rejected status and values.  These filter functions can return a new value to be passed along to the piped promise's <code>done()</code> or <code>fail()</code> callbacks, or they can return another observable object (Deferred, Promise, etc) which will pass its resolved / rejected status and values to the piped promise's callbacks. If the filter function used is <code>null</code>, or not specified, the piped promise will be resolved or rejected with the same values as the original.</p>
+    <p>The <code>deferred.pipe()</code> method returns a new promise that filters the status and values of a deferred through a function.  The <code>doneFilter</code> and <code>failFilter</code> functions filter the original deferred's resolved / rejected status and values. <strong>As of jQuery 1.7</strong>, the method also accepts a <code>progressFilter</code> function to filter any calls to the original deferred's <code>notify</code> or <code>notifyWith</code> methods. These filter functions can return a new value to be passed along to the piped promise's <code>done()</code> or <code>fail()</code> callbacks, or they can return another observable object (Deferred, Promise, etc) which will pass its resolved / rejected status and values to the piped promise's callbacks. If the filter function used is <code>null</code>, or not specified, the piped promise will be resolved or rejected with the same values as the original.</p>
 </longdesc>
   <example>
     <desc>Filter resolve value:</desc>
@@ -226,6 +1304,7 @@ chained.done(function( data ) {
   </example>
 <category name="Deferred Object"/>
 <category name="Version 1.6"/>
+<category name="Version 1.7"/>
 </entry>
 
 <entry name="deferred.always" type="method" return="Deferred">
@@ -714,7 +1793,7 @@ alert( 'You are running jQuery version: ' + $.fn.jquery );
         </argument>
     </signature>
     <desc> Return a Deferred's Promise object. </desc>
-    <longdesc> <p>The <code>deferred.promise()</code> method allows an asynchronous function to prevent other code from interfering with the progress or status of its internal request. The Promise exposes only the Deferred methods needed to attach additional handlers or determine the state (<code>then</code>, <code>done</code>, <code>fail</code>, <code>isResolved</code>, and <code>isRejected</code>), but not ones that change the state (<code>resolve</code>, <code>reject</code>, <code>resolveWith</code>, and <code>rejectWith</code>). <strong>As of jQuery 1.6</strong>, the Promise also exposes the <code>always</code> and <code>pipe</code> Deferred methods.</p>
+    <longdesc> <p>The <code>deferred.promise()</code> method allows an asynchronous function to prevent other code from interfering with the progress or status of its internal request. The Promise exposes only the Deferred methods needed to attach additional handlers or determine the state (<code>then</code>, <code>done</code>, <code>fail</code>, <code>always</code>,<code>pipe</code>, <code>progress</code>, and <code>state</code>), but not ones that change the state (<code>resolve</code>, <code>reject</code>, <code>progress</code>, <code>resolveWith</code>, <code>rejectWith</code>, and <code>progressWith</code>).</p>
 
 <p>If <code>target</code> is provided, <code>deferred.promise()</code> will attach the methods onto it and then return this object rather than create a new one. This can be useful to attach the Promise behavior to an object that already exists.</p>
 
@@ -722,26 +1801,43 @@ alert( 'You are running jQuery version: ' + $.fn.jquery );
 <p>For more information, see the documentation for <a href="/category/deferred-object/">Deferred object</a>.</p>  
 </longdesc>
    <example>
-        <desc>Create a Deferred and set two timer-based functions to either resolve or reject the Deferred after a random interval. Whichever one fires first "wins" and will call one of the callbacks. The second timeout has no effect since the Deferred is already complete (in a resolved or rejected state) from the first timeout action.</desc>
-        <code><![CDATA[// Create a Deferred and return its Promise
+        <desc>Create a Deferred and set two timer-based functions to either resolve or reject the Deferred after a random interval. Whichever one fires first "wins" and will call one of the callbacks. The second timeout has no effect since the Deferred is already complete (in a resolved or rejected state) from the first timeout action. Also set a timer-based progress notification function, and call a progress handler that adds "working..." to the document body.</desc>
+        <code><![CDATA[
 function asyncEvent(){
     var dfd = new jQuery.Deferred();
+
+    // Resolve after a random interval
     setTimeout(function(){
         dfd.resolve("hurray");
-    }, Math.floor(Math.random()*1500));
+    }, Math.floor(400+Math.random()*2000));
+
+    // Reject after a random interval
     setTimeout(function(){
         dfd.reject("sorry");
-    }, Math.floor(Math.random()*1500));
+    }, Math.floor(400+Math.random()*2000));
+
+    // Show a "working..." message every half-second
+    setTimeout(function working(){
+        if ( dfd.state() === "pending" ) {
+            dfd.notify("working... ");
+            setTimeout(working, 500);
+        }
+    }, 1);
+
+    // Return the Promise so caller can't change the Deferred
     return dfd.promise();
 }
 
-// Attach a done and fail handler for the asyncEvent
+// Attach a done, fail, and progress handler for the asyncEvent
 $.when( asyncEvent() ).then(
     function(status){
         alert( status+', things are going well' );
     },
     function(status){
         alert( status+', you fail this time' );
+    },
+    function(status){
+        $("body").append(status);
     }
 );
 ]]></code>
@@ -1172,8 +2268,28 @@ $("button").bind("click", function() {
            </desc>
          </argument>
     </signature>
+    <signature>
+        <added>1.7</added>
+         <argument name="doneCallbacks" type="Function">
+           <desc>
+             A function, or array of functions, called when the Deferred is resolved.
+           </desc>
+         </argument>
+         <argument name="failCallbacks" type="Function">
+           <desc>
+             A function, or array of functions, called when the Deferred is rejected.
+           </desc>
+         </argument>
+         <argument name="progressCallbacks" type="Function" optional="true">
+           <desc>
+             A function, or array of functions, called when the Deferred notifies progress.
+           </desc>
+         </argument>
+    </signature>
     <desc> Add handlers to be called when the Deferred object is resolved or rejected. </desc>
-    <longdesc> <p>Both arguments can be either a single function or an array of functions. Either argument can also be null if no callback of that type is desired. Alternatively, use <code>.done()</code> or <code>.fail()</code> to set only doneCallbacks or failCallbacks. When the Deferred is resolved, the doneCallbacks are called. If the Deferred is instead rejected, the failCallbacks are called. Callbacks are executed in the order they were added. Since <code>deferred.then</code> returns the deferred object, other methods of the deferred object can be chained to this one, including additional <code>.then()</code> methods. For more information, see the documentation for <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a>.</p> </longdesc>
+    <longdesc> <p>All three arguments (including progressCallbacks, as of jQuery 1.7) can be either a single function or an array of functions. The arguments can also be <code>null</code> if no callback of that type is desired. Alternatively, use <code>.done()</code>, <code>.fail()</code> or <code>.progress()</code> to set only one type of callback. </p>
+<p>When the Deferred is resolved, the doneCallbacks are called. If the Deferred is instead rejected, the failCallbacks are called. As of jQuery 1.7, the <code>deferred.notify()</code> or <code>deferred.notifyWith()</code> methods can be called to invoke the progressCallbacks as many times as desired before the Deferred is resolved or rejected.</p>
+<p>Callbacks are executed in the order they were added. Since <code>deferred.then</code> returns the deferred object, other methods of the deferred object can be chained to this one, including additional <code>.then()</code> methods. For more information, see the documentation for <a href="http://api.jquery.com/category/deferred-object/">Deferred object</a>.</p> </longdesc>
    <example>
         <desc>Since the <a href="/jQuery.get"><code>jQuery.get</code></a> method returns a jqXHR object, which is derived from a Deferred object, we can attach handlers using the <code>.then</code> method.</desc>
 <code><![CDATA[
@@ -1185,6 +2301,7 @@ $.get("test.php").then(
     </example>
 <category name="Deferred Object"/>
 <category name="Version 1.5"/>
+<category name="Version 1.7"/>
 </entry>
 <entry name="deferred.reject" type="method" return="Deferred">
     <signature>
@@ -1206,24 +2323,32 @@ $.get("test.php").then(
 <entry name="deferred.isRejected" type="method" return="Boolean">
     <signature>
         <added>1.5</added>
+        <deprecated>1.7</deprecated>
      </signature>
     <desc> Determine whether a Deferred object has been rejected. </desc>
-    <longdesc> <p>Returns <code>true</code> if the Deferred object is in the rejected state, meaning that either <a href="http://api.jquery.com/deferred.reject/"><code>deferred.reject()</code></a> or <a href="http://api.jquery.com/deferred.rejectWith/"><code>deferred.rejectWith()</code></a> has been called for the object and the failCallbacks have been called (or are in the process of being called).</p>
-<p>Note that a Deferred object can be in one of three states: unresolved, resolved, or rejected; use <a href="http://api.jquery.com/deferred.isResolved/"><code>deferred.isResolved()</code></a> to determine whether the Deferred object is in the resolved state. These methods are primarily useful for debugging, for example to determine whether a Deferred has already been resolved even though you are inside code that intended to reject it.</p>  </longdesc>
+    <longdesc> 
+<p>As of jQuery 1.7 this API has been deprecated; please use <a href="http://api.jquery.com/deferred.state"><code>deferred.state()</code></a> instead.</p>
+<p>Returns <code>true</code> if the Deferred object is in the rejected state, meaning that either <a href="http://api.jquery.com/deferred.reject/"><code>deferred.reject()</code></a> or <a href="http://api.jquery.com/deferred.rejectWith/"><code>deferred.rejectWith()</code></a> has been called for the object and the failCallbacks have been called (or are in the process of being called).</p>
+<p>Note that a Deferred object can be in one of three states: pending, resolved, or rejected; use <a href="http://api.jquery.com/deferred.isResolved/"><code>deferred.isResolved()</code></a> to determine whether the Deferred object is in the resolved state. These methods are primarily useful for debugging, for example to determine whether a Deferred has already been resolved even though you are inside code that intended to reject it.</p>  </longdesc>
 
 <category name="Deferred Object"/>
+<category name="Deprecated"/>
 <category name="Version 1.5"/>
 </entry>
 
 <entry name="deferred.isResolved" type="method" return="Boolean">
     <signature>
         <added>1.5</added>
+        <deprecated>1.7</deprecated>
      </signature>
     <desc> Determine whether a Deferred object has been resolved. </desc>
-    <longdesc> <p>Returns <code>true</code> if the Deferred object is in the resolved state, meaning that either <a href="http://api.jquery.com/deferred.resolve/"><code>deferred.resolve()</code></a> or <a href="http://api.jquery.com/deferred.resolveWith/"><code>deferred.resolveWith()</code></a> has been called for the object and the doneCallbacks have been called (or are in the process of being called).</p>
-<p>Note that a Deferred object can be in one of three states: unresolved, resolved, or rejected; use <a href="http://api.jquery.com/deferred.isRejected/"><code>deferred.isRejected()</code></a> to determine whether the Deferred object is in the rejected state. These methods are primarily useful for debugging, for example to determine whether a Deferred has already been resolved even though you are inside code that intended to reject it.</p>  </longdesc>
+    <longdesc> 
+<p>As of jQuery 1.7 this API has been deprecated; please use <a href="http://api.jquery.com/deferred.state"><code>deferred.state()</code></a> instead.</p>
+<p>Returns <code>true</code> if the Deferred object is in the resolved state, meaning that either <a href="http://api.jquery.com/deferred.resolve/"><code>deferred.resolve()</code></a> or <a href="http://api.jquery.com/deferred.resolveWith/"><code>deferred.resolveWith()</code></a> has been called for the object and the doneCallbacks have been called (or are in the process of being called).</p>
+<p>Note that a Deferred object can be in one of three states: pending, resolved, or rejected; use <a href="http://api.jquery.com/deferred.isRejected/"><code>deferred.isRejected()</code></a> to determine whether the Deferred object is in the rejected state. These methods are primarily useful for debugging, for example to determine whether a Deferred has already been resolved even though you are inside code that intended to reject it.</p>  </longdesc>
 
 <category name="Deferred Object"/>
+<category name="Deprecated"/>
 <category name="Version 1.5"/>
 </entry>
 
@@ -1574,7 +2699,7 @@ $("button").click(function(event) {
 <category name="Version 1.4.3"/>
 </entry>
 <entry type='method' name="undelegate" return="jQuery">
-  <desc>Remove a handler from the event for all elements which match the current selector, now or in the future, based upon a specific set of root elements.</desc>
+  <desc>Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.</desc>
   <signature>
     <added>1.4.2</added>
   </signature>
@@ -1615,7 +2740,7 @@ $("button").click(function(event) {
     </argument>
   </signature>  
 <longdesc>
-  <p>Undelegate is a way of removing event handlers that have been bound using <a href="/delegate">.delegate()</a>. It works virtually identically to <a href="/die">.die()</a> with the addition of a selector filter argument (which is required for delegation to work).</p>
+  <p>The <code>.undelegate()</code> method is a way of removing event handlers that have been bound using <a href="/delegate"><code>.delegate()</code></a>. <strong>As of jQuery 1.7</strong>, the <a href="http://api.jquery.com/on"><code>.on()</code></a> and <a href="http://api.jquery.com/off"><code>.off()</code></a> methods are preferred for attaching and removing event handlers.</p>
 </longdesc>
             <example>
                 <desc>Can bind and unbind events to the colored button.</desc>
@@ -1682,6 +2807,7 @@ $("form").undelegate(".whatever");]]></code>
 <category name="Version 1.4.3"/>
 <category name="Version 1.6"/>
 </entry>
+
 <entry type='method' name="delegate" return="jQuery">
   <desc>Attach a handler to one or more events for all elements that match the selector, now or in the future, based on a specific set of root elements.</desc>
   <signature>
@@ -1721,25 +2847,28 @@ $("form").undelegate(".whatever");]]></code>
     </argument>
   </signature>
 <longdesc>
-  <p>Delegate is an alternative to using the <a href="/live">.live()</a> method, allowing for each binding of event delegation to specific DOM elements. For example the following delegate code:</p>
+  <p>As of jQuery 1.7, <code>.delegate()</code> has been superseded by the <a href="http://api.jquery.com/on">.on()</a> method. For earlier versions, however, it remains the most effective means to use event delegation. More information on event binding and delegation is in the <a href="http://api.jquery.com/on">.on()</a> method. In general, these are the equivalent templates for the two methods:</p>
+ <pre>
+$(elements).delegate(<em>selector</em>, <em>events</em>, <em>data</em>, <em>handler</em>);  // jQuery 1.4.3+
+$(elements).on(<em>events</em>, <em>selector</em>, <em>data</em>, <em>handler</em>);        // jQuery 1.7+
+ </pre>
+ <p>For example, the following <code>.delegate()</code> code:</p>
 
-<pre>$("table").delegate("td", "hover", function(){
-	$(this).toggleClass("hover");
+<pre>$("table").delegate("td", "click", function() {
+  $(this).toggleClass("chosen");
 });</pre>
 
-<p>Is equivalent to the following code written using <code>.live()</code>:</p>
+<p>is equivalent to the following code written using <code>.on()</code>:</p>
 
-<pre>$("table").each(function(){
-	$("td", this).live("hover", function(){
-		$(this).toggleClass("hover");
-	});
+<pre>$("table").on("click", "td", function() {
+  $(this).toggleClass("chosen");
 });</pre>
 
-<p>See also the <a href="/undelegate">.undelegate()</a> method for a way of removing event handlers added in <a href="/delegate">.delegate()</a>.</p>
-<p>Passing and handling event data works <a href="http://api.jquery.com/bind/#passing-event-data">the same way as it does for .bind()</a>.</p>
+<p>To remove events attached with <code>delegate()</code>, see  the <a href="http://api.jquery.com/undelegate">.undelegate()</a> method.</p>
+<p>Passing and handling event data works the same way as it does for <code>.on()</code>.</p>
 </longdesc>
   <example>
-    <desc>Click a paragraph to add another. Note that .delegate() binds the click event to all paragraphs - even new ones.</desc>
+    <desc>Click a paragraph to add another. Note that .delegate() attaches a click event handler to all paragraphs - even new ones.</desc>
     <code><![CDATA[
     $("body").delegate("p", "click", function(){
       $(this).after("<p>Another paragraph!</p>");
@@ -1798,6 +2927,7 @@ $("form").undelegate(".whatever");]]></code>
 <category name="Version 1.4.2"/>
 <category name="Version 1.4.3"/>
 <note type="additional">Since the <a href="http://api.jquery.com/live"><code>.live()</code></a> method handles events once they have propagated to the top of the document, it is not possible to stop propagation of live events. Similarly, events handled by <code><a href="http://api.jquery.com/delegate/">.delegate()</a></code> will propagate to the elements to which they are delegated; event handlers bound on any elements below it in the DOM tree will already have been executed by the time the delegated event handler is called. These handlers, therefore, may prevent the delegated handler from triggering by calling <code><a href="http://api.jquery.com/event.stopPropagation/">event.stopPropagation()</a></code> or returning <code>false</code>.</note></entry>
+
             <entry type='method' name="jQuery.error" return="">
                 <signature>
                   <added>1.4.1</added>
@@ -1988,7 +3118,7 @@ $("p").focusout(function() {
 <category name="Version 1.4.3"/>
 </entry>
 <entry type='method' name="focusin" return="jQuery">
-  <desc>Bind an event handler to the "focusin" JavaScript event.</desc>
+  <desc>Bind an event handler to the "focusin" event.</desc>
   <signature>
     <added>1.4</added>
     <argument name="handler(eventObject)" type="Function">
@@ -3627,8 +4757,19 @@ $('div').html('Index: ' + foobar);]]></code>
                     <desc>A string naming the piece of data to delete.</desc>
                 </argument>
               </signature>
+              <signature>
+                <added>1.7</added>
+                <argument name="list" type="Array,String" optional="true">
+                    <desc>An array or space-separated string naming the pieces of data to delete.</desc>
+                </argument>
+              </signature>
+              
               <desc>Remove a previously-stored piece of data.</desc>
-              <longdesc><p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed.</p><p>NOTE: Starting with jQuery 1.4.3, calling <code>.removeData()</code> will cause the value of the property being removed to revert to the value of the data attribute of the same name in the DOM, rather than being set to <code>undefined</code>.</p></longdesc>
+              <longdesc><p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed. Removing data from jQuery's internal <code>.data()</code> cache does not effect any HTML5 <code>data-</code> attributes in a document; use <code>.removeAttr()</code> to remove those.</p>
+<p><strong>As of jQuery 1.7</strong>, when called with an array of keys or a string of space-separated keys, <code>.removeData()</code> deletes the value of each key in that array or string.</p>
+<p><strong>As of jQuery 1.4.3</strong>, calling <code>.removeData()</code> will cause the value of the property being removed to revert to the value of the data attribute of the same name in the DOM, rather than being set to <code>undefined</code>.</p>
+              
+              </longdesc>
                 <example>
                     <desc>Set a data store for 2 names then remove one of them.</desc>
                     <code><![CDATA[
@@ -3655,6 +4796,7 @@ $('div').html('Index: ' + foobar);]]></code>
             <category name="Data"/>
 <category name="Data Storage"/>
 <category name="Version 1.2.3"/>
+<category name="Version 1.7"/>
 </entry>
 
 
@@ -6409,17 +7551,18 @@ $('#foo').queue(function() {
 <p>To determine which key was pressed, examine the event object that is passed to the handler function. While browsers use differing properties to store this information, jQuery normalizes the <code>.which</code> property so you can reliably use it to retrieve the key code. This code corresponds to a key on the keyboard, including codes for special keys such as arrows. For catching actual text entry, <code>.keypress()</code> may be a better choice.</p>
 </longdesc>
 <example>
-    <desc>Show the event object for the keyup handler when a key is released in the input.</desc>
+    <desc>Show the event object for the keyup handler (using a simple $.print plugin) when a key is released in the input.</desc>
     <code><![CDATA[
 var xTriggered = 0;
 $('#target').keyup(function(event) {
-  if (event.keyCode == '13') {
-     event.preventDefault();
-   }
    xTriggered++;
    var msg = 'Handler for .keyup() called ' + xTriggered + ' time(s).';
   $.print(msg, 'html');
   $.print(event);
+}).keydown(function(event) {
+  if (event.which == 13) {
+    event.preventDefault();
+  }  
 });
 
 $('#other').click(function() {
@@ -8046,6 +9189,7 @@ It is not possible to cancel the <code>unload</code> event with <code>.preventDe
 </entry>
 
 <entry type='method' name="die" return="jQuery">
+  <deprecated>1.7</deprecated>
   <desc>Remove all event handlers previously attached using <code>.live()</code> from the elements.</desc>
   <signature>
     <added>1.4.1</added>
@@ -8053,6 +9197,7 @@ It is not possible to cancel the <code>unload</code> event with <code>.preventDe
 <longdesc>
 <p>Any handler that has been attached with <code>.live()</code> can be removed with <code>.die()</code>. This method is analogous to calling <code>.unbind()</code> with no arguments, which is used to remove all handlers attached with <code>.bind()</code>.
 See the discussions of <code>.live()</code> and <code>.unbind()</code> for further details.</p>
+<p><strong>As of jQuery 1.7</strong>, use of <code>.die()</code> (and its complementary method, <code>.live()</code>) is not recommended. Instead, use <a href="http://api.jquery.com/off/"><code>.off()</code></a> to remove event handlers bound with <a href="http://api.jquery.com/on/"><code>.on()</code></a></p>
 <p><strong>Note:</strong> In order for .die() to function correctly, the selector used with it must match exactly the selector initially used with .live().</p>
 </longdesc>
 <category name="Event Handler Attachment"/>
@@ -8061,6 +9206,7 @@ See the discussions of <code>.live()</code> and <code>.unbind()</code> for furth
 <category name="Version 1.4.3"/>
 </entry>
 <entry type='method' name="die" return="jQuery">
+  <deprecated>1.7</deprecated>
   <desc>Remove an event handler previously attached using <code>.live()</code> from the elements.</desc>
   <signature>
     <added>1.3</added>
@@ -8132,6 +9278,7 @@ $("p").die("click", foo); // ... foo will no longer be called.]]></code>
 <category name="Version 1.4.1"/>
 <category name="Version 1.4.3"/>
 </entry>
+
 
 
 <entry type='property' name="jQuery.browser" return="Map">
@@ -8257,11 +9404,12 @@ if ( $.browser.msie ) {
 </entry>
 
 <entry type='method' name="live" return="jQuery">
-  <desc>Attach a handler to the event for all elements which match the current selector, now and in the future.</desc>
+  <deprecated>1.7</deprecated>
+  <desc>Attach an event handler for all elements which match the current selector, now and in the future.</desc>
   <signature>
     <added>1.3</added>
-    <argument name="eventType" type="String">
-      <desc>A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names, as well.</desc>
+    <argument name="events" type="String">
+      <desc>A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.</desc>
     </argument>
     <argument name="handler" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
@@ -8269,10 +9417,10 @@ if ( $.browser.msie ) {
   </signature>
   <signature>
     <added>1.4</added>
-    <argument name="eventType" type="String">
-      <desc>A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names, as well.</desc>
+    <argument name="events" type="String">
+      <desc>A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.</desc>
     </argument>
-    <argument name="eventData" type="Object">
+    <argument name="data" type="Object">
       <desc>A map of data that will be passed to the event handler.</desc>
     </argument>
     <argument name="handler" type="Function">
@@ -8281,92 +9429,46 @@ if ( $.browser.msie ) {
   </signature>
   <signature>
     <added>1.4.3</added>
-    <argument name="events" type="Object">
+    <argument name="events-map" type="Object">
       <desc>A map of one or more JavaScript event types and functions to execute for them.</desc>
     </argument>
   </signature>
 
 <longdesc>
-  <p>This method is a variation on the basic <code>.bind()</code> method for attaching event handlers to elements. When <code>.bind()</code> is called, the elements that the jQuery object refers to get the handler attached; elements that get introduced later do not, so they would require another <code>.bind()</code> call. For instance, consider the HTML:</p>
-<pre>&lt;body&gt;
-  &lt;div class="clickme"&gt;
-    Click here
-  &lt;/div&gt;
-&lt;/body&gt;
-</pre>
-  <p>To bind a simple click handler to this element:</p>
-<pre>$('.clickme').bind('click', function() {
-  // Bound handler called.
-});
-</pre>
-  <p>When the element is clicked, the handler is called. However, suppose that after this, another element is added:
-  </p>
-  <pre>$('body').append('&lt;div class="clickme"&gt;Another target&lt;/div&gt;');</pre>
-  <p>This new element also matches the selector <code>.clickme</code>, but since it was added after the call to <code>.bind()</code>, clicks on it will do nothing.</p>
-  <p>The <code>.live()</code> method provides an alternative to this behavior. To bind a click handler to the target element using this method:</p>
-<pre>$('.clickme').live('click', function() {
-  // Live handler called.
-});</pre>
-  <p>And then later add a new element:</p>
-  <pre>$('body').append('&lt;div class="clickme"&gt;Another target&lt;/div&gt;');</pre>
-  <p>Then clicks on the new element will also trigger the handler.</p>
-  <p>To <em>unbind</em> the click handlers from all <code>&lt;div class="clickme"&gt;</code> that were bound using <code>.live()</code>, use the <code><a href="http://api.jquery.com/die/">.die()</a></code> method:</p>
-<pre>$(".clickme").die("click");</pre>
-  <h4 id="event-delegation">Event Delegation</h4>
-  <p>The <code>.live()</code> method is able to affect elements that have not yet been added to the DOM through the use of event delegation: a handler bound to an ancestor element is responsible for events that are triggered on its descendants. The handler passed to <code>.live()</code> is never bound to an element; instead, <code>.live()</code> binds a special handler to the root of the DOM tree. In the example above, when the new element is clicked, the following steps occur:</p>
-  <ol>
-    <li>A click event is generated and passed to the <code>&lt;div&gt;</code> for handling.</li>
-    <li>No handler is directly bound to the <code>&lt;div&gt;</code>, so the event bubbles up the DOM tree.</li>
-    <li>The event bubbles up until it reaches the root of the tree, which is where <code>.live()</code> binds its special handlers by default. <br /><em>* As of jQuery 1.4, event bubbling can optionally stop at a DOM element "context".</em></li>
-    <li>The special <code>click</code> handler bound by <code>.live()</code> executes.</li>
-    <li>This handler tests the <code>target</code> of the event object to see whether it should continue. This test is performed by checking if <code>$(event.target).closest(".clickme")</code> is able to locate a matching element.</li>
-    <li>If a matching element is found, the original handler is called on it.</li>
-  </ol>
-  <p>Because the test in step 5 is not performed until the event occurs, elements can be added at any time and still respond to events.</p>
-  <p>See the discussion for <code><a href="/bind">.bind()</a></code> for more information on event binding.</p>
 
-  <h4 id="multiple-events">Multiple Events</h4>
-  <p>As of jQuery 1.4.1 <code>.live()</code> can accept multiple, space-separated events, similar to the functionality provided in <a href="/bind">.bind()</a>. For example, you can "live bind" the <code>mouseover</code> and <code>mouseout</code> events at the same time like so: </p>
-<pre>$(".hoverme").live("mouseover mouseout", function(event) {
-  if ( event.type == "mouseover" ) {
-    // do something on mouseover
-  } else {
-    // do something on mouseout
-  }
-});</pre>
-  <p>As of jQuery 1.4.3, you can bind multiple live event handlers simultaneously by passing a map of event type/handler pairs:</p>
+<p><strong>As of jQuery 1.7</strong>, the <code>.live()</code> method is deprecated. Use <a href="http://api.jquery.com/on/"><code>.on()</code></a> to attach event handlers. Users of older versions of jQuery should use <a href="http://api.jquery.com/delegate/"><code>.delegate()</code></a> in preference to <code>.live()</code>.</p>
 
-<pre>$("a").live({
-  click: function() {
-    // do something on click
-  },
-  mouseover: function() {
-    // do something on mouseover
-  }
-});</pre>
-  <h4 id="event-data">Event Data</h4>
-  <p>As of jQuery 1.4, the optional <code>eventData</code> parameter is available for passing additional information to the handler. One handy use of this parameter is to work around issues caused by closures. See the <code>.bind()</code> method's "<a href="/bind/#passing-event-data">Passing Event Data</a>" discussion for more information.</p>
-  <h4 id="event-context">Event Context</h4>
-  <p>As of jQuery 1.4, live events can be bound to a DOM element "context" rather than to the default document root. To set this context, use the <a href="http://api.jquery.com/jquery/#selector-context"><code>jQuery()</code> function's second argument</a>, passing in a single DOM element (as opposed to a jQuery collection or a selector).</p>
-<pre>$("div.clickme", $("#container")[0]).live("click", function() {
-  // Live handler called.
-});</pre>
-  <p>The live handler in this example is called only when <code>&lt;div class="clickme"&gt;</code> is a descendant of an element with an ID of "container."</p>
-  <h4 id="caveats">Caveats</h4>
-  <p>The <code>.live()</code> technique is useful, but due to its special approach cannot be simply substituted for <code>.bind()</code> in all cases. Specific differences include:</p>
-  <ul>
-    <li>DOM traversal methods are not supported for finding elements to send to <code>.live()</code>. Rather, the <code>.live()</code> method should always be called directly after a selector, as in the example above.</li>
-    <li>To stop further handlers from executing after one bound using <code>.live()</code>, the handler must return <code>false</code>. Calling <code>.stopPropagation()</code> will not accomplish this.</li>
-    <li>The <code>paste</code> and <code>reset</code> events, in addition to <code>change</code> when used with inputs of type "file," are not fully supported by the <code>.live()</code> method, due to issues with simulating event bubbling in Internet Explorer. In these cases, the <code>.bind()</code> method can be used instead.</li>
-    <li>In <b>jQuery 1.3.x</b> only the following JavaScript events (in addition to custom events) could be bound with <code>.live()</code>: <code>click</code>, <code>dblclick</code>, <code>keydown</code>, <code>keypress</code>, <code>keyup</code>, <code>mousedown</code>, <code>mousemove</code>, <code>mouseout</code>, <code>mouseover</code>, and <code>mouseup</code>.</li>
-  </ul>
-  <blockquote>
-    <ul>
-      <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as all <em>JavaScript events that bubble</em>.</li>
-      <li>As of <b>jQuery 1.4.1</b> even <code>focus</code> and <code>blur</code> work with live (mapping to the more appropriate, bubbling, events <code>focusin</code> and <code>focusout</code>).</li>
-      <li>As of <b>jQuery 1.4.1</b> the <code>hover</code> event can be specified (mapping to <code>mouseenter</code> and  <code>mouseleave</code>, which, in turn, are mapped to <code>mouseover</code> and <code>mouseout</code>).</li>
-    </ul>
-  </blockquote>
+<p>This method provides a means to attach delegated event handlers to the <code>document</code> element of a page, which simplifies the use of event handlers when content is dynamically added to a page. See the discussion of direct versus delegated events in the <a href="http://api.jquery.com/on/"><code>.on()</code></a> method for more information. </p>
+
+<p>Rewriting the <code>.live()</code> method in terms of its successors is straightforward; these are templates for equivalent calls for all three event attachment methods:</p>
+<pre>
+$(<em>selector</em>).live(<em>events</em>, <em>data</em>, <em>handler</em>);                // jQuery 1.3+
+$(document).delegate(<em>selector</em>, <em>events</em>, <em>data</em>, <em>handler</em>);  // jQuery 1.4.3+
+$(document).on(<em>events</em>, <em>selector</em>, <em>data</em>, <em>handler</em>);        // jQuery 1.7+
+</pre>
+
+<p>The <code>events</code> argument can either be a space-separated list of event type names and optional namespaces, or an <code>event-map</code> of event names strings and handlers. The <code>data</code> argument is optional and can be omitted. For example, the following three method calls are functionally equivalent (but see below for more effective and performant ways to attach delegated event handlers):</p>
+<pre>
+$("a.offsite").live("click", function(){ alert("Goodbye!"); });                // jQuery 1.3+
+$(document).delegate("a.offsite", "click", function(){ alert("Goodbye!"); });  // jQuery 1.4.3+
+$(document).on("click", "a.offsite", function(){ alert("Goodbye!"); });        // jQuery 1.7+
+</pre>
+
+<p>Use of the <code>.live()</code> method is no longer recommended since later versions of jQuery offer better methods that do not have its drawbacks. In particular, the following issues arise with the use of <code>.live()</code>:</p>
+<ul>
+        <li>jQuery attempts to retrieve the elements specified by the selector before calling the <code>.live()</code> method, which may be time-consuming on large documents.</li>
+        <li>Chaining methods is not supported. For example, <code>$("a").find(".offsite, .external").live( ... ); </code> is <em>not</em> valid and does not work as expected.</li>
+        <li>Since all <code>.live()</code> events are attached at the <code>document</code> element, events take the longest and slowest possible path before they are handled.</li>
+        <li>Calling <a href="http://api.jquery.com/event.stopPropagation"><code>event.stopPropagation()</code></a> in the event handler is ineffective in stopping event handlers attached lower in the document; the event has already propagated to <code>document</code>.</li>
+        <li>The <code>.live()</code> method interacts with other event methods in ways that can be surprising, e.g., <code>$(document).unbind("click")</code> removes all click handlers attached by any call to <code>.live()</code>!</li>
+</ul>
+
+<p>For pages still using <code>.live()</code>, this list of version-specific differences may be helpful:</p>
+<ul>
+        <li>Before jQuery 1.7, to stop further handlers from executing after one bound using <code>.live()</code>, the handler must return <code>false</code>. Calling <code>.stopPropagation()</code> will not accomplish this.</li>
+        <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as <em>all JavaScript events that bubble</em>.</li>
+        <li>In <b>jQuery 1.3.x</b> only the following JavaScript events could be bound: <code>click</code>, <code>dblclick</code>, <code>keydown</code>, <code>keypress</code>, <code>keyup</code>, <code>mousedown</code>, <code>mousemove</code>, <code>mouseout</code>, <code>mouseover</code>, and <code>mouseup</code>.</li>
+ </ul>
 </longdesc>
   <example>
     <desc>Click a paragraph to add another. Note that .live() binds the click event to all paragraphs - even new ones.</desc>
@@ -8419,7 +9521,7 @@ $("button").click(function () {
   ]]></html>
   </example>
 <example>
-<desc>Use a map to bind multiple live event handlers. Note that .live() binds the click, mouseover, and mouseout events to all paragraphs — even new ones.</desc>
+<desc>Use a map to bind multiple live event handlers. Note that .live() calls the click, mouseover, and mouseout event handlers for all paragraphs--even new ones.</desc>
     <code><![CDATA[
 $("p").live({
   click: function() {
@@ -8446,6 +9548,7 @@ $("p").live({
 <category name="Event Handler Attachment"/>
 <category name="Version 1.3"/>
 </entry>
+
 <entry type='method' name="triggerHandler" return="Object">
   <desc>Execute all handlers attached to an element for an event.</desc>
   <signature>
@@ -8643,18 +9746,45 @@ pass:"bar"
   <desc>Attach a handler to an event for the elements. The handler is executed at most once per element.</desc>
   <signature>
     <added>1.1</added>
-    <argument name="eventType" type="String">
+    <argument name="events" type="String">
       <desc>A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.</desc>
     </argument>
-    <argument name="eventData" type="Object" optional="true">
+    <argument name="data" type="Object" optional="true">
       <desc>A map of data that will be passed to the event handler.</desc>
     </argument>
-    <argument name="handler(eventObject)" type="Function">
+    <argument name="handler" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
+  <signature>
+    <added>1.7</added>
+    <argument name="events" type="String">
+      <desc>One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".</desc>
+    </argument>
+    <argument name="selector" type="String" optional="true">
+      <desc>A selector string to filter the descendants of the selected elements that trigger the event. If the selector is <code>null</code> or omitted, the event is always triggered when it reaches the selected element.</desc>
+    </argument>
+    <argument name="data" type="Anything" optional="true">
+      <desc>Data to be passed to the handler in <a href="/event.data"><code>event.data</code></a> when an event is triggered.</desc>
+    </argument>
+    <argument name="handler" type="Function">
+      <desc>A function to execute when the event is triggered. The value <code>false</code> is also allowed as a shorthand for a function that simply does <code>return false</code>.</desc>
+    </argument>
+  </signature>
+  <signature>
+    <added>1.7</added>
+    <argument name="events-map" type="Map">
+      <desc>A map in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).</desc>
+    </argument>
+    <argument name="selector" type="String" optional="true">
+      <desc>A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.</desc>
+    </argument>
+    <argument name="data" type="Anything" optional="true">
+      <desc>Data to be passed to the handler in <a href="http://api.jquery.com/event.data"><code>event.data</code></a> when an event occurs.</desc>
+    </argument>
+  </signature>
 <longdesc>
-<p>This method is identical to <code>.bind()</code>, except that the handler is unbound after its first invocation. For example:</p>
+<p>The first form of this method is identical to <code>.bind()</code>, except that the handler is unbound after its first invocation. The second two forms, introduced in jQuery 1.7, are identical to <code>.on()</code> except that the handler is removed after its first invocation. For example:</p>
 <pre>$("#foo").one("click", function() {
   alert("This will be displayed only once.");
 });
@@ -9171,7 +10301,7 @@ alert( $(this).text() );
     </argument>
   </signature>
 <longdesc>
-    <p>Any handler that has been attached with <code>.bind()</code> can be removed with <code>.unbind()</code>. In the simplest case, with no arguments, <code>.unbind()</code> removes all handlers attached to the elements:</p>
+<p>Event handlers attached with <code>.bind()</code> can be removed with <code>.unbind()</code>. (As of jQuery 1.7, the <a href="http://api.jquery.com/on"><code>.on()</code></a> and <a href="http://api.jquery.com/off"><code>.off()</code></a> methods are preferred to attach and remove event handlers on elements.) In the simplest case, with no arguments, <code>.unbind()</code> removes all handlers attached to the elements:</p>
 <pre>$('#foo').unbind();</pre>
 <p>This version removes the handlers regardless of type. To be more precise, we can pass an event type:</p>
 <pre>$('#foo').unbind('click');</pre>
@@ -9182,7 +10312,7 @@ alert( $(this).text() );
 $('#foo').bind('click', handler);
 $('#foo').unbind('click', handler);
 </pre>
-<p>By naming the handler, we can be assured that no other functions are caught in the crossfire. Note that the following will <em>not</em> work:</p>
+<p>By naming the handler, we can be assured that no other functions are accidentally removed. Note that the following will <em>not</em> work:</p>
 <pre>$('#foo').bind('click', function() {
   alert('The quick brown fox jumps over the lazy dog.');
 });
@@ -9192,7 +10322,6 @@ $('#foo').unbind('click', function() {
   alert('The quick brown fox jumps over the lazy dog.');
 });</pre>
 <p>Even though the two functions are identical in content, they are created separately and so JavaScript is free to keep them as distinct function objects. To unbind a particular handler, we need a reference to that function and not a different one that happens to do the same thing.</p>
-<blockquote><p><strong>Note: </strong>Because the <code><a href="http://api.jquery.com/live/">.live()</a></code> method binds event handlers to <code>document</code> by default, calling .unbind() on <code>document</code> will unbind the handlers bound by <code>.live()</code>, as well. For example, <code>$(document).unbind('click');</code> will remove not only <code>$(document).bind('click', fn1)</code> <br />but also <br /> <code>$('a.foo').live('click', fn2)</code>.</p></blockquote>
 <blockquote><p><strong>Note:</strong> Using a proxied function to unbind an event on an element will unbind all proxied functions on that element, as the same proxy function is used for all proxied events. To allow unbinding a specific event, use unique class names on the event (e.g. <code>click.proxy1</code>, <code>click.proxy2</code>) when attaching them.</p></blockquote>
 <h4>Using Namespaces</h4>
 <p>Instead of maintaining references to handlers in order to unbind them, we can namespace the events and use this capability to narrow the scope of our unbinding actions. As shown in the discussion for the <code>.bind()</code> method, namespaces are defined by using a period (<code>.</code>) character when binding a handler:</p>
@@ -9269,11 +10398,12 @@ $("p").unbind("click", foo); // ... foo will no longer be called.]]></code>
 <category name="Version 1.4.3"/>
 </entry>
 
+
 <entry type='method' name="bind" return="jQuery">
 <signature>
   <added>1.0</added>
   <argument name="eventType" type="String">
-    <desc>A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.</desc>
+    <desc>A string containing one or more DOM event types, such as "click" or "submit," or custom event names.</desc>
   </argument>
   <argument name="eventData" type="Object" optional="true">
     <desc>A map of data that will be passed to the event handler.</desc>
@@ -9285,7 +10415,7 @@ $("p").unbind("click", foo); // ... foo will no longer be called.]]></code>
 <signature>
   <added>1.4.3</added>
   <argument name="eventType" type="String">
-    <desc>A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.</desc>
+    <desc>A string containing one or more DOM event types, such as "click" or "submit," or custom event names.</desc>
   </argument>
   <argument name="eventData" type="Object" optional="true">
     <desc>A map of data that will be passed to the event handler.</desc>
@@ -9297,17 +10427,20 @@ $("p").unbind("click", foo); // ... foo will no longer be called.]]></code>
 <signature>
   <added>1.4</added>
   <argument name="events" type="Object">
-    <desc>A map of one or more JavaScript event types and functions to execute for them.</desc>
+    <desc>A map of one or more DOM event types and functions to execute for them.</desc>
   </argument>
 </signature>
 <desc>Attach a handler to an event for the elements.</desc>
 <longdesc>
-<p>The <code>.bind()</code> method is the primary means of attaching behavior to a document. All JavaScript event types, such as <code>focus</code>, <code>mouseover</code>, and <code>resize</code>, are allowed for <code>eventType</code>. The <code>error</code> event on the <code>window</code> object uses nonstandard conventions and is not supported by jQuery; attach a handler directly to the <code>window</code> object instead. The <code>beforeunload</code> event is supported cross-browser in jQuery 1.5.1 and 1.6+, but is not supported in IE for jQuery 1.5.2 due to a regression.</p>
-<p>The jQuery library provides shortcut methods for binding the standard event types, such as <code>.click()</code> for <code>.bind('click')</code>. A description of each can be found in the discussion of its shortcut method: <a href="http://api.jquery.com/blur">blur</a>, <a href="http://api.jquery.com/focus">focus</a>, <a href="http://api.jquery.com/focusin">focusin</a>, <a href="http://api.jquery.com/focusout">focusout</a>, <a href="http://api.jquery.com/load-event">load</a>, <a href="http://api.jquery.com/resize">resize</a>, <a href="http://api.jquery.com/scroll">scroll</a>, <a href="http://api.jquery.com/unload">unload</a>, <a href="http://api.jquery.com/click">click</a>, <a href="http://api.jquery.com/dblclick">dblclick</a>, <a href="http://api.jquery.com/mousedown">mousedown</a>, <a href="http://api.jquery.com/mouseup">mouseup</a>, <a href="http://api.jquery.com/mousemove">mousemove</a>, <a href="http://api.jquery.com/mouseover">mouseover</a>, <a href="http://api.jquery.com/mouseout">mouseout</a>, <a href="http://api.jquery.com/mouseenter">mouseenter</a>, <a href="http://api.jquery.com/mouseleave">mouseleave</a>, <a href="http://api.jquery.com/change">change</a>, <a href="http://api.jquery.com/select">select</a>, <a href="http://api.jquery.com/submit">submit</a>, <a href="http://api.jquery.com/keydown">keydown</a>, <a href="http://api.jquery.com/keypress">keypress</a>, <a href="http://api.jquery.com/keyup">keyup</a>,  <a href="http://api.jquery.com/error">error</a></p>
+<p>As of jQuery 1.7, the <a href="http://api.jquery.com/on"><code>.on()</code></a> method is the preferred method for attaching event handlers to a document. For earlier versions, the <code>.bind()</code> method is used for attaching an event handler directly to elements. Handlers are attached to the currently selected elements in the jQuery object, so those elements <em>must exist</em> at the point the call to <code>.bind()</code> occurs. For more flexible event binding, see the discussion of event delegation in <a href="http://api.jquery.com/on"><code>.on()</code></a> or <a href="http://api.jquery.com/delegate"><code>.delegate()</code></a>.</p>
 
-<p>Any string is legal for <code>eventType</code>; if the string is not the name of a native JavaScript event, then the handler is bound to a custom event. These events are never called by the browser, but may be triggered manually from other JavaScript code using <code>.trigger()</code> or <code>.triggerHandler()</code>.</p>
+<p>Any string is legal for <code>eventType</code>; if the string is not the name of a native DOM event, then the handler is bound to a custom event. These events are never called by the browser, but may be triggered manually from other JavaScript code using <code>.trigger()</code> or <code>.triggerHandler()</code>.</p>
 <p>If the <code>eventType</code> string contains a period (<code>.</code>) character, then the event is namespaced. The period character separates the event from its namespace. For example, in the call <code>.bind('click.name', handler)</code>, the string <code>click</code> is the event type, and the string <code>name</code> is the namespace. Namespacing allows us to unbind or trigger some events of a type without affecting others. See the discussion of <code>.unbind()</code> for more information.</p>
+
+<p>There are shorthand methods for some standard browser events such as <a href="/click"><code>.click()</code></a> that can be used to attach or trigger event handlers. For a complete list of shorthand methods, see the <a href="http://api.jquery.com/category/events/">events category</a>.</p>
+
 <p>When an event reaches an element, all handlers bound to that event type for the element are fired. If there are multiple handlers registered, they will always execute in the order in which they were bound. After all handlers have executed, the event continues along the normal event propagation path.</p>
+
 <p>A basic usage of <code>.bind()</code> is:</p>
 <pre>
 $('#foo').bind('click', function() {
@@ -9342,16 +10475,13 @@ $('#foo').bind({
 </pre>
 <p>After this code is executed, when the user clicks inside the element with an ID of <code>foo</code>, its text contents will be shown as an alert.
 </p>
-<p>As of jQuery 1.4.2 duplicate event handlers can be bound to an element instead of being discarded. For example:</p>
-<pre>function test(){ alert("Hello"); }
-$("button").click( test );
-$("button").click( test );</pre>
-<p>The above will generate two alerts when the button is clicked.</p>
+<p>As of jQuery 1.4.2 duplicate event handlers can be bound to an element instead of being discarded. This is useful when the event data feature is being used, or when other unique data resides in a closure around the event handler function.</p>
 
-<p>In jQuery 1.4.3 you can now pass in 'false' in place of an event handler. This will bind an event handler that's equivalent to: <code>function(){ return false; }</code>. This function can be removed at a later time by calling: <code>.unbind( eventName, false )</code>.</p>
+<p>In jQuery 1.4.3 you can now pass in <code>false</code> in place of an event handler. This will bind an event handler equivalent to: <code>function(){ return false; }</code>. This function can be removed at a later time by calling: <code>.unbind( eventName, false )</code>.</p>
 
 <h4 id="event-object"><a href="http://api.jquery.com/category/events/event-object/">The Event object</a></h4>
-<p>The <code>handler</code> callback function can also take parameters. When the function is called, the JavaScript event object will be passed to the first parameter.</p>
+
+<p>The <code>handler</code> callback function can also take parameters. When the function is called, the event object will be passed to the first parameter.</p>
 <p>The event object is often unnecessary and the parameter omitted, as sufficient context is usually available when the handler is bound to know exactly what needs to be done when the handler is triggered. However, at times it becomes necessary to gather more information about the user's environment at the time the event was initiated. <a href="http://api.jquery.com/category/events/event-object/">View the full Event Object</a>.</p>
 
 <p>Returning <code>false</code> from a handler is equivalent to calling both <code>.preventDefault()</code> and <code>.stopPropagation()</code> on the event object.</p>
@@ -9493,6 +10623,7 @@ span { color:blue; }
 <category name="Version 1.4"/>
 <category name="Version 1.4.3"/>
 </entry>
+
             <entry type='method' name="first" return="jQuery">
               <signature>
                 <added>1.4</added>
@@ -9896,6 +11027,7 @@ $(&#39;&lt;input type=&quot;text&quot; /&gt;&#39;).attr({
 <category name="Version 1.4"/>
 </entry>
 
+
 <entry type='method' name="stop" return="jQuery">
   <desc>Stop the currently-running animation on the matched elements.</desc>
   <signature>
@@ -9907,10 +11039,23 @@ $(&#39;&lt;input type=&quot;text&quot; /&gt;&#39;).attr({
       <desc>A Boolean indicating whether to complete the current animation immediately. Defaults to <code>false</code>.</desc>
     </argument>
   </signature>
+  <signature>
+    <added>1.7</added>
+    <argument name="queue" type="String" optional="true">
+      <desc>The name of the queue in which to stop animations.</desc>
+    </argument>
+    <argument name="clearQueue" type="Boolean" optional="true">
+      <desc>A Boolean indicating whether to remove queued animation as well. Defaults to <code>false</code>.</desc>
+    </argument>
+    <argument name="jumpToEnd" type="Boolean" optional="true">
+      <desc>A Boolean indicating whether to complete the current animation immediately. Defaults to <code>false</code>.</desc>
+    </argument>
+  </signature>
   <longdesc>
   <p>When <code>.stop()</code> is called on an element, the currently-running animation (if any) is immediately stopped. If, for instance, an element is being hidden with <code>.slideUp()</code> when <code>.stop()</code> is called, the element will now still be displayed, but will be a fraction of its previous height. Callback functions are not called.</p>
 <p>If more than one animation method is called on the same element, the later animations are placed in the effects queue for the element. These animations will not begin until the first one completes. When <code>.stop()</code> is called, the next animation in the queue begins immediately. If the <code>clearQueue</code> parameter is provided with a value of <code>true</code>, then the rest of the animations in the queue are removed and never run.</p>
-<p>If the <code>jumpToEnd</code> property is provided with a value of <code>true</code>, the current animation stops, but the element is immediately given its target values for each CSS property. In our above <code>.slideUp()</code> example, the element would be immediately hidden. The callback function is then immediately called, if provided.</p>
+<p>If the <code>jumpToEnd</code> argument is provided with a value of <code>true</code>, the current animation stops, but the element is immediately given its target values for each CSS property. In our above <code>.slideUp()</code> example, the element would be immediately hidden. The callback function is then immediately called, if provided.</p>
+<p><strong>As of jQuery 1.7</strong>, if the first argument is provided as a string, only the animations in the queue represented by that string will be stopped.</p>
 <p>The usefulness of the <code>.stop()</code> method is evident when we need to animate an element on <code>mouseenter</code> and <code>mouseleave</code>:</p>
 <pre>&lt;div id="hoverme"&gt;
   Hover me
@@ -9922,8 +11067,12 @@ $(&#39;&lt;input type=&quot;text&quot; /&gt;&#39;).attr({
 }, function() {
   $(this).find('img').stop(true, true).fadeIn();
 });</pre>
+
+<h2>Toggling Animations</h2>
+<p><strong>As of jQuery 1.7,</strong> stopping a toggled animation prematurely with <code>.stop()</code> will trigger jQuery's internal effects tracking. In previous versions, calling the <code>.stop()</code> method before a toggled animation was completed would cause the animation to lose track of its state (if jumpToEnd was false). Any subsequent animations would start at a new "half-way" state, sometimes resulting in the element disappearing. To observe the new behavior, see the final example below.</p>
+
 <blockquote><p>Animations may be stopped globally by setting the property <code>$.fx.off</code> to <code>true</code>. When this is done, all animation methods will immediately set elements to their final state when called, rather than displaying an effect.</p></blockquote>
-  </longdesc>
+</longdesc>
   <example>
       <desc>Click the Go button once to start the animation, then click the STOP button to stop it where it's currently positioned.  Another option is to click several buttons to queue them up and see that stop just kills the currently playing one.</desc>
       <code><![CDATA[
@@ -9958,8 +11107,30 @@ margin: 5px;
 }
 ]]></css>
   </example>
+
+<example>
+  <desc>Click the slideToggle button to start the animation, then click again before the animation is completed. The animation will toggle the other direction from the saved starting point.</desc>
+  <code><![CDATA[
+var $block = $('.block');
+/* Toggle a sliding animation animation */
+$('#toggle').on('click', function() {
+    $block.stop().slideToggle(1000);
+});
+]]></code>
+<html><![CDATA[<button id="toggle">slideToggle</button> 
+<div class="block"></div>]]></html>
+<css><![CDATA[.block { 
+background-color: #abc;
+border: 2px solid black;
+width: 200px; 
+height: 80px;
+margin: 10px;
+}
+]]></css>
+</example>
 <category name="Custom"/>
 <category name="Version 1.2"/>
+<category name="Version 1.7"/>
 </entry>
 
             <entry type='method' name="end" return="jQuery">
@@ -10197,7 +11368,7 @@ $('ul.first').find('.foo')
         <li><code>easing</code>: A string indicating which easing function to use for the transition.</li>
         <li><code>complete</code>: A function to call once the animation is complete.</li>
         <li><code>step</code>: A function to be called after each step of the animation.</li>
-        <li><code>queue</code>: A Boolean indicating whether to place the animation in the effects queue. If <code>false</code>, the animation will begin immediately.</li>
+        <li><code>queue</code>: A Boolean indicating whether to place the animation in the effects queue. If <code>false</code>, the animation will begin immediately. <strong>As of jQuery 1.7</strong>, the <code>queue</code> option can also accept a string, in which case the animation is added to the queue represented by that string.</li>
         <li><code>specialEasing</code>: A map of one or more of the CSS properties defined by the properties argument and their corresponding easing functions (added 1.4).</li>
         </ul>
         </desc>
@@ -11478,7 +12649,7 @@ $("span").click(function () {
     </argument>
   </signature>
   <longdesc>
-<p>The <code>.slideUp()</code> method animates the height of the matched elements. This causes lower parts of the page to slide up, appearing to conceal the items. Once the height reaches 0, the <code>display</code> style property is set to <code>none</code> to ensure that the element no longer affects the layout of the page.</p>
+<p>The <code>.slideUp()</code> method animates the height of the matched elements. This causes lower parts of the page to slide up, appearing to conceal the items. Once the height reaches 0 (or, if set, to whatever the CSS min-height property is), the <code>display</code> style property is set to <code>none</code> to ensure that the element no longer affects the layout of the page.</p>
   <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The strings <code>'fast'</code> and <code>'slow'</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively. If any other string is supplied, or if the <code>duration</code> parameter is omitted, the default duration of  <code>400</code> milliseconds is used.</p>
   <p>We can animate any element, such as a simple image:</p>
 <pre>&lt;div id="clickme"&gt;
@@ -14067,21 +15238,18 @@ $("form").submit(function () {
   <example>
       <desc>Remove the two white spaces at the start and at the end of the string.</desc>
       <code><![CDATA[
-
-$("button").click(function () {
-var str = "     lots of spaces before and after     ";
-alert("'" + str + "'");
-
-str = jQuery.trim(str);
-alert("'" + str + "' - no longer");
-});
-
+  var str = "         lots of spaces before and after         ";
+  $("#original").html("Original String: '" + str + "'");
+  $("#trimmed").html("$.trim()'ed: '" + $.trim(str) + "'");
 ]]></code>
-      <html><![CDATA[<button>Show Trim Example</button>]]></html>
+      <html><![CDATA[
+        <pre id="original"></pre>
+        <pre id="trimmed"></pre>
+      ]]></html>
   </example>
   <example>
       <desc>Remove the two white spaces at the start and at the end of the string.</desc>
-      <code><![CDATA[$.trim("  hello, how are you?  ");]]></code>
+      <code><![CDATA[$.trim("    hello, how are you?    ");]]></code>
       <results><![CDATA["hello, how are you?"]]></results>
   </example>
 <category name="Utilities"/>
@@ -14241,6 +15409,9 @@ $.merge( $.merge([],first), second);
     <argument name="array" type="Array">
       <desc>An array through which to search.</desc>
     </argument>
+    <argument name="fromIndex" type="Number" optional="true">
+      <desc>The index of the array at which to begin the search. The default is 0, which will search the whole array.</desc>
+    </argument>
   </signature>
 <desc>Search for a specified value within an array and return its index (or -1 if not found).</desc>
   <longdesc><p>The <code>$.inArray()</code> method is similar to JavaScript's native <code>.indexOf()</code> method in that it returns -1 when it doesn't find a match. If the first element within the array matches <code>value</code>, <code>$.inArray()</code> returns 0.</p> 
@@ -14251,11 +15422,11 @@ $.merge( $.merge([],first), second);
 <example>
   <desc>Report the index of some elements in the array.</desc>
   <code><![CDATA[var arr = [ 4, "Pete", 8, "John" ];
-
-$("span:eq(0)").text(jQuery.inArray("John", arr));
-$("span:eq(1)").text(jQuery.inArray(4, arr));
-$("span:eq(2)").text(jQuery.inArray("Karl", arr));
-
+var $spans = $("span");
+$spans.eq(0).text(jQuery.inArray("John", arr));
+$spans.eq(1).text(jQuery.inArray(4, arr));
+$spans.eq(2).text(jQuery.inArray("Karl", arr));
+$spans.eq(3).text(jQuery.inArray("Pete", arr, 2));
 ]]></code>
 <css><![CDATA[
   div { color:blue; }
@@ -14264,7 +15435,8 @@ $("span:eq(2)").text(jQuery.inArray("Karl", arr));
 <html><![CDATA[
 <div>"John" found at <span></span></div>
 <div>4 found at <span></span></div>
-<div>"Karl" not found, so <span></span></div>]]></html>
+<div>"Karl" not found, so <span></span></div>
+<div>"Pete" is in the array, but not at or after index 2, so <span></span></div>]]></html>
   </example>
 <category name="Utilities"/>
 <category name="Version 1.2"/>
@@ -15930,7 +17102,7 @@ $(elem).wrapInner(&quot;&lt;div class=\&quot;test\&quot;&gt;&lt;/div&gt;&quot;);
   &lt;div class="inner"&gt;Hello&lt;/div&gt;
   &lt;div class="inner"&gt;Goodbye&lt;/div&gt;
 &lt;/div&gt;</pre>
-				<p>If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first.</p></longdesc>
+				<p>If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first, and that new set (the original element plus clones) is returned.</p></longdesc>
                 <example>
                     <desc>Inserts all paragraphs before an element with id of "foo". Same as $("#foo").before("p")</desc>
                     <code><![CDATA[$("p").insertBefore("#foo"); // check before() examples]]></code>
@@ -16054,7 +17226,7 @@ $('p').first().before($newdiv1, [newdiv2, existingdiv1]);
   &lt;div class="inner"&gt;Goodbye&lt;/div&gt;
 &lt;/div&gt;
 &lt;h2&gt;Greetings&lt;/h2&gt;</pre>
-				<p>If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first.</p></longdesc>
+				<p>If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first, and that new set (the original element plus clones) is returned.</p></longdesc>
                 <example>
                     <desc>Inserts all paragraphs after an element with id of "foo". Same as $("#foo").after("p")</desc>
                     <code><![CDATA[$("p").insertAfter("#foo"); // check after() examples]]></code>
@@ -16344,7 +17516,7 @@ $('body').prepend($newdiv1, [newdiv2, existingdiv1]);
   &lt;h2&gt;Greetings&lt;/h2&gt;
 &lt;/div&gt;
 </pre>
-				<p>If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first.</p></longdesc>
+				<p>If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first, and that new set (the original element plus clones) is returned.</p></longdesc>
                 <example>
                     <desc>Appends all spans to the element with the ID "foo"</desc>
                     <code><![CDATA[$("span").appendTo("#foo"); // check append() examples]]></code>
@@ -16464,13 +17636,25 @@ $('body').append($newdiv1, [newdiv2, existingdiv1]);
     </signature>
     <desc>Get the current value of the first element in the set of matched elements.</desc>
     <longdesc>
-      <p>The <code>.val()</code> method is primarily used to get the values of form elements. In the case of <code>&lt;select multiple="multiple"&gt;</code> elements, the <code>.val()</code> method returns an array containing each selected option.</p>
+      <p>The <code>.val()</code> method is primarily used to get the values of form elements such as <code>input</code>, <code>select</code> and <code>textarea</code>. In the case of <code>&lt;select multiple="multiple"&gt;</code> elements, the <code>.val()</code> method returns an array containing each selected option.</p>
 
 <p>For selects and checkboxes, you can also use the <a href='/selected'>:selected</a> and <a href='/checked'>:checked</a> selectors to get at values, for example:</p>
 <pre>$('select.foo option:selected').val();    // get the value from a dropdown select
 $('select.foo').val();                    // get the value from a dropdown select even easier
 $('input:checkbox:checked').val();        // get the value from a checked checkbox
-$('input:radio[name=bar]:checked').val(); // get the value from a set of radio buttons</pre></longdesc>
+$('input:radio[name=bar]:checked').val(); // get the value from a set of radio buttons</pre>
+
+<blockquote><p><strong>Note: </strong> At present, using <code>.val()</code> on textarea elements strips carriage return characters from the browser-reported value. When this value is sent to the server via XHR however, carriage returns are preserved (or added by browsers which do not include them in the raw value). A workaround for this issue can be achieved using a valHook as follows:</p></blockquote>
+
+<pre>
+$.valHooks.textarea = {
+    get: function( elem ) {
+        return elem.value.replace( /\r?\n/g, "\r\n" );
+    }
+};
+</pre>
+</longdesc>
+
                 <example>
                     <desc>Get the single value from a single select and an array of values from a multiple select and display their values.</desc>
                     <code><![CDATA[
@@ -16492,17 +17676,18 @@ $('input:radio[name=bar]:checked').val(); // get the value from a set of radio b
   b { color:blue; }
   ]]></css>
                     <html><![CDATA[<p></p>
+
   <select id="single">
     <option>Single</option>
     <option>Single2</option>
-
   </select>
+
   <select id="multiple" multiple="multiple">
     <option selected="selected">Multiple</option>
     <option>Multiple2</option>
-
     <option selected="selected">Multiple3</option>
-  </select>]]></html>
+  </select>
+]]></html>
 </example>
 <example>
     <desc>Find the value of an input box.</desc>
@@ -16542,7 +17727,7 @@ $('input:radio[name=bar]:checked').val(); // get the value from a set of radio b
   <longdesc><p>This method is typically used to set the values of form fields. </p>
 <p>Passing an array of element values allows matching  <code>&lt;input type="checkbox"&gt;</code>, <code>&lt;input type="radio"&gt;</code> and <code>&lt;option&gt;</code>s inside of n <code>&lt;select multiple="multiple"&gt;</code> to be selected. In the case of <code>&lt;input type="radio"&gt;</code>s that are part of a radio group and <code>&lt;select multiple="multiple"&gt;</code> the other elements will be deselected.</p>
     <p>The <code>.val()</code> method allows us to set the value by passing in a function. As of jQuery 1.4, the function is passed two arguments, the current element's index and its current value: </p>
-<pre>$('input:text.items').val(function(index, value) {
+<pre>$('input:text.items').val(function( index, value ) {
   return value + ' ' + this.className;
 });
 </pre>
@@ -16563,7 +17748,6 @@ $('input:radio[name=bar]:checked').val(); // get the value from a set of radio b
                     <html><![CDATA[<div>
     <button>Feed</button>
     <button>the</button>
-
     <button>Input</button>
   </div>
   <input type="text" value="click a button" />]]></html>
@@ -16573,11 +17757,9 @@ $('input:radio[name=bar]:checked').val(); // get the value from a set of radio b
       <desc>Use the function argument to modify the value of an input box.</desc>
       <code><![CDATA[
   $('input').bind('blur', function() {
-      
-    $(this).val(function(i, val) {
+    $(this).val(function( i, val ) {
       return val.toUpperCase();
     });
-    
   });
   ]]></code>
   <html><![CDATA[
@@ -16605,7 +17787,6 @@ $('input:radio[name=bar]:checked').val(); // get the value from a set of radio b
   <select id="multiple" multiple="multiple">
     <option selected="selected">Multiple</option>
     <option>Multiple2</option>
-
     <option selected="selected">Multiple3</option>
   </select><br/>
   <input type="checkbox" name="checkboxname" value="check1"/> check1
@@ -17021,7 +18202,9 @@ input { clear:left}
 });</pre>
 <p>Now, when the user clicks on the word "list" in the first item or anywhere in the third item, the clicked list item will be given a red background. However, when the user clicks on item 1 in the first item or anywhere in the second item, nothing will occur, because in those cases the target of the event would be <code>&lt;strong&gt;</code> or <code>&lt;span&gt;</code>, respectively.
 </p>
-<p>Be aware that for selector strings with positional selectors such as <code>:first</code>, <code>:gt()</code>, or <code>:even</code>, the positional filtering is done against the jQuery object passed to <code>.is()</code>, <em>not</em> against the containing document. So for the HTML shown above, an expression such as <code>$("li:first").is("li:last")</code> returns <code>true</code>, but <code>$("li:first-child").is("li:last-child")</code> returns <code>false</code>.</p>
+<p>Prior to jQuery 1.7, in selector strings with positional selectors such as <code>:first</code>, <code>:gt()</code>, or <code>:even</code>, the positional filtering is done against the jQuery object passed to <code>.is()</code>, <em>not</em> against the containing document. So for the HTML shown above, an expression such as <code>$("li:first").is("li:last")</code> returns <code>true</code>, but <code>$("li:first-child").is("li:last-child")</code> returns <code>false</code>. In addition, a bug in Sizzle prevented many positional selectors from working properly. These two factors made positional selectors almost unusable in filters.</p>
+
+<p>Starting with jQuery 1.7, selector strings with positional selectors apply the selector against the document, and then determine whether the first element of the current jQuery set matches any of the resulting elements. So for the HTML shown above, an expression such as <code>$("li:first").is("li:last")</code> returns <code>false</code>. Note that since positional selectors are jQuery additions and not W3C standard, we recommend using the W3C selectors whenever feasible.</p>
 
 <h4>Using a Function</h4>
 <p>The second form of this method evaluates expressions related to elements based on a function rather than a selector. For each element, if the function returns <code>true</code>, <code>.is()</code> returns <code>true</code> as well. For example, given a somewhat more involved HTML snippet:</p>
@@ -17161,6 +18344,7 @@ $("li").click(function() {
 <category name="Filtering"/>
 <category name="Version 1.0"/>
 <category name="Version 1.6"/>
+<category name="Version 1.7"/>
 </entry>
 
             <entry type='method' name="eq" return="jQuery">
@@ -19269,7 +20453,7 @@ You can customize the name in a custom mapping at the same time as a converter b
 <pre>
 $("form").link(person, {
     firstName: {
-        name: "first-name"
+        name: "first-name",
         convert: "titleCase"
     }
 });
@@ -20992,7 +22176,7 @@ $( "#dramaBtn" ).click( function() {
 <!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
 
 Page Caching using disk: basic (Requested URI is rejected)
-Database Caching 69/343 queries in 0.189 seconds using disk: basic
-Object Caching 3762/4420 objects using disk: basic
+Database Caching 71/291 queries in 0.236 seconds using disk: basic
+Object Caching 4174/4612 objects using disk: basic
 
-Served from: api.jquery.com @ 2011-10-28 11:08:08 -->
+Served from: api.jquery.com @ 2011-11-04 10:46:55 -->

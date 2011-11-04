@@ -107,6 +107,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     try {
       documentation = parser.parse(input);
     } catch (DocumentationParseException e) {
+      e.printStackTrace(System.err);
       return;
     }
 
@@ -276,7 +277,10 @@ public class JSDocGenerator implements MemberVisitor<Void> {
   private void writeSignature(String methodName, FunctionSignature signature, String suffix) {
     Version added = signature.getAdded();
     this.writeTag("since", added.toString());
-    //    this.writeTag("name", methodName + StringUtils.defaultString(suffix));
+    if (signature.isDeprecated()) {
+      this.writeTag("deprecated", signature.getDeprecated());
+    }
+    //this.writeTag("name", methodName + StringUtils.defaultString(suffix));
 
     for (JQueryArgument argument : signature.getArguments()) {
       writeArgument(argument, null);
@@ -390,6 +394,15 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
     this.writeStart();
     this.writeCommentLine(property.getDescription());
+    
+    Collection<PropertySignature> signatures = property.getSignatures();
+    if (!signatures.isEmpty()) {
+      PropertySignature signature = signatures.iterator().next();
+      if (signature.isDeprecated()) {
+        this.writeTag("deprecated", signature.getDeprecated());
+      }
+    }
+    
     String returnType = property.getReturnType();
     if (!StringUtils.isEmpty(returnType)) {
       this.writeTag("type", '{' + fixPropertyTypes(returnType) + '}');

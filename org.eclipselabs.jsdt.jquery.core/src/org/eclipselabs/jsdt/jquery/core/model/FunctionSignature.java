@@ -20,8 +20,8 @@ class FunctionSignature extends Signature {
   
   private final List<FunctionArgument> arguments;
   
-  FunctionSignature(String added, List<FunctionArgument> arguments) {
-    super(added);
+  FunctionSignature(String added, String deprecated, List<FunctionArgument> arguments) {
+    super(added, deprecated);
     this.arguments = arguments;
   }
 

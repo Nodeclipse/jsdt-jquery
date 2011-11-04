@@ -49,6 +49,10 @@ public class Property extends DocumentedMember implements JQueryMember {
     return visitor.visitProperty(this);
   }
   
+  Collection<PropertySignature> getSignatures() {
+    return this.signatures;
+  }
+  
   boolean isIncludedIn(Version version) {
     if (version == JQueryApiPlugin.MAX_VERSION) {
       return true;

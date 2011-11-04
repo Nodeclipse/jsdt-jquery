@@ -53,7 +53,7 @@ jQueryObject.fadeToggle = function(duration, easing, callback) {};
  */
 jQueryObject.toggle = function(handler, handler, handler) {};
 /**
- * Remove a handler from the event for all elements which match the current selector, now or in the future, based upon a specific set of root elements.
+ * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
  * @since 1.4
  * @returns {jQueryObject}
  */
@@ -75,7 +75,7 @@ jQueryObject.delegate = function(selector, eventType, handler) {};
  */
 jQueryObject.focusout = function(handler) {};
 /**
- * Bind an event handler to the "focusin" JavaScript event.
+ * Bind an event handler to the "focusin" event.
  * @since 1.4
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
@@ -401,13 +401,13 @@ jQueryObject.die = function() {};
  */
 jQueryObject.die = function(eventType, handler) {};
 /**
- * Attach a handler to the event for all elements which match the current selector, now and in the future.
+ * Attach an event handler for all elements which match the current selector, now and in the future.
  * @since 1.3
- * @param {String} eventType A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names, as well.
+ * @param {String} events A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.
  * @param {Function} handler A function to execute at the time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.live = function(eventType, handler) {};
+jQueryObject.live = function(events, handler) {};
 /**
  * Execute all handlers attached to an element for an event.
  * @since 1.2
@@ -434,12 +434,12 @@ jQueryObject.ajaxComplete = function(handler) {};
 /**
  * Attach a handler to an event for the elements. The handler is executed at most once per element.
  * @since 1.1
- * @param {String} eventType A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
- * @param {Object} [eventData] A map of data that will be passed to the event handler.
+ * @param {String} events A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
+ * @param {Object} [data] A map of data that will be passed to the event handler.
  * @param {Function} handler A function to execute at the time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.one = function(eventType, eventData, handler) {};
+jQueryObject.one = function(events, data, handler) {};
 /**
  * Encode a set of form elements as an array of names and values.
  * @since 1.2
@@ -498,7 +498,7 @@ jQueryObject.unbind = function(eventType, handler) {};
 /**
  * Attach a handler to an event for the elements.
  * @since 1.0
- * @param {String} eventType A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
+ * @param {String} eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
  * @param {Object} [eventData] A map of data that will be passed to the event handler.
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}

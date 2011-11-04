@@ -242,6 +242,7 @@ public class DocumentationParser {
     
     
     METHOD("method") {
+      @Override
       DocumentationEntry instantiate(String name,
           String returnType,
           String description,
@@ -257,7 +258,7 @@ public class DocumentationParser {
       private List<FunctionSignature> toMethodSignatures(List<SignatureInfo> signatures) {
         List<FunctionSignature> methodSignatures = new ArrayList<FunctionSignature>(signatures.size());
         for (SignatureInfo each : signatures) {
-          methodSignatures.add(new FunctionSignature(each.added, each.arguments));
+          methodSignatures.add(new FunctionSignature(each.added, each.deprecated, each.arguments));
         }
         return methodSignatures;
       }
@@ -265,6 +266,7 @@ public class DocumentationParser {
     },
     
     PROPERTY("property") {
+      @Override
       DocumentationEntry instantiate(String name,
           String returnType,
           String description,
@@ -281,7 +283,7 @@ public class DocumentationParser {
       private List<PropertySignature> toPropertySignatures(List<SignatureInfo> signatures) {
         List<PropertySignature> propertySignatures = new ArrayList<PropertySignature>(signatures.size());
         for (SignatureInfo each : signatures) {
-          propertySignatures.add(new PropertySignature(each.added));
+          propertySignatures.add(new PropertySignature(each.added, each.deprecated));
         }
         return propertySignatures;
       }
@@ -289,6 +291,7 @@ public class DocumentationParser {
     },
     
     SELECTOR("selector") {
+      @Override
       DocumentationEntry instantiate(String name,
           String returnType,
           String description,
@@ -338,6 +341,7 @@ public class DocumentationParser {
 
   private SignatureInfo parseSignature(XMLStreamReader reader) throws XMLStreamException {
     String added = null;
+    String deprecated = null;
     //TODO optimize
     List<FunctionArgument> arguments = new ArrayList<FunctionArgument>();
     while (reader.hasNext()) {
@@ -348,6 +352,8 @@ public class DocumentationParser {
           added = this.parseStringContent("added", reader);
         } else if ("argument".equals(localName)) {
           arguments.add(this.parseArgument(reader));
+        } else if ("deprecated".equals(localName)) {
+            deprecated = parseStringContent("deprecated", reader);
         } else {
           String message = "unexpected element \"" + localName + "\" expected one of: "
               +" \"added\", \"argument\"";
@@ -359,7 +365,7 @@ public class DocumentationParser {
           String message = "unexpected end element \"" + localName + "\" expected: \"signature\"";
           throw new DocumentationValidationException(message);
         }
-        return new SignatureInfo(added, arguments);
+        return new SignatureInfo(added, arguments, deprecated);
       }
     }
     throw new DocumentationValidationException("end element missing for \"example\"");
@@ -629,9 +635,12 @@ public class DocumentationParser {
     
     final List<FunctionArgument> arguments;
 
-    SignatureInfo(String added, List<FunctionArgument> arguments) {
+    final String deprecated;
+
+    SignatureInfo(String added, List<FunctionArgument> arguments, String deprecated) {
       this.added = added;
       this.arguments = arguments;
+      this.deprecated = deprecated;
     }
     
   }

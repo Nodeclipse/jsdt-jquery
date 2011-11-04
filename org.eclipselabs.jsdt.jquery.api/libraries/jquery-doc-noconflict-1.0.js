@@ -283,7 +283,7 @@ jQueryObject.unbind = function(eventType, handler) {};
 /**
  * Attach a handler to an event for the elements.
  * @since 1.0
- * @param {String} eventType A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
+ * @param {String} eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
  * @param {Object} [eventData] A map of data that will be passed to the event handler.
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}

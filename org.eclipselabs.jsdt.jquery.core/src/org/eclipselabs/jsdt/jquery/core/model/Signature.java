@@ -21,12 +21,23 @@ public class Signature {
   
   private final Version added;
   
-  Signature(String added) {
+  private final String deprecated;
+  
+  Signature(String added, String deprecated) {
     this.added = SimpleVersion.fromString(added);
+    this.deprecated = deprecated;
   }
   
   public Version getAdded() {
     return this.added;
+  }
+  
+  public boolean isDeprecated() {
+    return this.deprecated != null;
+  }
+  
+  public String getDeprecated() {
+    return this.deprecated;
   }
   
   boolean isIncludedIn(Version version) {
