@@ -13,12 +13,14 @@
  */
 package org.eclipselabs.jsdt.jquery.core.api;
 
+import org.eclipselabs.jsdt.jquery.api.Version;
+
 
 public interface Documented {
   
   String getDescription();
   
-  boolean isDeprecated();
+  boolean isDeprecatedIn(Version version);
   
   String getDeprecated();
 

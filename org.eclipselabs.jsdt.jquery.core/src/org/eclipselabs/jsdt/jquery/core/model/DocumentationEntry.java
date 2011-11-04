@@ -16,6 +16,8 @@ package org.eclipselabs.jsdt.jquery.core.model;
 import java.util.Collection;
 import java.util.Set;
 
+import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
+import org.eclipselabs.jsdt.jquery.api.Version;
 import org.eclipselabs.jsdt.jquery.core.api.DocumentationEntryVisitor;
 import org.eclipselabs.jsdt.jquery.core.api.Documented;
 
@@ -50,8 +52,14 @@ abstract class DocumentationEntry implements Documented {
   }
   
   @Override
-  public boolean isDeprecated() {
-    return this.deprecated != null;
+  public boolean isDeprecatedIn(Version version) {
+    if (this.deprecated == null) {
+      return false;
+    } else if (SimpleVersion.isVersionString(this.deprecated)) {
+      return version.compareTo(SimpleVersion.fromString(this.deprecated)) >= 0;
+    } else {
+      return true;
+    }
   }
   
   @Override

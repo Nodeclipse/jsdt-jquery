@@ -32,8 +32,14 @@ public class Signature {
     return this.added;
   }
   
-  public boolean isDeprecated() {
-    return this.deprecated != null;
+  public boolean isDeprecatedIn(Version version) {
+    if (this.deprecated == null) {
+      return false;
+    } else if (SimpleVersion.isVersionString(this.deprecated)) {
+        return version.compareTo(SimpleVersion.fromString(this.deprecated)) >= 0;
+    } else {
+      return true;
+    }
   }
   
   public String getDeprecated() {

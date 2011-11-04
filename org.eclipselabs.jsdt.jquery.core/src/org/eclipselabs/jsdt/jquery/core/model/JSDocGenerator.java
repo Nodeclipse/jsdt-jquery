@@ -278,10 +278,10 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     Version added = signature.getAdded();
     this.writeTag("since", added.toString());
     
-    if (function.isDeprecated()) {
+    if (function.isDeprecatedIn(this.maximumVersion)) {
       this.writeTag("deprecated", function.getDeprecated());
     } else {
-      if (signature.isDeprecated()) {
+      if (signature.isDeprecatedIn(this.maximumVersion)) {
         this.writeTag("deprecated", signature.getDeprecated());
       }
     }
@@ -424,13 +424,13 @@ public class JSDocGenerator implements MemberVisitor<Void> {
   }
 
   private void writeDeprecated(Property property) {
-    if (property.isDeprecated()) {
+    if (property.isDeprecatedIn(this.maximumVersion)) {
       this.writeTag("deprecated", property.getDeprecated());
     } else {
       Collection<PropertySignature> signatures = property.getSignatures();
       if (!signatures.isEmpty()) {
         PropertySignature signature = signatures.iterator().next();
-        if (signature.isDeprecated()) {
+        if (signature.isDeprecatedIn(this.maximumVersion)) {
           this.writeTag("deprecated", signature.getDeprecated());
         }
       }

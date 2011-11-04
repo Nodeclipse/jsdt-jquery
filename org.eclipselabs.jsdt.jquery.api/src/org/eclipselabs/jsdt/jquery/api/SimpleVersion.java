@@ -49,11 +49,15 @@ public class SimpleVersion implements Version {
     return this.getMajor() + "." + this.getMinor();
   }
   
+  public static boolean isVersionString(String s) {
+     return s != null
+       && s.length() >= 3
+       && s.charAt(0) == '1'
+       && s.charAt(1) == '.';
+  }
+  
   public static Version fromString(String s) {
-    Assert.isNotNull(s);
-    Assert.isTrue(s.charAt(0) == '1');
-    Assert.isTrue(s.length() >= 3);
-    Assert.isTrue(s.charAt(1) == '.');
+    Assert.isTrue(isVersionString(s));
     return JQueryApiPlugin.ALL_VERSIONS.get(JQueryApiPlugin.MAX_MINOR + '0' - s.charAt(2));
   }
 
