@@ -17,5 +17,9 @@ package org.eclipselabs.jsdt.jquery.core.api;
 public interface Documented {
   
   String getDescription();
+  
+  boolean isDeprecated();
+  
+  String getDeprecated();
 
 }

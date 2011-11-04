@@ -34,8 +34,9 @@ public class Property extends DocumentedMember implements JQueryMember {
       Collection<Example> examples,
       Set<String> categories,
       Collection<PropertySignature> signatures,
-      String returnType) {
-    super(name, description, longDescription, examples, categories, returnType);
+      String returnType,
+      String deprecated) {
+    super(name, description, longDescription, examples, categories, returnType, deprecated);
     this.signatures = signatures;
   }
   

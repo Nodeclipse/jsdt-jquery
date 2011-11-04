@@ -203,6 +203,7 @@ public class DocumentationParser {
 
     String sample = null, longDescription = null, description = null;
     Set<String> categories = new HashSet<String>();
+    String deprecated = null;
     //TODO optimize
     List<SignatureInfo> signatures = new ArrayList<SignatureInfo>();
     //TODO optimize
@@ -224,13 +225,15 @@ public class DocumentationParser {
           categories.add(this.parseCategory(reader));
         } else if ("signature".equals(localName)) {
           signatures.add(this.parseSignature(reader));
+        } else if ("deprecated".equals(localName)) {
+          deprecated = this.parseStringContent("deprecated", reader);
         }
 
       } else if (event == END_ELEMENT) {
         String localName = reader.getLocalName();
         if ("entry".equals(localName)) {
           DocumentationEntryInstantiator instantiator = DocumentationEntryInstantiator.forType(type);
-          return instantiator.instantiate(name, returnType, description, longDescription, signatures, sample, examples, categories);
+          return instantiator.instantiate(name, returnType, description, longDescription, signatures, sample, examples, categories, deprecated);
         }
       }
     }
@@ -250,8 +253,10 @@ public class DocumentationParser {
           List<SignatureInfo> signatures,
           String sample,
           Collection<Example> examples,
-          Set<String> categories) {
-        return new Function(name, description, longDescription, examples, categories, toMethodSignatures(signatures), returnType);
+          Set<String> categories,
+          String deprecated) {
+        return new Function(name, description, longDescription, examples, categories,
+             toMethodSignatures(signatures), returnType, deprecated);
       }
       
       
@@ -274,9 +279,10 @@ public class DocumentationParser {
           List<SignatureInfo> signatures,
           String sample,
           Collection<Example> examples,
-          Set<String> categories) {
+          Set<String> categories,
+          String deprecated) {
         return new Property(name, description, longDescription, examples, categories,
-            toPropertySignatures(signatures), returnType);
+            toPropertySignatures(signatures), returnType, deprecated);
       }
       
       
@@ -299,8 +305,9 @@ public class DocumentationParser {
           List<SignatureInfo> signatures,
           String sample,
           Collection<Example> examples,
-          Set<String> categories) {
-        return new Selector(name, description, longDescription, examples, categories, sample);
+          Set<String> categories,
+          String deprecated) {
+        return new Selector(name, description, longDescription, examples, categories, sample, deprecated);
       }
     };
     
@@ -329,7 +336,8 @@ public class DocumentationParser {
         List<SignatureInfo> signatures,
         String sample,
         Collection<Example> examples,
-        Set<String> categories);
+        Set<String> categories,
+        String deprecated);
 
     private final String type;
 

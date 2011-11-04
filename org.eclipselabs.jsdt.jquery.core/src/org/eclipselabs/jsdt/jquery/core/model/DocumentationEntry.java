@@ -28,22 +28,35 @@ abstract class DocumentationEntry implements Documented {
   private final Collection<Example> examples;
   private final Set<String> categories;
   private final String name;
+  private final String deprecated;
   
   DocumentationEntry(String name,
       String description,
       String longDescription,
       Collection<Example> examples,
-      Set<String> categories) {
+      Set<String> categories,
+      String deprecated) {
     this.name = name;
     this.description = description;
     this.longDescription = longDescription;
     this.examples = examples;
     this.categories = categories;
+    this.deprecated = deprecated;
   }
   
   @Override
   public String getDescription() {
     return this.description;
+  }
+  
+  @Override
+  public boolean isDeprecated() {
+    return this.deprecated != null;
+  }
+  
+  @Override
+  public String getDeprecated() {
+    return this.deprecated;
   }
   
   

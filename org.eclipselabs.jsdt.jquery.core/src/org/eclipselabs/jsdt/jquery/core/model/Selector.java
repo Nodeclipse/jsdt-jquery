@@ -29,8 +29,9 @@ public class Selector extends DocumentationEntry {
       String longDescription,
       Collection<Example> examples,
       Set<String> categories,
-      String sample) {
-    super(name, description, longDescription, examples, categories);
+      String sample,
+      String deprecated) {
+    super(name, description, longDescription, examples, categories, deprecated);
     this.sample = sample;
   }
   

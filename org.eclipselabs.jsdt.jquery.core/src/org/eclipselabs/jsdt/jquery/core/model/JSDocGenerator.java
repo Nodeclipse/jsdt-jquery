@@ -227,7 +227,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
         //  prefix = null;
         //}
         FunctionSignature signature = signatures.get(0);
-        this.writeSignature(function.getName(), signature, null);
+        this.writeSignature(function, signature, null);
       }
       if (!StringUtils.isEmpty(returnType)) {
         this.writeTag("returns", '{' + fixReturnTypes(returnType) + '}');
@@ -274,11 +274,16 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     }
   }
 
-  private void writeSignature(String methodName, FunctionSignature signature, String suffix) {
+  private void writeSignature(Function function, FunctionSignature signature, String suffix) {
     Version added = signature.getAdded();
     this.writeTag("since", added.toString());
-    if (signature.isDeprecated()) {
-      this.writeTag("deprecated", signature.getDeprecated());
+    
+    if (function.isDeprecated()) {
+      this.writeTag("deprecated", function.getDeprecated());
+    } else {
+      if (signature.isDeprecated()) {
+        this.writeTag("deprecated", signature.getDeprecated());
+      }
     }
     //this.writeTag("name", methodName + StringUtils.defaultString(suffix));
 
@@ -395,13 +400,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     this.writeStart();
     this.writeCommentLine(property.getDescription());
     
-    Collection<PropertySignature> signatures = property.getSignatures();
-    if (!signatures.isEmpty()) {
-      PropertySignature signature = signatures.iterator().next();
-      if (signature.isDeprecated()) {
-        this.writeTag("deprecated", signature.getDeprecated());
-      }
-    }
+    this.writeDeprecated(property);
     
     String returnType = property.getReturnType();
     if (!StringUtils.isEmpty(returnType)) {
@@ -422,6 +421,20 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
     this.write(";");
     this.writeNewLine();
+  }
+
+  private void writeDeprecated(Property property) {
+    if (property.isDeprecated()) {
+      this.writeTag("deprecated", property.getDeprecated());
+    } else {
+      Collection<PropertySignature> signatures = property.getSignatures();
+      if (!signatures.isEmpty()) {
+        PropertySignature signature = signatures.iterator().next();
+        if (signature.isDeprecated()) {
+          this.writeTag("deprecated", signature.getDeprecated());
+        }
+      }
+    }
   }
 
   private void writeStart() {

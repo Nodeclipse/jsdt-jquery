@@ -30,8 +30,9 @@ abstract class DocumentedMember extends DocumentationEntry implements JQueryMemb
       String longDescription,
       Collection<Example> examples,
       Set<String> categories,
-      String returnType) {
-    super(extractName(name), description, longDescription, examples, categories);
+      String returnType,
+      String deprecated) {
+    super(extractName(name), description, longDescription, examples, categories, deprecated);
     this.owner = extractOwner(name);
     this.returnType = fixType(returnType);
   }

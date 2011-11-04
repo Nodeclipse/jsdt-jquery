@@ -359,12 +359,14 @@ jQueryObject.ready = function(handler) {};
 /**
  * Remove all event handlers previously attached using <code>.live()</code> from the elements.
  * @since 1.4
+ * @deprecated 1.7
  * @returns {jQueryObject}
  */
 jQueryObject.die = function() {};
 /**
  * Remove an event handler previously attached using <code>.live()</code> from the elements.
  * @since 1.3
+ * @deprecated 1.7
  * @param {String} eventType A string containing a JavaScript event type, such as <code>click</code> or <code>keydown</code>.
  * @param {String} [handler] The function that is no longer to be executed.
  * @returns {jQueryObject}
@@ -373,6 +375,7 @@ jQueryObject.die = function(eventType, handler) {};
 /**
  * Attach an event handler for all elements which match the current selector, now and in the future.
  * @since 1.3
+ * @deprecated 1.7
  * @param {String} events A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.
  * @param {Function} handler A function to execute at the time the event is triggered.
  * @returns {jQueryObject}
