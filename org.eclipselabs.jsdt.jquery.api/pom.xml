@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.eclipselabs.jsdt.jquery</groupId>
     <artifactId>jsdt-jquery-parent</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
   </parent>
   <artifactId>org.eclipselabs.jsdt.jquery.api</artifactId>
   <packaging>eclipse-plugin</packaging>
