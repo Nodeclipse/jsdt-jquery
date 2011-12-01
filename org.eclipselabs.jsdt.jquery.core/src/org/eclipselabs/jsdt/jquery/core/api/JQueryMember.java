@@ -18,6 +18,8 @@ public interface JQueryMember {
   
   String JQUERY_OBJECT = "jQueryObject";
   
+  String JQUERY_EVENT = "jQueryEvent";
+  
   public String getName();
   
   public String getOwner();

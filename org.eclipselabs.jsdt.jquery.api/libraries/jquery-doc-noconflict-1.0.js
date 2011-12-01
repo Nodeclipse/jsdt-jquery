@@ -698,6 +698,38 @@ jQueryObject.attr = function(attributeName, value) {};
  * @returns {jQueryObject}
  */
 jQueryObject.addClass = function(className) {};
+var jQueryEvent = { };
+/**
+ * Prevents the event from bubbling up the DOM tree, preventing any parent handlers from being notified of the event.   
+ * @since 1.0
+ */
+jQueryEvent.stopPropagation = function() {};
+/**
+ *  If this method is called, the default action of the event will not be triggered. 
+ * @since 1.0
+ * @returns {undefined}
+ */
+jQueryEvent.preventDefault = function() {};
+/**
+ * The mouse position relative to the top edge of the document. 
+ * @type {Number}
+ */
+jQueryEvent.pageY = 1;
+/**
+ * The mouse position relative to the left edge of the document. 
+ * @type {Number}
+ */
+jQueryEvent.pageX = 1;
+/**
+ *  The DOM element that initiated the event.  
+ * @type {Element}
+ */
+jQueryEvent.target = null;
+/**
+ *  Describes the nature of the event.  
+ * @type {String}
+ */
+jQueryEvent.type = "";
 /**
  * Accepts a string containing a CSS selector which is then used to match a set of elements.
  * @returns {jQueryObject}

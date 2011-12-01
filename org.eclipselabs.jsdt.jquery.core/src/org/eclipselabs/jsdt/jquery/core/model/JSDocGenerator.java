@@ -72,10 +72,10 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     this.maximumVersion = maximumVersion;
     
     this.writeJQueryObject();
-    MemberVisitor<Void> instanceVisitor = new InstanceSideVisitor<Void>(this);
-    for (JQueryMember member : members) {
-        member.accept(instanceVisitor);
-    }
+    this.visitAll(members, Filters.INSTANCE_SIDE);
+    
+    this.writeJQueryEvent();
+    this.visitAll(members, Filters.EVENT);
     
     Function constructor = this.findConstructor(members);
     this.writeConstructor(constructor);
@@ -86,6 +86,13 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 //    for (JQueryMember member : members) {
 //      member.accept(classVisitor);
 //    }
+  }
+  
+  private void visitAll(Collection<JQueryMember> members, Predicate predicate) {
+    MemberVisitor<Void> filteredVisitor = new FilteredVisitor<Void>(predicate, this);
+    for (JQueryMember member : members) {
+      member.accept(filteredVisitor);
+    }
   }
 
   private Function findConstructor(Collection<JQueryMember> members) {
@@ -169,6 +176,10 @@ public class JSDocGenerator implements MemberVisitor<Void> {
       this.writeLine("var " + JQueryMember.JQUERY_OBJECT + " = { };");
   }
   
+  private void writeJQueryEvent() {
+      this.writeLine("var " + JQueryMember.JQUERY_EVENT + " = { };");
+  }
+  
 
   private void writeDeferredConsturctor() {
     if (this.maximumVersion.compareTo(VERSION_WITH_DEFERRED) >= 0) {
@@ -186,20 +197,39 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     this.writeLine(globalVariableName + ".Deferred = function() {};");
   }
 
+  static boolean isJQueryObject(DocumentedMember member) {
+    return isJQueryObject(member.getOwner());
+  }
+
   static boolean isJQueryObject(String owner) {
     return JQueryMember.JQUERY_OBJECT.equals(owner);
+  }
+
+  static boolean isJQueryStatic(DocumentedMember member) {
+    return isJQueryStatic(member.getOwner());
   }
 
   static boolean isJQueryStatic(String owner) {
     return "jQuery".equals(owner);
   }
 
+  static boolean isJQueryEvent(DocumentedMember member) {
+    return isJQueryEvent(member.getOwner());
+  }
+
+  static boolean isJQueryEvent(String owner) {
+    return "event".equals(owner);
+  }
+
   @Override
   public Void visitFuntion(Function function) {
+    
+    //FIXME duplicate
     String owner = function.getOwner();
     boolean isStatic = isJQueryStatic(owner);
     boolean isObject = isJQueryObject(owner);
-    boolean writeDoc = isStatic || isObject;
+    boolean isEvent = isJQueryEvent(owner);
+    boolean writeDoc = isStatic || isObject || isEvent;
 
     if (writeDoc) {
       writeFunction(function, owner, "jQuery");
@@ -263,11 +293,15 @@ public class JSDocGenerator implements MemberVisitor<Void> {
   }
 
   private void writeIdentifier(String owner, String jQueryGlobalObjectName) {
+    // FIXME ugly
     if (isJQueryObject(owner)) {
       this.write(JQueryMember.JQUERY_OBJECT);
       this.write(".");
     } else if(isJQueryStatic(owner)) {
       this.write(jQueryGlobalObjectName);
+      this.write(".");
+    } else if(isJQueryEvent(owner)) {
+      this.write(JQueryMember.JQUERY_EVENT);
       this.write(".");
     } else {
       throw new RuntimeException("unknown owner: " + owner);
@@ -378,10 +412,13 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     if (!property.isIncludedIn(this.maximumVersion)) {
       return null;
     }
+    
+    //FIXME duplicate
     String owner = property.getOwner();
     boolean isStatic = isJQueryStatic(owner);
     boolean isObject = isJQueryObject(owner);
-    boolean writeDoc = isStatic || isObject;
+    boolean isEvent = isJQueryEvent(owner);
+    boolean writeDoc = isStatic || isObject || isEvent;
 
     if (writeDoc) {
       writeProperty(property, owner, "jQuery");
@@ -511,17 +548,28 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     }
   }
   
-  static final class ClassSideVisitor<P> implements MemberVisitor<P> {
+  interface Predicate {
+    
+    boolean isTrue(Function function);
+    
+    boolean isTrue(Property property);
+    
+  }
+  
+  
+  static final class FilteredVisitor<P> implements MemberVisitor<P> {
       
     private final MemberVisitor<P>  delegate;
+    private final Predicate predicate;
 
-    ClassSideVisitor(MemberVisitor<P> delegate) {
+    FilteredVisitor(Predicate predicate, MemberVisitor<P> delegate) {
+      this.predicate = predicate;
       this.delegate = delegate;
     }
 
     @Override
     public P visitFuntion(Function function) {
-      if (isJQueryStatic(function.getOwner())) {
+      if (this.predicate.isTrue(function)) {
         return this.delegate.visitFuntion(function); 
       } else {
         return null;
@@ -530,7 +578,7 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 
     @Override
     public P visitProperty(Property property) {
-      if (isJQueryStatic(property.getOwner())) {
+      if (this.predicate.isTrue(property)) {
         return this.delegate.visitProperty(property);
       } else {
         return null;
@@ -539,32 +587,50 @@ public class JSDocGenerator implements MemberVisitor<Void> {
       
   }
   
-  static final class InstanceSideVisitor<P> implements MemberVisitor<P> {
-      
-      private final MemberVisitor<P>  delegate;
-      
-      InstanceSideVisitor(MemberVisitor<P> delegate) {
-        this.delegate = delegate;
-      }
-      
-      @Override
-      public P visitFuntion(Function function) {
-        if (isJQueryObject(function.getOwner())) {
-          return this.delegate.visitFuntion(function);
-        } else {
-            return null;
-        }
-      }
-      
-      @Override
-      public P visitProperty(Property property) {
-        if (isJQueryObject(property.getOwner())) {
-           return this.delegate.visitProperty(property);
-         } else {
-           return null;
-         }
-      }
-      
-  }
+  enum Filters implements Predicate {
+    
+    CLASS_SIDE {
 
+      @Override
+      public boolean isTrue(Function function) {
+        return isJQueryStatic(function);
+      }
+
+      @Override
+      public boolean isTrue(Property property) {
+        return isJQueryStatic(property);
+      }
+      
+    },
+    
+    INSTANCE_SIDE {
+
+      @Override
+      public boolean isTrue(Function function) {
+        return isJQueryObject(function);
+      }
+
+      @Override
+      public boolean isTrue(Property property) {
+        return isJQueryObject(property);
+      }
+      
+    },
+    
+    EVENT {
+
+      @Override
+      public boolean isTrue(Function function) {
+        return isJQueryEvent(function);
+      }
+
+      @Override
+      public boolean isTrue(Property property) {
+        return isJQueryEvent(property);
+      }
+      
+    }
+    
+  }
+  
 }

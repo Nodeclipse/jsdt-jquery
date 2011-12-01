@@ -926,6 +926,58 @@ jQueryObject.attr = function(attributeName, value) {};
  * @returns {jQueryObject}
  */
 jQueryObject.addClass = function(className) {};
+var jQueryEvent = { };
+/**
+ * Prevents the event from bubbling up the DOM tree, preventing any parent handlers from being notified of the event.   
+ * @since 1.0
+ */
+jQueryEvent.stopPropagation = function() {};
+/**
+ *  If this method is called, the default action of the event will not be triggered. 
+ * @since 1.0
+ * @returns {undefined}
+ */
+jQueryEvent.preventDefault = function() {};
+/**
+ * The difference in milliseconds between the time an event is triggered and January 1, 1970.
+ * @type {Number}
+ */
+jQueryEvent.timeStamp = 1;
+/**
+ *  For key or button events, this attribute indicates the specific button or key that was pressed.  
+ * @type {Number}
+ */
+jQueryEvent.which = 1;
+/**
+ * The mouse position relative to the top edge of the document. 
+ * @type {Number}
+ */
+jQueryEvent.pageY = 1;
+/**
+ * The mouse position relative to the left edge of the document. 
+ * @type {Number}
+ */
+jQueryEvent.pageX = 1;
+/**
+ *   The other DOM element involved in the event, if any. 
+ * @type {Element}
+ */
+jQueryEvent.relatedTarget = null;
+/**
+ *  The optional data passed to jQuery.fn.bind when the current executing handler was bound.  
+ * @type {Anything}
+ */
+jQueryEvent.data = {};
+/**
+ *  The DOM element that initiated the event.  
+ * @type {Element}
+ */
+jQueryEvent.target = null;
+/**
+ *  Describes the nature of the event.  
+ * @type {String}
+ */
+jQueryEvent.type = "";
 /**
  * Accepts a string containing a CSS selector which is then used to match a set of elements.
  * @returns {jQueryObject}
