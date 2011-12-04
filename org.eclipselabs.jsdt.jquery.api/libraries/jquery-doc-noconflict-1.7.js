@@ -779,7 +779,7 @@ jQueryObject.not = function(selector) {};
  */
 jQueryObject.outerWidth = function(includeMargin) {};
 /**
- * Get the current computed height for the first element in the set of matched elements, including padding, border, and optionally margin.
+ * Get the current computed height for the first element in the set of matched elements, including padding, border, and optionally margin. Returns an integer (without "px") representation of the value or null if called on an empty set of elements.
  * @since 1.2
  * @param {Boolean} [includeMargin] A Boolean indicating whether to include the element's margin in the calculation.
  * @returns {Integer}
@@ -1122,7 +1122,7 @@ jQueryObject.hasClass = function(className) {};
 /**
  * Remove an attribute from each element in the set of matched elements.
  * @since 1.0
- * @param {String} attributeName An attribute to remove.
+ * @param {String} attributeName An attribute to remove; as of version 1.7, it can be a space-separated list of attributes.
  * @returns {jQueryObject}
  */
 jQueryObject.removeAttr = function(attributeName) {};
@@ -1150,6 +1150,11 @@ jQueryObject.attr = function(attributeName, value) {};
 jQueryObject.addClass = function(className) {};
 function jQueryEvent(){};
 jQueryEvent = new Object();
+/**
+ * The element where the currently-called jQuery event handler was attached.
+ * @type {Element}
+ */
+jQueryEvent.prototype.delegateTarget = null;
 /**
  * The namespace specified when the event was triggered.
  * @type {String}
@@ -1191,7 +1196,7 @@ jQueryEvent.prototype.isDefaultPrevented = function() {};
  */
 jQueryEvent.prototype.preventDefault = function() {};
 /**
- * The difference in milliseconds between the time an event is triggered and January 1, 1970.
+ * The difference in milliseconds between the time the browser created the event and January 1, 1970.
  * @type {Number}
  */
 jQueryEvent.prototype.timeStamp = 1;
