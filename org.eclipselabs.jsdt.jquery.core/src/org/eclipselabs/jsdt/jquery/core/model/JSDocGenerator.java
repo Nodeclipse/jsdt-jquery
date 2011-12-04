@@ -35,9 +35,11 @@ import org.eclipselabs.jsdt.jquery.core.api.JQueryMember;
 import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
 
-public class JSDocGenerator implements MemberVisitor<Void> {
+public class JSDocGenerator {
   
-  private static final Map<String, String> DEFAULT_VALUES;
+  private static final String JQUERY_EVENT_PROTOTYPE = JQueryMember.JQUERY_EVENT + ".prototype";
+
+private static final Map<String, String> DEFAULT_VALUES;
   
   static {
       DEFAULT_VALUES = new HashMap<String, String>();
@@ -72,10 +74,10 @@ public class JSDocGenerator implements MemberVisitor<Void> {
     this.maximumVersion = maximumVersion;
     
     this.writeJQueryObject();
-    this.visitAll(members, Filters.INSTANCE_SIDE);
+    this.visitAll(members, Filters.INSTANCE_SIDE, new JQueryInstanceSideWriter());
     
     this.writeJQueryEvent();
-    this.visitAll(members, Filters.EVENT);
+    this.visitAll(members, Filters.EVENT, new JQueryEventWriter());
     
     Function constructor = this.findConstructor(members);
     this.writeConstructor(constructor);
@@ -88,8 +90,8 @@ public class JSDocGenerator implements MemberVisitor<Void> {
 //    }
   }
   
-  private void visitAll(Collection<JQueryMember> members, Predicate predicate) {
-    MemberVisitor<Void> filteredVisitor = new FilteredVisitor<Void>(predicate, this);
+  private void visitAll(Collection<JQueryMember> members, Predicate predicate, MemberVisitor<Void> visistor) {
+    MemberVisitor<Void> filteredVisitor = new FilteredVisitor<Void>(predicate, visistor);
     for (JQueryMember member : members) {
       member.accept(filteredVisitor);
     }
@@ -177,7 +179,8 @@ public class JSDocGenerator implements MemberVisitor<Void> {
   }
   
   private void writeJQueryEvent() {
-      this.writeLine("var " + JQueryMember.JQUERY_EVENT + " = { };");
+      this.writeLine("function " + JQueryMember.JQUERY_EVENT + "(){};");
+      this.writeLine(JQueryMember.JQUERY_EVENT + " = new Object();");
   }
   
 
@@ -220,92 +223,137 @@ public class JSDocGenerator implements MemberVisitor<Void> {
   static boolean isJQueryEvent(String owner) {
     return "event".equals(owner);
   }
+  
+  final class JQueryEventWriter implements MemberVisitor<Void> {
 
-  @Override
-  public Void visitFuntion(Function function) {
-    
-    //FIXME duplicate
-    String owner = function.getOwner();
-    boolean isStatic = isJQueryStatic(owner);
-    boolean isObject = isJQueryObject(owner);
-    boolean isEvent = isJQueryEvent(owner);
-    boolean writeDoc = isStatic || isObject || isEvent;
-
-    if (writeDoc) {
-      writeFunction(function, owner, "jQuery");
-      if (!this.noConflict && isStatic) {
-        writeFunction(function, owner, "$");
-      }
-    } else {
-      System.out.println(owner);
+    @Override
+    public Void visitFuntion(Function function) {
+        visitJQueryEventFunction(function);
+        return null;
     }
 
-    return null;
+    @Override
+    public Void visitProperty(Property property) {
+        visitJQueryEventeProperty(property);
+        return null;
+    }
+      
   }
+  
+  final class JQueryInstanceSideWriter implements MemberVisitor<Void> {
+      
+      @Override
+      public Void visitFuntion(Function function) {
+          visitJQueryInstanceSideFunction(function);
+          return null;
+      }
+      
+      @Override
+      public Void visitProperty(Property property) {
+          visitJQueryInstanceSideProperty(property);
+          return null;
+      }
+      
+  }
+  
+  final class JQueryClassSideWriter implements MemberVisitor<Void> {
+      
+      private final String jQueryGlobal;
+      
+      JQueryClassSideWriter(String jQueryGlobal) {
+        this.jQueryGlobal = jQueryGlobal;
+    }
 
-  private void writeFunction(Function function, String owner, String jQueryGlobalObjectName) {
-    List<FunctionSignature> signatures = function.getSignaturesInVersion(this.maximumVersion);
-    if (!signatures.isEmpty()) {
-      this.writeStart();
-      this.writeCommentLine(function.getDescription());
-      String returnType = function.getReturnType();
-      if (!signatures.isEmpty()) {
-        //String prefix;
-        //if (signatures.size() > 1) {
-        //  prefix = "^1";
-        //} else {
-        //  prefix = null;
-        //}
-        FunctionSignature signature = signatures.get(0);
-        this.writeSignature(function, signature, null);
+    @Override
+      public Void visitFuntion(Function function) {
+        visitJQueryClassSideFunction(function, this.jQueryGlobal);
+          return null;
       }
-      if (!StringUtils.isEmpty(returnType)) {
-        this.writeTag("returns", '{' + fixReturnTypes(returnType) + '}');
+      
+      @Override
+      public Void visitProperty(Property property) {
+          visitJQueryClassSideProperty(property, this.jQueryGlobal);
+          return null;
       }
-      this.writeEnd();
-      //if (signatures.size() > 1) {
-      //  int i = 2;
-      //  for (MethodSignature signature : signatures.subList(1, signatures.size())) {
-      //    String suffix = "^" + i;
-      //    this.writeStart();
-      //    this.writeSignature(method.getName(), signature, suffix);
-      //    this.writeEnd();
-      //    i += 1;
-      //  }
-      //}
-      writeIdentifier(owner, jQueryGlobalObjectName);
-      this.write(function.getName());
-      this.write(" = function(");
+      
+  }
+  
+  void visitJQueryEventFunction(Function function) {
+      writeFunction(function, JQUERY_EVENT_PROTOTYPE);
+  }
+  
+  void visitJQueryEventeProperty(Property property) {
+      writeProperty(property, JQUERY_EVENT_PROTOTYPE);
+  }
+  
+  void visitJQueryInstanceSideFunction(Function function) {
+      writeFunction(function, JQueryMember.JQUERY_OBJECT);
+  }
+  
+  void visitJQueryInstanceSideProperty(Property property) {
+      writeProperty(property, JQueryMember.JQUERY_OBJECT);
+  }
+  
+  void visitJQueryClassSideFunction(Function function, String jQueryGlobal) {
+      writeFunction(function, jQueryGlobal);
+  }
+  
+  void visitJQueryClassSideProperty(Property property, String jQueryGlobal) {
+      writeProperty(property, jQueryGlobal);
+  }
+  
+  private void writeFunction(Function function, String owner) {
+      List<FunctionSignature> signatures = function.getSignaturesInVersion(this.maximumVersion);
       if (!signatures.isEmpty()) {
-        FunctionSignature signature = signatures.get(0);
-        boolean first = true;
-        for (FunctionArgument argument : signature.getArguments()) {
-          if (!first) {
-            write(", ");
+          this.writeStart();
+          this.writeCommentLine(function.getDescription());
+          String returnType = function.getReturnType();
+          if (!signatures.isEmpty()) {
+              //String prefix;
+              //if (signatures.size() > 1) {
+              //  prefix = "^1";
+              //} else {
+              //  prefix = null;
+              //}
+              FunctionSignature signature = signatures.get(0);
+              this.writeSignature(function, signature, null);
           }
-          first = false;
-          write(argument.getName());
-        }
+          if (!StringUtils.isEmpty(returnType)) {
+              this.writeTag("returns", '{' + fixReturnTypes(returnType) + '}');
+          }
+          this.writeEnd();
+          //if (signatures.size() > 1) {
+          //  int i = 2;
+          //  for (MethodSignature signature : signatures.subList(1, signatures.size())) {
+          //    String suffix = "^" + i;
+          //    this.writeStart();
+          //    this.writeSignature(method.getName(), signature, suffix);
+          //    this.writeEnd();
+          //    i += 1;
+          //  }
+          //}
+          writeIdentifier(owner);
+          this.write(function.getName());
+          this.write(" = function(");
+          if (!signatures.isEmpty()) {
+              FunctionSignature signature = signatures.get(0);
+              boolean first = true;
+              for (FunctionArgument argument : signature.getArguments()) {
+                  if (!first) {
+                      write(", ");
+                  }
+                  first = false;
+                  write(argument.getName());
+              }
+          }
+          this.write(") {};");
+          this.writeNewLine();
       }
-      this.write(") {};");
-      this.writeNewLine();
-    }
   }
 
-  private void writeIdentifier(String owner, String jQueryGlobalObjectName) {
-    // FIXME ugly
-    if (isJQueryObject(owner)) {
-      this.write(JQueryMember.JQUERY_OBJECT);
-      this.write(".");
-    } else if(isJQueryStatic(owner)) {
-      this.write(jQueryGlobalObjectName);
-      this.write(".");
-    } else if(isJQueryEvent(owner)) {
-      this.write(JQueryMember.JQUERY_EVENT);
-      this.write(".");
-    } else {
-      throw new RuntimeException("unknown owner: " + owner);
-    }
+  private void writeIdentifier(String owner) {
+      this.write(owner);
+      this.write('.');
   }
 
   private void writeSignature(Function function, FunctionSignature signature, String suffix) {
@@ -406,58 +454,34 @@ public class JSDocGenerator implements MemberVisitor<Void> {
       return StringUtils.join(types, '|');
     }
   }
-
-  @Override
-  public Void visitProperty(Property property) {
-    if (!property.isIncludedIn(this.maximumVersion)) {
-      return null;
-    }
-    
-    //FIXME duplicate
-    String owner = property.getOwner();
-    boolean isStatic = isJQueryStatic(owner);
-    boolean isObject = isJQueryObject(owner);
-    boolean isEvent = isJQueryEvent(owner);
-    boolean writeDoc = isStatic || isObject || isEvent;
-
-    if (writeDoc) {
-      writeProperty(property, owner, "jQuery");
-      if (!this.noConflict && isStatic) {
-        writeProperty(property, owner, "$");
+  
+  private void writeProperty(Property property, String owner) {
+      
+      
+      this.writeStart();
+      this.writeCommentLine(property.getDescription());
+      
+      this.writeDeprecated(property);
+      
+      String returnType = property.getReturnType();
+      if (!StringUtils.isEmpty(returnType)) {
+          this.writeTag("type", '{' + fixPropertyTypes(returnType) + '}');
       }
-    } else {
-      System.out.println(owner);
-    }
-    return null;
-  }
-
-  private void writeProperty(Property property, String owner, String jQueryGlobalObjectName) {
-
-
-    this.writeStart();
-    this.writeCommentLine(property.getDescription());
-    
-    this.writeDeprecated(property);
-    
-    String returnType = property.getReturnType();
-    if (!StringUtils.isEmpty(returnType)) {
-      this.writeTag("type", '{' + fixPropertyTypes(returnType) + '}');
-    }
-    this.writeEnd();
-
-    writeIdentifier(owner, jQueryGlobalObjectName);
-    this.write(property.getName());
-    this.write(" = ");
-
-    String defaultValue = DEFAULT_VALUES.get(returnType);
-    if (defaultValue == null) {
-      throw new RuntimeException("no known default type for: " + returnType);
-    } else {
-      this.write(defaultValue);
-    }
-
-    this.write(";");
-    this.writeNewLine();
+      this.writeEnd();
+      
+      writeIdentifier(owner);
+      this.write(property.getName());
+      this.write(" = ");
+      
+      String defaultValue = DEFAULT_VALUES.get(returnType);
+      if (defaultValue == null) {
+          throw new RuntimeException("no known default type for: " + returnType);
+      } else {
+          this.write(defaultValue);
+      }
+      
+      this.write(';');
+      this.writeNewLine();
   }
 
   private void writeDeprecated(Property property) {
@@ -482,10 +506,18 @@ public class JSDocGenerator implements MemberVisitor<Void> {
       throw new RuntimeException("output failed", e);
     }
   }
-
+  
   private void write(String s) {
+      try {
+          this.output.write(s);
+      } catch (IOException e) {
+          throw new RuntimeException("output failed", e);
+      }
+  }
+
+  private void write(char c) {
     try {
-      this.output.write(s);
+      this.output.write(c);
     } catch (IOException e) {
       throw new RuntimeException("output failed", e);
     }

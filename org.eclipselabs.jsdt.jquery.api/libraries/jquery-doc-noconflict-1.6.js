@@ -1126,97 +1126,98 @@ jQueryObject.attr = function(attributeName, value) {};
  * @returns {jQueryObject}
  */
 jQueryObject.addClass = function(className) {};
-var jQueryEvent = { };
+function jQueryEvent(){};
+jQueryEvent = new Object();
 /**
  * The namespace specified when the event was triggered.
  * @type {String}
  */
-jQueryEvent.namespace = "";
+jQueryEvent.prototype.namespace = "";
 /**
  *   Returns whether event.stopImmediatePropagation() was ever called on this event object. 
  * @since 1.3
  * @returns {Boolean}
  */
-jQueryEvent.isImmediatePropagationStopped = function() {};
+jQueryEvent.prototype.isImmediatePropagationStopped = function() {};
 /**
  *  Keeps the rest of the handlers from being executed and prevents the event from bubbling up the DOM tree.
   
  * @since 1.3
  */
-jQueryEvent.stopImmediatePropagation = function() {};
+jQueryEvent.prototype.stopImmediatePropagation = function() {};
 /**
  *   Returns whether <a>event.stopPropagation()</a> was ever called on this event object. 
  * @since 1.3
  * @returns {Boolean}
  */
-jQueryEvent.isPropagationStopped = function() {};
+jQueryEvent.prototype.isPropagationStopped = function() {};
 /**
  * Prevents the event from bubbling up the DOM tree, preventing any parent handlers from being notified of the event.   
  * @since 1.0
  */
-jQueryEvent.stopPropagation = function() {};
+jQueryEvent.prototype.stopPropagation = function() {};
 /**
  * Returns whether <a>event.preventDefault()</a> was ever called on this event object. 
  * @since 1.3
  * @returns {Boolean}
  */
-jQueryEvent.isDefaultPrevented = function() {};
+jQueryEvent.prototype.isDefaultPrevented = function() {};
 /**
  *  If this method is called, the default action of the event will not be triggered. 
  * @since 1.0
  * @returns {undefined}
  */
-jQueryEvent.preventDefault = function() {};
+jQueryEvent.prototype.preventDefault = function() {};
 /**
  * The difference in milliseconds between the time an event is triggered and January 1, 1970.
  * @type {Number}
  */
-jQueryEvent.timeStamp = 1;
+jQueryEvent.prototype.timeStamp = 1;
 /**
  *  The last value returned by an event handler that was triggered by this event, unless the value was <code>undefined</code>.  
  * @type {Object}
  */
-jQueryEvent.result = {};
+jQueryEvent.prototype.result = {};
 /**
  *  For key or button events, this attribute indicates the specific button or key that was pressed.  
  * @type {Number}
  */
-jQueryEvent.which = 1;
+jQueryEvent.prototype.which = 1;
 /**
  * The mouse position relative to the top edge of the document. 
  * @type {Number}
  */
-jQueryEvent.pageY = 1;
+jQueryEvent.prototype.pageY = 1;
 /**
  * The mouse position relative to the left edge of the document. 
  * @type {Number}
  */
-jQueryEvent.pageX = 1;
+jQueryEvent.prototype.pageX = 1;
 /**
  *  The current DOM element within the event bubbling phase.  
  * @type {Element}
  */
-jQueryEvent.currentTarget = null;
+jQueryEvent.prototype.currentTarget = null;
 /**
  *   The other DOM element involved in the event, if any. 
  * @type {Element}
  */
-jQueryEvent.relatedTarget = null;
+jQueryEvent.prototype.relatedTarget = null;
 /**
  *  The optional data passed to jQuery.fn.bind when the current executing handler was bound.  
  * @type {Anything}
  */
-jQueryEvent.data = {};
+jQueryEvent.prototype.data = {};
 /**
  *  The DOM element that initiated the event.  
  * @type {Element}
  */
-jQueryEvent.target = null;
+jQueryEvent.prototype.target = null;
 /**
  *  Describes the nature of the event.  
  * @type {String}
  */
-jQueryEvent.type = "";
+jQueryEvent.prototype.type = "";
 /**
  * Accepts a string containing a CSS selector which is then used to match a set of elements.
  * @returns {jQueryObject}
