@@ -14,34 +14,38 @@
  */
 package org.eclipselabs.jsdt.jquery.api.infer;
 
+import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 
 public class JQueryEventInferEngine implements IInferEngine {
+    
+    private CompilationUnitDeclaration compilationUnit;
+    private InferOptions options;
 
   @Override
   public void doInfer() {
-    // TODO Auto-generated method stub
+      ASTVisitor inferer = new JQueryEventInferer();
+      this.compilationUnit.traverse(inferer);
 
   }
 
   @Override
   public void initialize() {
-    // TODO Auto-generated method stub
+   // nothing yet
 
   }
 
   @Override
-  public void initializeOptions(InferOptions arg0) {
-    // TODO Auto-generated method stub
-
+  public void initializeOptions(InferOptions inferOptions) {
+    this.options = options;
   }
 
   @Override
-  public void setCompilationUnit(CompilationUnitDeclaration arg0) {
-    // TODO Auto-generated method stub
+  public void setCompilationUnit(CompilationUnitDeclaration parsedUnit) {
+    this.compilationUnit = parsedUnit;
 
   }
 
