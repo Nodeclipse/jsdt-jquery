@@ -18,7 +18,7 @@ import org.eclipselabs.jsdt.jquery.core.model.Property;
 
 
 public interface MemberVisitor<P> {
-  
+
   P visitFuntion(Function function);
   P visitProperty(Property property);
 

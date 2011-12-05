@@ -24,14 +24,14 @@ import org.eclipselabs.jsdt.jquery.core.api.Documented;
 
 
 abstract class DocumentationEntry implements Documented {
-  
+
   private final String description;
   private final String longDescription;
   private final Collection<Example> examples;
   private final Set<String> categories;
   private final String name;
   private final String deprecated;
-  
+
   DocumentationEntry(String name,
       String description,
       String longDescription,
@@ -45,12 +45,12 @@ abstract class DocumentationEntry implements Documented {
     this.categories = categories;
     this.deprecated = deprecated;
   }
-  
+
   @Override
   public String getDescription() {
     return this.description;
   }
-  
+
   @Override
   public boolean isDeprecatedIn(Version version) {
     if (this.deprecated == null) {
@@ -61,19 +61,19 @@ abstract class DocumentationEntry implements Documented {
       return true;
     }
   }
-  
+
   @Override
   public String getDeprecated() {
     return this.deprecated;
   }
-  
-  
+
+
   public String getName() {
     return this.name;
   }
-  
+
   public abstract <P> P accept(DocumentationEntryVisitor<P> visitor);
-  
-  
-  
+
+
+
 }

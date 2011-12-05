@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 public final class JQueryApiPlugin extends Plugin {
-  
+
   static final int MAX_MINOR = 7;
-  
+
   static final List<Version> ALL_VERSIONS;
-  
+
   public static final Version MAX_VERSION;
-  
+
   static {
     List<Version> versions = new ArrayList<Version>(MAX_MINOR + 1);
     for (int i = MAX_MINOR; i >= 0; --i) {
@@ -38,8 +38,8 @@ public final class JQueryApiPlugin extends Plugin {
   }
 
   private static volatile JQueryApiPlugin instance;
-  
-  
+
+
   /**
    * {@inheritDoc}
    */
@@ -48,7 +48,7 @@ public final class JQueryApiPlugin extends Plugin {
     super.start(context);
     instance = this;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -57,14 +57,14 @@ public final class JQueryApiPlugin extends Plugin {
     instance = null;
     super.stop(context);
   }
-  
+
   public static JQueryApiPlugin getDefault() {
     return instance;
   }
-  
-  
+
+
   private static final JQuerySupport SUPPORT = new SimpleJQuerySupport();
-  
+
   public static JQuerySupport getJQuerySupport() {
     return SUPPORT;
   }

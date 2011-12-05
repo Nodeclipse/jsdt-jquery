@@ -21,26 +21,26 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 
 public class JQueryEventInferEngine implements IInferEngine {
-    
-    private CompilationUnitDeclaration compilationUnit;
-    private InferOptions options;
+
+  private CompilationUnitDeclaration compilationUnit;
+  private InferOptions options;
 
   @Override
   public void doInfer() {
-      ASTVisitor inferer = new JQueryEventInferer();
-      this.compilationUnit.traverse(inferer);
+    ASTVisitor inferer = new JQueryEventInferer();
+    this.compilationUnit.traverse(inferer);
 
   }
 
   @Override
   public void initialize() {
-   // nothing yet
+    // nothing yet
 
   }
 
   @Override
   public void initializeOptions(InferOptions inferOptions) {
-    this.options = options;
+    this.options = this.options;
   }
 
   @Override

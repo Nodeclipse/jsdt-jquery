@@ -25,11 +25,11 @@ import org.eclipselabs.jsdt.jquery.core.api.JQueryMember;
 
 
 final class ParsedJQqueryDocumentation implements JQueryDocumentation {
-  
+
   private final Collection<JQueryMember> members;
   private final Collection<Selector> selectors;
   private final JQuerySupport support;
-  
+
   ParsedJQqueryDocumentation(Collection<JQueryMember> members, Collection<Selector> selectors) {
     this.members = members;
     this.selectors = selectors;
@@ -43,7 +43,7 @@ final class ParsedJQqueryDocumentation implements JQueryDocumentation {
   public Collection<JQueryMember> getMembers() {
     return this.members;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -51,8 +51,8 @@ final class ParsedJQqueryDocumentation implements JQueryDocumentation {
   public Collection<Selector> getSelectors() {
     return this.selectors;
   }
-  
-  
+
+
   /**
    * {@inheritDoc}
    */

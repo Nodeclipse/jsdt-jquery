@@ -19,54 +19,52 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
-import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
-import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 
 
 public class JQueryEventInferer extends ASTVisitor {
-    
-    private static final InferredType jQueryEvent;
 
-    static {
-        char[] selector = "jQueryEvent".toCharArray();
-        jQueryEvent = new InferredType(selector);
-    }
-  
+  private static final InferredType jQueryEvent;
+
+  static {
+    char[] selector = "jQueryEvent".toCharArray();
+    jQueryEvent = new InferredType(selector);
+  }
+
   @Override
   public boolean visit(IFunctionCall functionCall) {
-    
+
     IExpression receiver = functionCall.getReceiver();
-    if (isJQueryObject(receiver)) {
-        char[] selector = functionCall.getSelector();
-        if (isJQueryEventSelector(selector)) {
-            IExpression[] functionCallArguments = functionCall.getArguments();
-            if (functionCallArguments != null) {
-                for (IExpression expression : functionCallArguments) {
-                    if (expression.getASTType() == IASTNode.FUNCTION_EXPRESSION) {
-                        IFunctionExpression functionExpression = (IFunctionExpression) expression;
-                        IArgument[] functionExpressionArguments = functionExpression.getMethodDeclaration().getArguments();
-                        if (functionExpressionArguments != null) {
-                            for (IArgument argument : functionExpressionArguments) {
-                                argument.setInferredType(jQueryEvent);
-                            }
-                        }
-                    }
+    if (this.isJQueryObject(receiver)) {
+      char[] selector = functionCall.getSelector();
+      if (this.isJQueryEventSelector(selector)) {
+        IExpression[] functionCallArguments = functionCall.getArguments();
+        if (functionCallArguments != null) {
+          for (IExpression expression : functionCallArguments) {
+            if (expression.getASTType() == IASTNode.FUNCTION_EXPRESSION) {
+              IFunctionExpression functionExpression = (IFunctionExpression) expression;
+              IArgument[] functionExpressionArguments = functionExpression.getMethodDeclaration().getArguments();
+              if (functionExpressionArguments != null) {
+                for (IArgument argument : functionExpressionArguments) {
+                  argument.setInferredType(jQueryEvent);
                 }
+              }
             }
+          }
+        }
       }
     }
-    
+
     return super.visit(functionCall);
   }
-  
+
   private boolean isJQueryObject(IExpression expression) {
     //TODO check inferred type
     IExpression current = expression;
     while (current != null && current.getASTType() == IASTNode.FUNCTION_CALL) {
       IFunctionCall call = (IFunctionCall) current;
-      if (isJQuery(call.getSelector())) {
+      if (this.isJQuery(call.getSelector())) {
         return true;
       } else {
         current = call.getReceiver();
@@ -74,11 +72,11 @@ public class JQueryEventInferer extends ASTVisitor {
     }
     return false;
   }
-  
+
   private boolean isJQueryEventSelector(char[] selector) {
     return new String(selector).equals("submit");
   }
-  
+
   private boolean isJQuery(char[] token) {
     if (token.length == 1) {
       return token[0] == '$';
@@ -93,5 +91,5 @@ public class JQueryEventInferer extends ASTVisitor {
       return false;
     }
   }
-  
+
 }

@@ -17,11 +17,11 @@ import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
 
 
 public final class JQuery11ConflictGlobalScopeContainerInitializer extends
-    JQueryGlobalScopeContainerInitializer {
+JQueryGlobalScopeContainerInitializer {
 
   public JQuery11ConflictGlobalScopeContainerInitializer() {
     super(SimpleVersion.fromString("1.1"), false);
   }
-  
-  
+
+
 }

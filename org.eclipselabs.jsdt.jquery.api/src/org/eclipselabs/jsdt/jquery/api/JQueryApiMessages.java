@@ -28,5 +28,5 @@ public class JQueryApiMessages extends NLS {
 
   private JQueryApiMessages() {
   }
-  
+
 }

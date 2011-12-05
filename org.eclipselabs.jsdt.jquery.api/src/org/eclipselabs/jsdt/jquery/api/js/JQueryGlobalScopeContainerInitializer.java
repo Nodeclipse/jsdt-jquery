@@ -27,8 +27,8 @@ import org.eclipselabs.jsdt.jquery.api.Version;
 
 
 abstract class JQueryGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer
-    implements IJsGlobalScopeContainerInitializer {
-  
+implements IJsGlobalScopeContainerInitializer {
+
   private final Version version;
   private final boolean noConflict;
   private final LibraryLocation libraryLocation;
@@ -40,7 +40,7 @@ abstract class JQueryGlobalScopeContainerInitializer extends JsGlobalScopeContai
     this.libraryFileNames = new char[][]{getLibraryFileName(version, noConflict).toCharArray()};
     this.libraryLocation = new JQueryLibraryLocation();
   }
-  
+
   private static String getLibraryFileName(Version version, boolean noConflict) {
     if (noConflict) {
       return "jquery-doc-noconflict-" + version + ".js";
@@ -48,10 +48,10 @@ abstract class JQueryGlobalScopeContainerInitializer extends JsGlobalScopeContai
       return "jquery-doc-" + version + ".js";
     }
   }
-  
+
   @Override
   public String getDescription() {
-    if (noConflict) {
+    if (this.noConflict) {
       return NLS.bind(JQueryApiMessages.container_noConflictDescription, this.version.toString());
     } else {
       return NLS.bind(JQueryApiMessages.container_conflictDescription, this.version.toString());
@@ -62,40 +62,42 @@ abstract class JQueryGlobalScopeContainerInitializer extends JsGlobalScopeContai
   public LibraryLocation getLibraryLocation() {
     return this.libraryLocation;
   }
-  
+
   @Override
   public boolean allowAttachJsDoc() {
     return false;
   }
-  
+
   @Override
   public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) {
     return true;
   }
-  
+
 
   final class JQueryLibraryLocation extends SystemLibraryLocation {
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public char[][] getLibraryFileNames() {
       // this method is called from the super constructor!
-      // that's why we can't make this an instance variable in this class 
-      return libraryFileNames;
+      // that's why we can't make this an instance variable in this class
+      return JQueryGlobalScopeContainerInitializer.this.libraryFileNames;
     }
 
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getPluginId() {
       return JQueryApiPlugin.getDefault().getBundle().getSymbolicName();
     }
-    
+
   }
-  
-  
+
+
 
 }

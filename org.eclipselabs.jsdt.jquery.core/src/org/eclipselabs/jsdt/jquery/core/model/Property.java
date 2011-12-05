@@ -25,7 +25,7 @@ import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
 
 public class Property extends DocumentedMember implements JQueryMember {
-  
+
   private final Collection<PropertySignature> signatures;
 
   Property(String name,
@@ -39,21 +39,21 @@ public class Property extends DocumentedMember implements JQueryMember {
     super(name, description, longDescription, examples, categories, returnType, deprecated);
     this.signatures = signatures;
   }
-  
+
   @Override
   public <P> P accept(MemberVisitor<P> visitor) {
     return visitor.visitProperty(this);
   }
-  
+
   @Override
   public <P> P accept(DocumentationEntryVisitor<P> visitor) {
     return visitor.visitProperty(this);
   }
-  
+
   Collection<PropertySignature> getSignatures() {
     return this.signatures;
   }
-  
+
   boolean isIncludedIn(Version version) {
     if (version == JQueryApiPlugin.MAX_VERSION) {
       return true;

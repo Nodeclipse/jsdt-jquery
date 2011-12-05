@@ -17,10 +17,10 @@ import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
 
 
 public final class JQuery14NoConflictGlobalScopeContainerInitializer extends
-    JQueryGlobalScopeContainerInitializer {
+JQueryGlobalScopeContainerInitializer {
 
   public JQuery14NoConflictGlobalScopeContainerInitializer() {
     super(SimpleVersion.fromString("1.4"), true);
   }
-  
+
 }

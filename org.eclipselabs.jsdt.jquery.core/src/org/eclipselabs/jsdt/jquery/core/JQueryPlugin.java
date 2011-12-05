@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 public class JQueryPlugin extends Plugin {
-  
+
   private static volatile JQueryPlugin instance;
-  
+
   /**
    * {@inheritDoc}
    */
@@ -27,13 +27,13 @@ public class JQueryPlugin extends Plugin {
     super.start(context);
     instance = this;
   }
-  
+
   @Override
   public void stop(BundleContext context) throws Exception {
     instance = null;
     super.stop(context);
   }
-  
+
   public static JQueryPlugin getDefault() {
     return instance;
   }

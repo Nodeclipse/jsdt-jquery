@@ -18,34 +18,34 @@ import org.eclipselabs.jsdt.jquery.api.Version;
 
 
 public class Signature {
-  
+
   private final Version added;
-  
+
   private final String deprecated;
-  
+
   Signature(String added, String deprecated) {
     this.added = SimpleVersion.fromString(added);
     this.deprecated = deprecated;
   }
-  
+
   public Version getAdded() {
     return this.added;
   }
-  
+
   public boolean isDeprecatedIn(Version version) {
     if (this.deprecated == null) {
       return false;
     } else if (SimpleVersion.isVersionString(this.deprecated)) {
-        return version.compareTo(SimpleVersion.fromString(this.deprecated)) >= 0;
+      return version.compareTo(SimpleVersion.fromString(this.deprecated)) >= 0;
     } else {
       return true;
     }
   }
-  
+
   public String getDeprecated() {
     return this.deprecated;
   }
-  
+
   boolean isIncludedIn(Version version) {
     return this.added == null || this.added.compareTo(version) <= 0;
   }

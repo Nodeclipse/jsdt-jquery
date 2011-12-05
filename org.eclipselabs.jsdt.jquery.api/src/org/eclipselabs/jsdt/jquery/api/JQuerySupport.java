@@ -17,7 +17,7 @@ import java.util.List;
 
 
 public interface JQuerySupport {
-  
+
   List<Version> getAllVersions();
 
 }

@@ -17,13 +17,13 @@ import org.eclipselabs.jsdt.jquery.core.api.JQueryArgument;
 
 
 abstract class Argument implements JQueryArgument {
-  
+
   private final String name;
   private final String type;
   private final String description;
   private final String defaultValue;
-  
-  
+
+
   Argument(String name, String type, String description, String defaultValue) {
     this.type = fixType(type);
     if ("Function".equals(type)) {
@@ -34,7 +34,7 @@ abstract class Argument implements JQueryArgument {
     this.description = description;
     this.defaultValue = defaultValue;
   }
-  
+
   private static String fixType(String s) {
     if ("boolean".equals(s)) {
       return "Boolean";
@@ -42,7 +42,7 @@ abstract class Argument implements JQueryArgument {
       return s;
     }
   }
-  
+
   private static String extractFunctionName(String nameWithArguments) {
     int parenIndex = nameWithArguments.indexOf('(');
     if (parenIndex == -1) {
@@ -52,7 +52,7 @@ abstract class Argument implements JQueryArgument {
       return safeFunctionName(substring);
     }
   }
-  
+
   private static String safeFunctionName(String functionName) {
     //HAX for function()
     if ("function".equals(functionName)) {
@@ -61,20 +61,24 @@ abstract class Argument implements JQueryArgument {
       return functionName;
     }
   }
-  
 
+
+  @Override
   public String getName() {
     return this.name;
   }
-  
+
+  @Override
   public String getType() {
     return this.type;
   }
-  
+
+  @Override
   public String getDescription() {
     return this.description;
   }
 
+  @Override
   public String getDefaultValue() {
     return this.defaultValue;
   }

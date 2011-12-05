@@ -29,7 +29,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipselabs.jsdt.jquery.core.api.DocumentationEntryVisitor;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryDocumentation;
@@ -79,7 +78,7 @@ public class DocumentationParser {
       input.close();
     }
   }
-  
+
   private Collection<JQueryMember> extractMembers(Collection<DocumentationEntry> entries) {
     Collection<JQueryMember> members = new ArrayList<JQueryMember>();
     DocumentationEntryVisitor<?> visitor = new MemberExtractorVisitor(members);
@@ -88,7 +87,7 @@ public class DocumentationParser {
     }
     return members;
   }
-  
+
   private Collection<Selector> extractSelectors(Collection<DocumentationEntry> entries) {
     Collection<Selector> selectors = new ArrayList<Selector>();
     DocumentationEntryVisitor<?> visitor = new SelectorExtractorVisitor(selectors);
@@ -97,42 +96,42 @@ public class DocumentationParser {
     }
     return selectors;
   }
-  
+
   final class MemberExtractorVisitor implements DocumentationEntryVisitor<Void> {
-    
+
     private final Collection<JQueryMember> members;
-    
+
     MemberExtractorVisitor(Collection<JQueryMember> members) {
       this.members = members;
     }
-    
+
     @Override
     public Void visitMethod(Function method) {
       this.addMember(method);
       return null;
     }
-    
+
     private void addMember(JQueryMember member) {
       this.members.add(member);
     }
-    
+
     @Override
     public Void visitProperty(Property property) {
       this.addMember(property);
       return null;
     }
-    
+
     @Override
     public Void visitSelector(Selector selector) {
       return null;
     }
-    
+
   }
-  
+
   final class SelectorExtractorVisitor implements DocumentationEntryVisitor<Void> {
-    
+
     private final Collection<Selector> selectors;
-    
+
     SelectorExtractorVisitor(Collection<Selector> selectors) {
       this.selectors = selectors;
     }
@@ -152,7 +151,7 @@ public class DocumentationParser {
       this.selectors.add(selector);
       return null;
     }
-    
+
   }
 
   private Collection<DocumentationEntry> parseProtected(XMLStreamReader reader) throws XMLStreamException, IOException {
@@ -183,7 +182,7 @@ public class DocumentationParser {
         }
       }
     }
-    
+
     throw new DocumentationValidationException("expected end of \"entries\" element");
   }
 
@@ -240,10 +239,10 @@ public class DocumentationParser {
 
     throw new DocumentationValidationException("expected end of \"entry\" element");
   }
-  
+
   enum DocumentationEntryInstantiator {
-    
-    
+
+
     METHOD("method") {
       @Override
       DocumentationEntry instantiate(String name,
@@ -256,10 +255,10 @@ public class DocumentationParser {
           Set<String> categories,
           String deprecated) {
         return new Function(name, description, longDescription, examples, categories,
-             toMethodSignatures(signatures), returnType, deprecated);
+            this.toMethodSignatures(signatures), returnType, deprecated);
       }
-      
-      
+
+
       private List<FunctionSignature> toMethodSignatures(List<SignatureInfo> signatures) {
         List<FunctionSignature> methodSignatures = new ArrayList<FunctionSignature>(signatures.size());
         for (SignatureInfo each : signatures) {
@@ -267,9 +266,9 @@ public class DocumentationParser {
         }
         return methodSignatures;
       }
-      
+
     },
-    
+
     PROPERTY("property") {
       @Override
       DocumentationEntry instantiate(String name,
@@ -282,10 +281,10 @@ public class DocumentationParser {
           Set<String> categories,
           String deprecated) {
         return new Property(name, description, longDescription, examples, categories,
-            toPropertySignatures(signatures), returnType, deprecated);
+            this.toPropertySignatures(signatures), returnType, deprecated);
       }
-      
-      
+
+
       private List<PropertySignature> toPropertySignatures(List<SignatureInfo> signatures) {
         List<PropertySignature> propertySignatures = new ArrayList<PropertySignature>(signatures.size());
         for (SignatureInfo each : signatures) {
@@ -293,9 +292,9 @@ public class DocumentationParser {
         }
         return propertySignatures;
       }
-      
+
     },
-    
+
     SELECTOR("selector") {
       @Override
       DocumentationEntry instantiate(String name,
@@ -310,16 +309,16 @@ public class DocumentationParser {
         return new Selector(name, description, longDescription, examples, categories, sample, deprecated);
       }
     };
-    
+
     private static final Map<String, DocumentationEntryInstantiator> REGISTRY;
-    
+
     static {
       REGISTRY = new HashMap<String, DocumentationEntryInstantiator>(3);
       for (DocumentationEntryInstantiator each : values()) {
         REGISTRY.put(each.type, each);
       }
     }
-    
+
     static DocumentationEntryInstantiator forType(String type) {
       DocumentationEntryInstantiator instantiator = REGISTRY.get(type);
       if (instantiator != null) {
@@ -328,7 +327,7 @@ public class DocumentationParser {
         throw new NoSuchElementException("no instantiator for type: " + type);
       }
     }
-    
+
     abstract DocumentationEntry instantiate(String name,
         String returnType,
         String description,
@@ -344,7 +343,7 @@ public class DocumentationParser {
     private DocumentationEntryInstantiator(String type) {
       this.type = type;
     }
-    
+
   }
 
   private SignatureInfo parseSignature(XMLStreamReader reader) throws XMLStreamException {
@@ -361,7 +360,7 @@ public class DocumentationParser {
         } else if ("argument".equals(localName)) {
           arguments.add(this.parseArgument(reader));
         } else if ("deprecated".equals(localName)) {
-            deprecated = parseStringContent("deprecated", reader);
+          deprecated = this.parseStringContent("deprecated", reader);
         } else {
           String message = "unexpected element \"" + localName + "\" expected one of: "
               +" \"added\", \"argument\"";
@@ -431,7 +430,7 @@ public class DocumentationParser {
     String message = "missing end of element \"argument\"";
     throw new DocumentationValidationException(message);
   }
-  
+
   private Option parseOption(XMLStreamReader reader) throws XMLStreamException {
     String name = null, type = null, added = null, defaultValue = null, description = null;
     for (int i = 0; i < reader.getAttributeCount(); ++i) {
@@ -451,7 +450,7 @@ public class DocumentationParser {
         throw new DocumentationValidationException(message);
       }
     }
-    
+
     while (reader.hasNext()) {
       int event = reader.next();
       if (event == START_ELEMENT) {
@@ -476,8 +475,8 @@ public class DocumentationParser {
     }
     String message = "missing end of element \"option\"";
     throw new DocumentationValidationException(message);
-    
-    
+
+
   }
 
   private String parseCategory(XMLStreamReader reader) throws XMLStreamException {
@@ -591,7 +590,7 @@ public class DocumentationParser {
   }
 
   private void consumeCategories(XMLStreamReader reader) throws XMLStreamException {
-    consumeElement("categories", reader);
+    this.consumeElement("categories", reader);
   }
 
   private void expectNextElement(String expectedName, XMLStreamReader reader) throws XMLStreamException {
@@ -636,11 +635,11 @@ public class DocumentationParser {
     long end = System.currentTimeMillis();
     System.out.printf("finished after %dms%n", end - start);
   }
-  
+
   static final class SignatureInfo {
-    
+
     final String added;
-    
+
     final List<FunctionArgument> arguments;
 
     final String deprecated;
@@ -650,9 +649,9 @@ public class DocumentationParser {
       this.arguments = arguments;
       this.deprecated = deprecated;
     }
-    
+
   }
-  
+
 
   static final class DocumentationValidationException extends RuntimeException {
 

@@ -21,7 +21,7 @@ import org.eclipselabs.jsdt.jquery.core.api.DocumentationEntryVisitor;
 
 
 public class Selector extends DocumentationEntry {
-  
+
   private final String sample;
 
   Selector(String name,
@@ -34,7 +34,7 @@ public class Selector extends DocumentationEntry {
     super(name, description, longDescription, examples, categories, deprecated);
     this.sample = sample;
   }
-  
+
   @Override
   public <P> P accept(DocumentationEntryVisitor<P> visitor) {
     return visitor.visitSelector(this);

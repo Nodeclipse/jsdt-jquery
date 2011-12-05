@@ -21,7 +21,7 @@ import org.eclipselabs.jsdt.jquery.core.api.JQueryMember;
 
 
 abstract class DocumentedMember extends DocumentationEntry implements JQueryMember {
-  
+
   private final String owner;
   private final String returnType;
 
@@ -36,7 +36,7 @@ abstract class DocumentedMember extends DocumentationEntry implements JQueryMemb
     this.owner = extractOwner(name);
     this.returnType = fixType(returnType);
   }
-  
+
   private static String extractName(String s) {
     int dotIndex = s.lastIndexOf('.');
     if (dotIndex != -1) {
@@ -45,7 +45,7 @@ abstract class DocumentedMember extends DocumentationEntry implements JQueryMemb
       return s;
     }
   }
-  
+
   private static String extractOwner(String s) {
     int dotIndex = s.lastIndexOf('.');
     if (dotIndex != -1) {
@@ -54,7 +54,7 @@ abstract class DocumentedMember extends DocumentationEntry implements JQueryMemb
       return JQUERY_OBJECT;
     }
   }
-  
+
   private static String fixType(String s) {
     if ("boolean".equals(s)) {
       return "Boolean";
@@ -62,16 +62,16 @@ abstract class DocumentedMember extends DocumentationEntry implements JQueryMemb
       return s;
     }
   }
-  
+
   @Override
   public String getOwner() {
     return this.owner;
   }
-  
+
 
   public String getReturnType() {
     return this.returnType;
   }
-  
-  
+
+
 }

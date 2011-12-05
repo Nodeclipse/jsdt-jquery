@@ -17,11 +17,11 @@ import org.eclipselabs.jsdt.jquery.api.Version;
 
 
 public interface Documented {
-  
+
   String getDescription();
-  
+
   boolean isDeprecatedIn(Version version);
-  
+
   String getDeprecated();
 
 }

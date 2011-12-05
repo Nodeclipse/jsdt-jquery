@@ -17,8 +17,8 @@ import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
 
 
 public class JQuery17ConflictGlobalScopeContainerInitializer extends
-    JQueryGlobalScopeContainerInitializer {
-  
+JQueryGlobalScopeContainerInitializer {
+
   public JQuery17ConflictGlobalScopeContainerInitializer() {
     super(SimpleVersion.fromString("1.7"), false);
   }

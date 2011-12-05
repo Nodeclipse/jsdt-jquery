@@ -17,7 +17,7 @@ import java.util.List;
 
 
 final class SimpleJQuerySupport implements JQuerySupport {
-  
+
   /**
    * {@inheritDoc}
    */

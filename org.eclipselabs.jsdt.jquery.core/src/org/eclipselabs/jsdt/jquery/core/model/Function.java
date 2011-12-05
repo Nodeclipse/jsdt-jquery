@@ -28,7 +28,7 @@ import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
 
 public class Function extends DocumentedMember implements JQueryMember {
-  
+
   private final List<FunctionSignature> signatures;
 
   Function(String name,
@@ -42,12 +42,12 @@ public class Function extends DocumentedMember implements JQueryMember {
     super(name, description, longDescription, examples, categories, returnType, deprecated);
     this.signatures = signatures;
   }
-  
+
   @Override
   public <P> P accept(MemberVisitor<P> visitor) {
     return visitor.visitFuntion(this);
   }
-  
+
   @Override
   public <P> P accept(DocumentationEntryVisitor<P> visitor) {
     return visitor.visitMethod(this);
@@ -66,5 +66,5 @@ public class Function extends DocumentedMember implements JQueryMember {
       return signaturesInVersion;
     }
   }
-  
+
 }

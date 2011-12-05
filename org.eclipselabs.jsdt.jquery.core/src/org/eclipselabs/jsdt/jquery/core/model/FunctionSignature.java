@@ -17,17 +17,17 @@ import java.util.List;
 
 
 class FunctionSignature extends Signature {
-  
+
   private final List<FunctionArgument> arguments;
-  
+
   FunctionSignature(String added, String deprecated, List<FunctionArgument> arguments) {
     super(added, deprecated);
     this.arguments = arguments;
   }
 
-  
+
   List<FunctionArgument> getArguments() {
     return this.arguments;
   }
-  
+
 }

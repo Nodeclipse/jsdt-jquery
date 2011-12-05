@@ -18,7 +18,7 @@ import org.eclipse.osgi.util.NLS;
 public class JQueryUiMessages extends NLS {
 
   private static final String BUNDLE_NAME = "org.eclipselabs.jsdt.jquery.ui.messages"; //$NON-NLS-1$
-  
+
   public static String jQueryLibraryWizardPage_title;
 
   public static String jQueryLibraryWizardPage_jQueryLibraryAdded;
