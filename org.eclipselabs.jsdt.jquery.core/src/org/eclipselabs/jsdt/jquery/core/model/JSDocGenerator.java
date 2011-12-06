@@ -35,7 +35,7 @@ import org.eclipselabs.jsdt.jquery.core.api.JQueryMember;
 import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
 
-public class JSDocGenerator {
+public class JSDocGenerator extends WriterSupport {
 
   private static final String JQUERY_EVENT_PROTOTYPE = JQueryMember.JQUERY_EVENT + ".prototype";
 
@@ -53,8 +53,6 @@ public class JSDocGenerator {
   }
 
   private static final Version VERSION_WITH_DEFERRED = SimpleVersion.fromString("1.5");
-
-  private Writer output;
 
   private boolean noConflict;
 
@@ -90,13 +88,6 @@ public class JSDocGenerator {
     //    }
   }
 
-  private void visitAll(Collection<JQueryMember> members, Predicate predicate, MemberVisitor<Void> visistor) {
-    MemberVisitor<Void> filteredVisitor = new FilteredVisitor<Void>(predicate, visistor);
-    for (JQueryMember member : members) {
-      member.accept(filteredVisitor);
-    }
-  }
-
   private Function findConstructor(Collection<JQueryMember> members) {
     MemberVisitor<Function> finder = new ConstructorFinder();
     for (JQueryMember member : members) {
@@ -106,35 +97,6 @@ public class JSDocGenerator {
       }
     }
     throw new RuntimeException("no constructor found");
-  }
-
-  public static void main(String[] args) throws IOException {
-    long start = System.currentTimeMillis();
-    DocumentationParser parser = new DocumentationParser();
-    InputStream input = DocumentationParser.class.getClassLoader().getResourceAsStream("api.xml");
-    JQueryDocumentation documentation;
-    try {
-      documentation = parser.parse(input);
-    } catch (DocumentationParseException e) {
-      e.printStackTrace(System.err);
-      return;
-    }
-
-    JSDocGenerator generator = new JSDocGenerator();
-
-    File parent = new File(new File(new File(".."), "org.eclipselabs.jsdt.jquery.api"), "libraries");
-    for (Version version : documentation.getAllVersions()) {
-      OutputStream outputStream = new FileOutputStream(new File(parent, "jquery-doc-" + version.toString() + ".js"));
-      OutputStream buffered = new BufferedOutputStream(outputStream);
-      generator.write(documentation.getMembers(), false, new OutputStreamWriter(buffered, "US-ASCII"), version);
-
-      outputStream = new FileOutputStream(new File(parent, "jquery-doc-noconflict-" + version.toString() + ".js"));
-      buffered = new BufferedOutputStream(outputStream);
-      generator.write(documentation.getMembers(), true, new OutputStreamWriter(buffered, "US-ASCII"), version);
-    }
-
-    long end = System.currentTimeMillis();
-    System.out.printf("finished generating documentation in %dms%n", end - start);
   }
 
   static final class ConstructorFinder implements MemberVisitor<Function> {
@@ -198,30 +160,6 @@ public class JSDocGenerator {
     this.writeTag("returns", "{Promise}");
     this.writeEnd();
     this.writeLine(globalVariableName + ".Deferred = function() {};");
-  }
-
-  static boolean isJQueryObject(DocumentedMember member) {
-    return isJQueryObject(member.getOwner());
-  }
-
-  static boolean isJQueryObject(String owner) {
-    return JQueryMember.JQUERY_OBJECT.equals(owner);
-  }
-
-  static boolean isJQueryStatic(DocumentedMember member) {
-    return isJQueryStatic(member.getOwner());
-  }
-
-  static boolean isJQueryStatic(String owner) {
-    return "jQuery".equals(owner);
-  }
-
-  static boolean isJQueryEvent(DocumentedMember member) {
-    return isJQueryEvent(member.getOwner());
-  }
-
-  static boolean isJQueryEvent(String owner) {
-    return "event".equals(owner);
   }
 
   final class JQueryEventWriter implements MemberVisitor<Void> {
@@ -507,31 +445,6 @@ public class JSDocGenerator {
     }
   }
 
-  private void write(String s) {
-    try {
-      this.output.write(s);
-    } catch (IOException e) {
-      throw new RuntimeException("output failed", e);
-    }
-  }
-
-  private void write(char c) {
-    try {
-      this.output.write(c);
-    } catch (IOException e) {
-      throw new RuntimeException("output failed", e);
-    }
-  }
-
-  private void writeLine(String line) {
-    try {
-      this.output.write(line);
-      this.writeNewLine();
-    } catch (IOException e) {
-      throw new RuntimeException("output failed", e);
-    }
-  }
-
   private void writeCommentLine(String line) {
     try {
       this.writeStartLine();
@@ -545,14 +458,6 @@ public class JSDocGenerator {
   private void writeStartLine() {
     try {
       this.output.write(" * ");
-    } catch (IOException e) {
-      throw new RuntimeException("output failed", e);
-    }
-  }
-
-  private void writeNewLine() {
-    try {
-      this.output.write('\n');
     } catch (IOException e) {
       throw new RuntimeException("output failed", e);
     }
@@ -578,91 +483,6 @@ public class JSDocGenerator {
     } catch (IOException e) {
       throw new RuntimeException("output failed", e);
     }
-  }
-
-  interface Predicate {
-
-    boolean isTrue(Function function);
-
-    boolean isTrue(Property property);
-
-  }
-
-
-  static final class FilteredVisitor<P> implements MemberVisitor<P> {
-
-    private final MemberVisitor<P>  delegate;
-    private final Predicate predicate;
-
-    FilteredVisitor(Predicate predicate, MemberVisitor<P> delegate) {
-      this.predicate = predicate;
-      this.delegate = delegate;
-    }
-
-    @Override
-    public P visitFuntion(Function function) {
-      if (this.predicate.isTrue(function)) {
-        return this.delegate.visitFuntion(function);
-      } else {
-        return null;
-      }
-    }
-
-    @Override
-    public P visitProperty(Property property) {
-      if (this.predicate.isTrue(property)) {
-        return this.delegate.visitProperty(property);
-      } else {
-        return null;
-      }
-    }
-
-  }
-
-  enum Filters implements Predicate {
-
-    CLASS_SIDE {
-
-      @Override
-      public boolean isTrue(Function function) {
-        return isJQueryStatic(function);
-      }
-
-      @Override
-      public boolean isTrue(Property property) {
-        return isJQueryStatic(property);
-      }
-
-    },
-
-    INSTANCE_SIDE {
-
-      @Override
-      public boolean isTrue(Function function) {
-        return isJQueryObject(function);
-      }
-
-      @Override
-      public boolean isTrue(Property property) {
-        return isJQueryObject(property);
-      }
-
-    },
-
-    EVENT {
-
-      @Override
-      public boolean isTrue(Function function) {
-        return isJQueryEvent(function);
-      }
-
-      @Override
-      public boolean isTrue(Property property) {
-        return isJQueryEvent(property);
-      }
-
-    }
-
   }
 
 }
