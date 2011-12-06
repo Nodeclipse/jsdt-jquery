@@ -10,30 +10,44 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
 
   private static final String ID = JQueryEventInferenceProvider.class.getName();
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public IInferEngine getInferEngine() {
     return new JQueryEventInferEngine();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int applysTo(IInferenceFile scriptFile) {
     // TODO fix
     return InferrenceProvider.MAYBE_THIS;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getID() {
     return ID;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResolutionConfiguration getResolutionConfiguration() {
     return new ResolutionConfiguration();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RefactoringSupport getRefactoringSupport() {
-    // TODO Auto-generated method stub
     return null;
   }
 

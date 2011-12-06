@@ -17,6 +17,7 @@ package org.eclipselabs.jsdt.jquery.api.infer;
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 
@@ -25,6 +26,9 @@ public class JQueryEventInferEngine implements IInferEngine {
   private CompilationUnitDeclaration compilationUnit;
   private InferOptions options;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void doInfer() {
     ASTVisitor inferer = new JQueryEventInferer();
@@ -32,17 +36,25 @@ public class JQueryEventInferEngine implements IInferEngine {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void initialize() {
     // nothing yet
-
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void initializeOptions(InferOptions inferOptions) {
-    this.options = this.options;
+    this.options = inferOptions;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCompilationUnit(CompilationUnitDeclaration parsedUnit) {
     this.compilationUnit = parsedUnit;
