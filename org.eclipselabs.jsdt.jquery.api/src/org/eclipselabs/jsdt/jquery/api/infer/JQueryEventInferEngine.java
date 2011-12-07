@@ -17,7 +17,6 @@ package org.eclipselabs.jsdt.jquery.api.infer;
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
-import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 

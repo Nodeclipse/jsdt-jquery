@@ -13,13 +13,7 @@
  */
 package org.eclipselabs.jsdt.jquery.core.model;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
 import org.eclipselabs.jsdt.jquery.api.Version;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryArgument;
-import org.eclipselabs.jsdt.jquery.core.api.JQueryDocumentation;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryMember;
 import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
@@ -249,10 +242,10 @@ public class JSDocGenerator extends WriterSupport {
       if (!signatures.isEmpty()) {
         //String prefix;
         //if (signatures.size() > 1) {
-          //  prefix = "^1";
-          //} else {
-            //  prefix = null;
-            //}
+        //  prefix = "^1";
+        //} else {
+        //  prefix = null;
+        //}
         FunctionSignature signature = signatures.get(0);
         this.writeSignature(function, signature, null);
       }
