@@ -29,8 +29,8 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
    */
   @Override
   public int applysTo(IInferenceFile scriptFile) {
-    // TODO fix
-    return InferrenceProvider.MAYBE_THIS;
+      //FIXME
+      return InferrenceProvider.MAYBE_THIS;
   }
 
   /**
