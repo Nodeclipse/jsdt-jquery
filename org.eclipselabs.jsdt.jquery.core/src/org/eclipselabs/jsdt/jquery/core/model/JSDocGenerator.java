@@ -274,7 +274,8 @@ public class JSDocGenerator extends WriterSupport {
             this.write(", ");
           }
           first = false;
-          this.write(argument.getName());
+          String argumentName = extractArgumentName(argument);
+          this.write(argumentName);
         }
       }
       this.write(") {};");
@@ -333,7 +334,8 @@ public class JSDocGenerator extends WriterSupport {
     if (!StringUtils.isEmpty(prefix)) {
       buffer.append(prefix);
     }
-    buffer.append(argument.getName());
+    String argumentName = extractArgumentName(argument);
+    buffer.append(argumentName);
     if (optional) {
       String defaultValue = argument.getDefaultValue();
       if (!StringUtils.isEmpty(defaultValue)) {
@@ -352,11 +354,36 @@ public class JSDocGenerator extends WriterSupport {
     if ("Map".equals(type)) {
       Collection<? extends JQueryArgument> options = argument.getOptions();
       if (!options.isEmpty()) {
-        String subPrefix = argument.getName() + '.';
+        String subPrefix = argumentName + '.';
         for (JQueryArgument option : options) {
           this.writeArgument(option, subPrefix);
         }
       }
+    }
+  }
+  
+
+  private static String extractArgumentName(JQueryArgument argument) {
+    
+    String nameWithArguments = argument.getName();
+    if (!"Function".equals(argument.getType())) {
+      return nameWithArguments;
+    }
+    int parenIndex = nameWithArguments.indexOf('(');
+    if (parenIndex == -1) {
+      return safeFunctionName(nameWithArguments);
+    } else {
+      String substring = nameWithArguments.substring(0, parenIndex);
+      return safeFunctionName(substring);
+    }
+  }
+
+  private static String safeFunctionName(String functionName) {
+    //HAX for function()
+    if ("function".equals(functionName)) {
+      return "func";
+    } else {
+      return functionName;
     }
   }
 

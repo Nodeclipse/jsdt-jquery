@@ -26,11 +26,7 @@ abstract class Argument implements JQueryArgument {
 
   Argument(String name, String type, String description, String defaultValue) {
     this.type = fixType(type);
-    if ("Function".equals(type)) {
-      this.name = extractFunctionName(name);
-    } else {
-      this.name = name;
-    }
+    this.name = name;
     this.description = description;
     this.defaultValue = defaultValue;
   }
@@ -42,26 +38,6 @@ abstract class Argument implements JQueryArgument {
       return s;
     }
   }
-
-  private static String extractFunctionName(String nameWithArguments) {
-    int parenIndex = nameWithArguments.indexOf('(');
-    if (parenIndex == -1) {
-      return safeFunctionName(nameWithArguments);
-    } else {
-      String substring = nameWithArguments.substring(0, parenIndex);
-      return safeFunctionName(substring);
-    }
-  }
-
-  private static String safeFunctionName(String functionName) {
-    //HAX for function()
-    if ("function".equals(functionName)) {
-      return "func";
-    } else {
-      return functionName;
-    }
-  }
-
 
   @Override
   public String getName() {

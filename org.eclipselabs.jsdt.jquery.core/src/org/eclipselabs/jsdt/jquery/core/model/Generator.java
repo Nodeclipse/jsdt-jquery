@@ -27,7 +27,7 @@ public class Generator {
     }
 
 
-    //      writeJsDoc(documentation);
+    writeJsDoc(documentation);
     writeCallbackMethods(documentation);
 
     long end = System.currentTimeMillis();
