@@ -22,15 +22,20 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 public class JQueryEventInferEngine implements IInferEngine {
 
+  private final JQueryCallbackMethods callbackMethods;
   private CompilationUnitDeclaration compilationUnit;
   private InferOptions options;
+
+  public JQueryEventInferEngine(JQueryCallbackMethods callbackMethods) {
+    this.callbackMethods = callbackMethods;
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
   public void doInfer() {
-    ASTVisitor inferer = new JQueryEventInferer();
+    ASTVisitor inferer = new JQueryEventInferer(this.callbackMethods);
     this.compilationUnit.traverse(inferer);
 
   }

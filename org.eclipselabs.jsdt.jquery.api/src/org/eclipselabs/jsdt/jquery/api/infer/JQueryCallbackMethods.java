@@ -1,15 +1,35 @@
 package org.eclipselabs.jsdt.jquery.api.infer;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class JQueryCallbackMethods {
 
   public static final int NO_CALLBACK = -1;
-
-  public void addCallbackMethod(String selector, int argumentAcount, int eventIndex) {
-    throw new RuntimeException("not yet implemented");
+  
+  private final Map<CallbackLocator, Integer> callbackFunctions;
+  private final Set<String> callbackSelectors;
+  
+  public JQueryCallbackMethods() {
+    this.callbackFunctions = new ConcurrentHashMap<CallbackLocator, Integer>();
+    // REVIEW ConcurrentHashSet?
+    this.callbackSelectors = new HashSet<String>();
   }
 
-  public int getCallbackIndex(String selector, int argumentCount) {
-    throw new RuntimeException("not yet implemented");
+  public void addCallbackMethod(String selector, int argumentAcount, int eventIndex) {
+    this.callbackSelectors.add(selector);
+    this.callbackFunctions.put(new CallbackLocator(selector, argumentAcount), eventIndex);
+  }
+  
+
+  public boolean isEventCallback(String selector, int index) {
+    return this.callbackFunctions.containsKey(new CallbackLocator(selector, index));
+  }
+
+  public boolean isEventSelector(String selector) {
+    return this.callbackSelectors.contains(selector);
   }
 
   static final class CallbackLocator {

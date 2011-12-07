@@ -26,10 +26,16 @@ import org.eclipse.wst.jsdt.core.infer.InferredType;
 public class JQueryEventInferer extends ASTVisitor {
 
   private static final InferredType jQueryEvent;
+  
+  private final JQueryCallbackMethods callbackMethods;
 
   static {
     char[] selector = "jQueryEvent".toCharArray();
     jQueryEvent = new InferredType(selector);
+  }
+
+  public JQueryEventInferer(JQueryCallbackMethods callbackMethods) {
+    this.callbackMethods = callbackMethods;
   }
 
   @Override
@@ -37,12 +43,13 @@ public class JQueryEventInferer extends ASTVisitor {
 
     IExpression receiver = functionCall.getReceiver();
     if (this.isJQueryObject(receiver)) {
-      char[] selector = functionCall.getSelector();
+      String selector = new String(functionCall.getSelector());
       if (this.isJQueryEventSelector(selector)) {
         IExpression[] functionCallArguments = functionCall.getArguments();
         if (functionCallArguments != null) {
-          for (IExpression expression : functionCallArguments) {
-            if (expression.getASTType() == IASTNode.FUNCTION_EXPRESSION) {
+          for (int i = 0; i < functionCallArguments.length; ++i) {
+            IExpression expression = functionCallArguments[i];
+            if (expression.getASTType() == IASTNode.FUNCTION_EXPRESSION && this.isEventCallback(selector, i)) {
               IFunctionExpression functionExpression = (IFunctionExpression) expression;
               IArgument[] functionExpressionArguments = functionExpression.getMethodDeclaration().getArguments();
               if (functionExpressionArguments != null) {
@@ -59,6 +66,10 @@ public class JQueryEventInferer extends ASTVisitor {
     return super.visit(functionCall);
   }
 
+  private boolean isEventCallback(String selector, int i) {
+    return this.callbackMethods.isEventCallback(selector, i);
+  }
+
   private boolean isJQueryObject(IExpression expression) {
     //TODO check inferred type
     IExpression current = expression;
@@ -73,8 +84,8 @@ public class JQueryEventInferer extends ASTVisitor {
     return false;
   }
 
-  private boolean isJQueryEventSelector(char[] selector) {
-    return new String(selector).equals("submit");
+  private boolean isJQueryEventSelector(String selector) {
+    return this.callbackMethods.isEventSelector(selector);
   }
 
   private boolean isJQuery(char[] token) {
