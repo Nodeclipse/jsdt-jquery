@@ -1,5 +1,8 @@
 package org.eclipselabs.jsdt.jquery.api.infer;
 
+import javax.annotation.Generated;
+
+@Generated("org.eclipselabs.jsdt.jquery.core.model.CallbackMethodGenerator")
 public class JQueryCallbackMethodsGenerator {
 
  public JQueryCallbackMethods createCallbackMethods() {

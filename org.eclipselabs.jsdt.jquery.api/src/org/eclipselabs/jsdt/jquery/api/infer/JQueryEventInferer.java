@@ -14,6 +14,8 @@
  */
 package org.eclipselabs.jsdt.jquery.api.infer;
 
+import java.util.Set;
+
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
@@ -45,29 +47,38 @@ public class JQueryEventInferer extends ASTVisitor {
     if (this.isJQueryObject(receiver)) {
       String selector = new String(functionCall.getSelector());
       if (this.isJQueryEventSelector(selector)) {
-        IExpression[] functionCallArguments = functionCall.getArguments();
-        if (functionCallArguments != null) {
-          for (int i = 0; i < functionCallArguments.length; ++i) {
-            IExpression expression = functionCallArguments[i];
-            if (expression.getASTType() == IASTNode.FUNCTION_EXPRESSION && this.isEventCallback(selector, i)) {
-              IFunctionExpression functionExpression = (IFunctionExpression) expression;
-              IArgument[] functionExpressionArguments = functionExpression.getMethodDeclaration().getArguments();
-              if (functionExpressionArguments != null) {
-                for (IArgument argument : functionExpressionArguments) {
-                  argument.setInferredType(jQueryEvent);
-                }
-              }
-            }
-          }
-        }
+        this.inferJQueryFunctionCall(functionCall, selector);
       }
     }
 
     return super.visit(functionCall);
   }
 
-  private boolean isEventCallback(String selector, int i) {
-    return this.callbackMethods.isEventCallback(selector, i);
+  private void inferJQueryFunctionCall(IFunctionCall functionCall, String selector) {
+      IExpression[] functionCallArguments = functionCall.getArguments();
+      if (functionCallArguments != null) {
+          int argumentCount = functionCallArguments.length;
+          Set<Integer> callbackIndices = this.getCallbackIndices(selector, argumentCount);
+          for (int i = 0; i < argumentCount; ++i) {
+              IExpression expression = functionCallArguments[i];
+              if (expression.getASTType() == IASTNode.FUNCTION_EXPRESSION && callbackIndices.contains(i)) {
+                  setInferredTypeEvent(expression);
+              }
+          }
+      }
+  }
+
+  private void setInferredTypeEvent(IExpression expression) {
+      IFunctionExpression functionExpression = (IFunctionExpression) expression;
+      IArgument[] functionExpressionArguments = functionExpression.getMethodDeclaration().getArguments();
+      if (functionExpressionArguments != null && functionExpressionArguments.length == 1) {
+          IArgument argument = functionExpressionArguments[0];
+          argument.setInferredType(jQueryEvent);
+      }
+  }
+  
+  private Set<Integer> getCallbackIndices(String selector, int argumentCount) {
+      return this.callbackMethods.getCallbackIndices(selector, argumentCount);
   }
 
   private boolean isJQueryObject(IExpression expression) {

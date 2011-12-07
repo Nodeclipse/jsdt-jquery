@@ -9,23 +9,29 @@ public class JQueryCallbackMethods {
 
   public static final int NO_CALLBACK = -1;
   
-  private final Map<CallbackLocator, Integer> callbackFunctions;
+  private final Map<CallbackLocator, Set<Integer>> callbackFunctions;
   private final Set<String> callbackSelectors;
   
   public JQueryCallbackMethods() {
-    this.callbackFunctions = new ConcurrentHashMap<CallbackLocator, Integer>();
+    this.callbackFunctions = new ConcurrentHashMap<CallbackLocator, Set<Integer>>();
     // REVIEW ConcurrentHashSet?
     this.callbackSelectors = new HashSet<String>();
   }
 
   public void addCallbackMethod(String selector, int argumentAcount, int eventIndex) {
     this.callbackSelectors.add(selector);
-    this.callbackFunctions.put(new CallbackLocator(selector, argumentAcount), eventIndex);
+    CallbackLocator key = new CallbackLocator(selector, argumentAcount);
+    Set<Integer> indices = this.callbackFunctions.get(key);
+    if (indices == null) {
+        indices = new HashSet<Integer>(3);
+        this.callbackFunctions.put(key, indices);
+    }
+    indices.add(eventIndex);
   }
-  
 
-  public boolean isEventCallback(String selector, int index) {
-    return this.callbackFunctions.containsKey(new CallbackLocator(selector, index));
+  public Set<Integer> getCallbackIndices(String selector, int argumentCount) {
+    CallbackLocator key = new CallbackLocator(selector, argumentCount);
+    return this.callbackFunctions.get(key);
   }
 
   public boolean isEventSelector(String selector) {
@@ -41,6 +47,11 @@ public class JQueryCallbackMethods {
       super();
       this.selector = selector;
       this.argmentCount = argmentCount;
+    }
+    
+    @Override
+    public String toString() {
+        return this.selector + ":(" + this.argmentCount + ')';
     }
 
     @Override

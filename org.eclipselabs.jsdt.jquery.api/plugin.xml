@@ -68,5 +68,11 @@
             id="org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary_1.7">
       </JsGlobalScopeContainerInitializer>
    </extension>
+   <extension
+         point="org.eclipse.wst.jsdt.core.inferrenceSupport">
+      <inferenceProvider
+            class="org.eclipselabs.jsdt.jquery.api.infer.JQueryEventInferenceProvider">
+      </inferenceProvider>
+   </extension>
 
 </plugin>
