@@ -973,8 +973,7 @@ jQueryEvent.prototype.namespace = "";
  */
 jQueryEvent.prototype.isImmediatePropagationStopped = function() {};
 /**
- *  Keeps the rest of the handlers from being executed and prevents the event from bubbling up the DOM tree.
-  
+ *  Keeps the rest of the handlers from being executed and prevents the event from bubbling up the DOM tree.  
  * @since 1.3
  */
 jQueryEvent.prototype.stopImmediatePropagation = function() {};

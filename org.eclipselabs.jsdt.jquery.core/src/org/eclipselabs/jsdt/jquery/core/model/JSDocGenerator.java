@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
@@ -470,7 +471,10 @@ public class JSDocGenerator extends WriterSupport {
   private void writeCommentLine(String line) {
     try {
       this.writeStartLine();
-      this.output.write(line);
+      StringTokenizer tokenizer = new StringTokenizer(line, "\n");
+      while (tokenizer.hasMoreTokens()) {
+        this.output.write(tokenizer.nextToken());
+      }
       this.writeNewLine();
     } catch (IOException e) {
       throw new RuntimeException("output failed", e);
