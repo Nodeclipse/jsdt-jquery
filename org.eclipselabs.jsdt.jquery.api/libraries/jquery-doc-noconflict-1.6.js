@@ -6,21 +6,21 @@ var jQueryObject = { };
  * @param {Object} [target] Object onto which the promise methods have to be attached
  * @returns {Promise}
  */
-jQueryObject.promise = function(type, target) {};
+jQueryObject.prototype.promise = function(type, target) {};
 /**
  * Remove a property for the set of matched elements.
  * @since 1.6
  * @param {String} propertyName The name of the property to set.
  * @returns {jQueryObject}
  */
-jQueryObject.removeProp = function(propertyName) {};
+jQueryObject.prototype.removeProp = function(propertyName) {};
 /**
  * Get the value of a property for the first element in the set of matched elements.
  * @since 1.6
  * @param {String} propertyName The name of the property to get.
  * @returns {String}
  */
-jQueryObject.prop = function(propertyName) {};
+jQueryObject.prototype.prop = function(propertyName) {};
 /**
  * Set one or more properties for the set of matched elements.
  * @since 1.6
@@ -28,12 +28,12 @@ jQueryObject.prop = function(propertyName) {};
  * @param {String} value A value to set for the property.
  * @returns {jQueryObject}
  */
-jQueryObject.prop = function(propertyName, value) {};
+jQueryObject.prototype.prop = function(propertyName, value) {};
 /**
  * A string containing the jQuery version number.
  * @type {String}
  */
-jQueryObject.jquery = "";
+jQueryObject.prototype.jquery = "";
 /**
  * Display or hide the matched elements by animating their opacity.
  * @since 1.4
@@ -42,7 +42,7 @@ jQueryObject.jquery = "";
  * @param {Function} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.fadeToggle = function(duration, easing, callback) {};
+jQueryObject.prototype.fadeToggle = function(duration, easing, callback) {};
 /**
  * Bind two or more handlers to the matched elements, to be executed on alternate clicks.
  * @since 1.0
@@ -51,13 +51,13 @@ jQueryObject.fadeToggle = function(duration, easing, callback) {};
  * @param {Function} [handler] Additional handlers to cycle through after clicks.
  * @returns {jQueryObject}
  */
-jQueryObject.toggle = function(handler, handler, handler) {};
+jQueryObject.prototype.toggle = function(handler, handler, handler) {};
 /**
  * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
  * @since 1.4
  * @returns {jQueryObject}
  */
-jQueryObject.undelegate = function() {};
+jQueryObject.prototype.undelegate = function() {};
 /**
  * Attach a handler to one or more events for all elements that match the selector, now or in the future, based on a specific set of root elements.
  * @since 1.4
@@ -66,28 +66,28 @@ jQueryObject.undelegate = function() {};
  * @param {Function} handler A function to execute at the time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.delegate = function(selector, eventType, handler) {};
+jQueryObject.prototype.delegate = function(selector, eventType, handler) {};
 /**
  * Bind an event handler to the "focusout" JavaScript event.
  * @since 1.4
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.focusout = function(handler) {};
+jQueryObject.prototype.focusout = function(handler) {};
 /**
  * Bind an event handler to the "focusin" event.
  * @since 1.4
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.focusin = function(handler) {};
+jQueryObject.prototype.focusin = function(handler) {};
 /**
  * Reduce the set of matched elements to those that have a descendant that matches the selector or DOM element.
  * @since 1.4
  * @param {String} selector A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.has = function(selector) {};
+jQueryObject.prototype.has = function(selector) {};
 /**
  * Set a timer to delay execution of subsequent items in the queue.
  * @since 1.4
@@ -95,7 +95,7 @@ jQueryObject.has = function(selector) {};
  * @param {String} [queueName] A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
  * @returns {jQueryObject}
  */
-jQueryObject.delay = function(duration, queueName) {};
+jQueryObject.prototype.delay = function(duration, queueName) {};
 /**
  * Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.
  * @since 1.4
@@ -103,7 +103,7 @@ jQueryObject.delay = function(duration, queueName) {};
  * @param {Selector} [filter] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.parentsUntil = function(selector, filter) {};
+jQueryObject.prototype.parentsUntil = function(selector, filter) {};
 /**
  * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
  * @since 1.4
@@ -111,7 +111,7 @@ jQueryObject.parentsUntil = function(selector, filter) {};
  * @param {Selector} [filter] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.prevUntil = function(selector, filter) {};
+jQueryObject.prototype.prevUntil = function(selector, filter) {};
 /**
  * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
  * @since 1.4
@@ -119,54 +119,54 @@ jQueryObject.prevUntil = function(selector, filter) {};
  * @param {Selector} [filter] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.nextUntil = function(selector, filter) {};
+jQueryObject.prototype.nextUntil = function(selector, filter) {};
 /**
  * Iterate over a jQuery object, executing a function for each matched element. 
  * @since 1.0
  * @param {Function} func A function to execute for each matched element.
  * @returns {jQueryObject}
  */
-jQueryObject.each = function(func) {};
+jQueryObject.prototype.each = function(func) {};
 /**
  * Add a collection of DOM elements onto the jQuery stack.
  * @since 1.0
  * @param {Array} elements An array of elements to push onto the stack and make into a new jQuery object.
  * @returns {jQueryObject}
  */
-jQueryObject.pushStack = function(elements) {};
+jQueryObject.prototype.pushStack = function(elements) {};
 /**
  * Remove from the queue all items that have not yet been run.
  * @since 1.4
  * @param {String} [queueName] A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
  * @returns {jQueryObject}
  */
-jQueryObject.clearQueue = function(queueName) {};
+jQueryObject.prototype.clearQueue = function(queueName) {};
 /**
  * Retrieve all the DOM elements contained in the jQuery set, as an array.
  * @since 1.4
  * @returns {Array}
  */
-jQueryObject.toArray = function() {};
+jQueryObject.prototype.toArray = function() {};
 /**
  * Bind an event handler to the "keydown" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.keydown = function(handler) {};
+jQueryObject.prototype.keydown = function(handler) {};
 /**
  * Search for a given element from among the matched elements.
  * @since 1.4
  * @returns {Number}
  */
-jQueryObject.index = function() {};
+jQueryObject.prototype.index = function() {};
 /**
  * Remove a previously-stored piece of data.
  * @since 1.2
  * @param {String} [name] A string naming the piece of data to delete.
  * @returns {jQueryObject}
  */
-jQueryObject.removeData = function(name) {};
+jQueryObject.prototype.removeData = function(name) {};
 /**
  * Store arbitrary data associated with the matched elements.
  * @since 1.2
@@ -174,55 +174,55 @@ jQueryObject.removeData = function(name) {};
  * @param {Object} value The new data value; it can be any Javascript type including Array or Object.
  * @returns {jQueryObject}
  */
-jQueryObject.data = function(key, value) {};
+jQueryObject.prototype.data = function(key, value) {};
 /**
  * Returns value at named data store for the first element in the jQuery collection, as set by data(name, value).
  * @since 1.2
  * @param {String} key Name of the data stored.
  * @returns {Object}
  */
-jQueryObject.data = function(key) {};
+jQueryObject.prototype.data = function(key) {};
 /**
  * Retrieve the DOM elements matched by the jQuery object.
  * @since 1.0
  * @param {Number} [index] A zero-based integer indicating which element to retrieve.
  * @returns {Element|Array}
  */
-jQueryObject.get = function(index) {};
+jQueryObject.prototype.get = function(index) {};
 /**
  * Return the number of elements in the jQuery object.
  * @since 1.0
  * @returns {Number}
  */
-jQueryObject.size = function() {};
+jQueryObject.prototype.size = function() {};
 /**
  * Bind an event handler to the "scroll" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.scroll = function(handler) {};
+jQueryObject.prototype.scroll = function(handler) {};
 /**
  * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.resize = function(handler) {};
+jQueryObject.prototype.resize = function(handler) {};
 /**
  * Execute the next function on the queue for the matched elements.
  * @since 1.2
  * @param {String} [queueName] A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
  * @returns {jQueryObject}
  */
-jQueryObject.dequeue = function(queueName) {};
+jQueryObject.prototype.dequeue = function(queueName) {};
 /**
  * Show the queue of functions to be executed on the matched elements.
  * @since 1.2
  * @param {String} [queueName] A string containing the name of the queue. Defaults to <code>fx</code>, the standard effects queue.
  * @returns {Array}
  */
-jQueryObject.queue = function(queueName) {};
+jQueryObject.prototype.queue = function(queueName) {};
 /**
  * Manipulate the queue of functions to be executed on the matched elements.
  * @since 1.2
@@ -230,63 +230,63 @@ jQueryObject.queue = function(queueName) {};
  * @param {Array} newQueue An array of functions to replace the current queue contents.
  * @returns {jQueryObject}
  */
-jQueryObject.queue = function(queueName, newQueue) {};
+jQueryObject.prototype.queue = function(queueName, newQueue) {};
 /**
  * Bind an event handler to the "keyup" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.keyup = function(handler) {};
+jQueryObject.prototype.keyup = function(handler) {};
 /**
  * Bind an event handler to the "keypress" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.keypress = function(handler) {};
+jQueryObject.prototype.keypress = function(handler) {};
 /**
  * Bind an event handler to the "submit" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.submit = function(handler) {};
+jQueryObject.prototype.submit = function(handler) {};
 /**
  * Bind an event handler to the "select" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.select = function(handler) {};
+jQueryObject.prototype.select = function(handler) {};
 /**
  * Bind an event handler to the "change" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.change = function(handler) {};
+jQueryObject.prototype.change = function(handler) {};
 /**
  * Bind an event handler to the "blur" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.blur = function(handler) {};
+jQueryObject.prototype.blur = function(handler) {};
 /**
  * Bind an event handler to the "focus" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.focus = function(handler) {};
+jQueryObject.prototype.focus = function(handler) {};
 /**
  * Bind an event handler to the "mousemove" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mousemove = function(handler) {};
+jQueryObject.prototype.mousemove = function(handler) {};
 /**
  * Bind two handlers to the matched elements, to be executed when the mouse pointer enters and leaves the elements.
  * @since 1.0
@@ -294,104 +294,104 @@ jQueryObject.mousemove = function(handler) {};
  * @param {Function} handlerOut A function to execute when the mouse pointer leaves the element.
  * @returns {jQueryObject}
  */
-jQueryObject.hover = function(handlerIn, handlerOut) {};
+jQueryObject.prototype.hover = function(handlerIn, handlerOut) {};
 /**
  * Bind a single handler to the matched elements, to be executed when the mouse pointer enters or leaves the elements.
  * @since 1.4
  * @param {Function} handlerInOut A function to execute when the mouse pointer enters or leaves the element.
  * @returns {jQueryObject}
  */
-jQueryObject.hover = function(handlerInOut) {};
+jQueryObject.prototype.hover = function(handlerInOut) {};
 /**
  * Bind an event handler to be fired when the mouse leaves an element, or trigger that handler on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mouseleave = function(handler) {};
+jQueryObject.prototype.mouseleave = function(handler) {};
 /**
  * Bind an event handler to be fired when the mouse enters an element, or trigger that handler on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mouseenter = function(handler) {};
+jQueryObject.prototype.mouseenter = function(handler) {};
 /**
  * Bind an event handler to the "mouseout" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mouseout = function(handler) {};
+jQueryObject.prototype.mouseout = function(handler) {};
 /**
  * Bind an event handler to the "mouseover" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mouseover = function(handler) {};
+jQueryObject.prototype.mouseover = function(handler) {};
 /**
  * Bind an event handler to the "dblclick" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.dblclick = function(handler) {};
+jQueryObject.prototype.dblclick = function(handler) {};
 /**
  * Bind an event handler to the "click" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.click = function(handler) {};
+jQueryObject.prototype.click = function(handler) {};
 /**
  * Bind an event handler to the "mouseup" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mouseup = function(handler) {};
+jQueryObject.prototype.mouseup = function(handler) {};
 /**
  * Bind an event handler to the "mousedown" JavaScript event, or trigger that event on an element.
  * @since 1.0
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.mousedown = function(handler) {};
+jQueryObject.prototype.mousedown = function(handler) {};
 /**
  * Bind an event handler to the "error" JavaScript event.
  * @since 1.0
  * @param {Function} handler A function to execute when the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.error = function(handler) {};
+jQueryObject.prototype.error = function(handler) {};
 /**
  * Bind an event handler to the "unload" JavaScript event.
  * @since 1.0
  * @param {Function} handler A function to execute when the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.unload = function(handler) {};
+jQueryObject.prototype.unload = function(handler) {};
 /**
  * Bind an event handler to the "load" JavaScript event.
  * @since 1.0
  * @param {Function} handler A function to execute when the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.load = function(handler) {};
+jQueryObject.prototype.load = function(handler) {};
 /**
  * Specify a function to execute when the DOM is fully loaded.
  * @since 1.0
  * @param {Function} handler A function to execute after the DOM is ready.
  * @returns {jQueryObject}
  */
-jQueryObject.ready = function(handler) {};
+jQueryObject.prototype.ready = function(handler) {};
 /**
  * Remove all event handlers previously attached using <code>.live()</code> from the elements.
  * @since 1.4
  * @returns {jQueryObject}
  */
-jQueryObject.die = function() {};
+jQueryObject.prototype.die = function() {};
 /**
  * Remove an event handler previously attached using <code>.live()</code> from the elements.
  * @since 1.3
@@ -399,7 +399,7 @@ jQueryObject.die = function() {};
  * @param {String} [handler] The function that is no longer to be executed.
  * @returns {jQueryObject}
  */
-jQueryObject.die = function(eventType, handler) {};
+jQueryObject.prototype.die = function(eventType, handler) {};
 /**
  * Attach an event handler for all elements which match the current selector, now and in the future.
  * @since 1.3
@@ -407,7 +407,7 @@ jQueryObject.die = function(eventType, handler) {};
  * @param {Function} handler A function to execute at the time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.live = function(events, handler) {};
+jQueryObject.prototype.live = function(events, handler) {};
 /**
  * Execute all handlers attached to an element for an event.
  * @since 1.2
@@ -415,7 +415,7 @@ jQueryObject.live = function(events, handler) {};
  * @param {Array} extraParameters An array of additional parameters to pass along to the event handler.
  * @returns {Object}
  */
-jQueryObject.triggerHandler = function(eventType, extraParameters) {};
+jQueryObject.prototype.triggerHandler = function(eventType, extraParameters) {};
 /**
  * Execute all handlers and behaviors attached to the matched elements for the given event type.
  * @since 1.0
@@ -423,14 +423,14 @@ jQueryObject.triggerHandler = function(eventType, extraParameters) {};
  * @param {Object} extraParameters Additional parameters to pass along to the event handler.
  * @returns {jQueryObject}
  */
-jQueryObject.trigger = function(eventType, extraParameters) {};
+jQueryObject.prototype.trigger = function(eventType, extraParameters) {};
 /**
  * Register a handler to be called when Ajax requests complete. This is an <a>Ajax Event</a>.
  * @since 1.0
  * @param {Function} handler The function to be invoked.
  * @returns {jQueryObject}
  */
-jQueryObject.ajaxComplete = function(handler) {};
+jQueryObject.prototype.ajaxComplete = function(handler) {};
 /**
  * Attach a handler to an event for the elements. The handler is executed at most once per element.
  * @since 1.1
@@ -439,54 +439,54 @@ jQueryObject.ajaxComplete = function(handler) {};
  * @param {Function} handler A function to execute at the time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.one = function(events, data, handler) {};
+jQueryObject.prototype.one = function(events, data, handler) {};
 /**
  * Encode a set of form elements as an array of names and values.
  * @since 1.2
  * @returns {Array}
  */
-jQueryObject.serializeArray = function() {};
+jQueryObject.prototype.serializeArray = function() {};
 /**
  * Encode a set of form elements as a string for submission.
  * @since 1.0
  * @returns {String}
  */
-jQueryObject.serialize = function() {};
+jQueryObject.prototype.serialize = function() {};
 /**
  * Attach a function to be executed whenever an Ajax request completes successfully. This is an <a>Ajax Event</a>.
  * @since 1.0
  * @param {Function} handler The function to be invoked.
  * @returns {jQueryObject}
  */
-jQueryObject.ajaxSuccess = function(handler) {};
+jQueryObject.prototype.ajaxSuccess = function(handler) {};
 /**
  * Register a handler to be called when all Ajax requests have completed. This is an <a>Ajax Event</a>.
  * @since 1.0
  * @param {Function} handler The function to be invoked.
  * @returns {jQueryObject}
  */
-jQueryObject.ajaxStop = function(handler) {};
+jQueryObject.prototype.ajaxStop = function(handler) {};
 /**
  * Register a handler to be called when the first Ajax request begins. This is an <a>Ajax Event</a>.
  * @since 1.0
  * @param {Function} handler The function to be invoked.
  * @returns {jQueryObject}
  */
-jQueryObject.ajaxStart = function(handler) {};
+jQueryObject.prototype.ajaxStart = function(handler) {};
 /**
  * Attach a function to be executed before an Ajax request is sent. This is an <a>Ajax Event</a>.
  * @since 1.0
  * @param {Function} handler The function to be invoked.
  * @returns {jQueryObject}
  */
-jQueryObject.ajaxSend = function(handler) {};
+jQueryObject.prototype.ajaxSend = function(handler) {};
 /**
  * Register a handler to be called when Ajax requests complete with an error. This is an <a>Ajax Event</a>.
  * @since 1.0
  * @param {Function} handler The function to be invoked.
  * @returns {jQueryObject}
  */
-jQueryObject.ajaxError = function(handler) {};
+jQueryObject.prototype.ajaxError = function(handler) {};
 /**
  * Remove a previously-attached event handler from the elements.
  * @since 1.0
@@ -494,7 +494,7 @@ jQueryObject.ajaxError = function(handler) {};
  * @param {Function} [handler] The function that is to be no longer executed.
  * @returns {jQueryObject}
  */
-jQueryObject.unbind = function(eventType, handler) {};
+jQueryObject.prototype.unbind = function(eventType, handler) {};
 /**
  * Attach a handler to an event for the elements.
  * @since 1.0
@@ -503,19 +503,19 @@ jQueryObject.unbind = function(eventType, handler) {};
  * @param {Function} handler A function to execute each time the event is triggered.
  * @returns {jQueryObject}
  */
-jQueryObject.bind = function(eventType, eventData, handler) {};
+jQueryObject.prototype.bind = function(eventType, eventData, handler) {};
 /**
  * Reduce the set of matched elements to the first in the set.
  * @since 1.4
  * @returns {jQueryObject}
  */
-jQueryObject.first = function() {};
+jQueryObject.prototype.first = function() {};
 /**
  * Reduce the set of matched elements to the final one in the set.
  * @since 1.4
  * @returns {jQueryObject}
  */
-jQueryObject.last = function() {};
+jQueryObject.prototype.last = function() {};
 /**
  * Reduce the set of matched elements to a subset specified by a range of indices.
  * @since 1.1
@@ -523,7 +523,7 @@ jQueryObject.last = function() {};
  * @param {Integer} [end] An integer indicating the 0-based position at which the elements stop being selected. If negative, it indicates an offset from the end of the set. If omitted, the range continues until the end of the set.
  * @returns {jQueryObject}
  */
-jQueryObject.slice = function(start, end) {};
+jQueryObject.prototype.slice = function(start, end) {};
 /**
  * Accepts a string containing a CSS selector which is then used to match a set of elements.
  * @since 1.0
@@ -531,7 +531,7 @@ jQueryObject.slice = function(start, end) {};
  * @param {Element} [context] A DOM Element, Document, or jQuery to use as context
  * @returns {jQueryObject}
  */
-jQueryObject.jQuery = function(selector, context) {};
+jQueryObject.prototype.jQuery = function(selector, context) {};
 /**
  * Creates DOM elements on the fly from the provided string of raw HTML.
  * @since 1.0
@@ -539,14 +539,14 @@ jQueryObject.jQuery = function(selector, context) {};
  * @param {document} [ownerDocument] A document in which the new elements will be created
  * @returns {jQueryObject}
  */
-jQueryObject.jQuery = function(html, ownerDocument) {};
+jQueryObject.prototype.jQuery = function(html, ownerDocument) {};
 /**
  * Binds a function to be executed when the DOM has finished loading.
  * @since 1.0
  * @param {Function} callback The function to execute when the DOM is ready.
  * @returns {jQueryObject}
  */
-jQueryObject.jQuery = function(callback) {};
+jQueryObject.prototype.jQuery = function(callback) {};
 /**
  * Stop the currently-running animation on the matched elements.
  * @since 1.2
@@ -554,26 +554,26 @@ jQueryObject.jQuery = function(callback) {};
  * @param {Boolean} [jumpToEnd] A Boolean indicating whether to complete the current animation immediately. Defaults to <code>false</code>.
  * @returns {jQueryObject}
  */
-jQueryObject.stop = function(clearQueue, jumpToEnd) {};
+jQueryObject.prototype.stop = function(clearQueue, jumpToEnd) {};
 /**
  * End the most recent filtering operation in the current chain and return the set of matched elements to its previous state.
  * @since 1.0
  * @returns {jQueryObject}
  */
-jQueryObject.end = function() {};
+jQueryObject.prototype.end = function() {};
 /**
  * Add the previous set of elements on the stack to the current set.
  * @since 1.2
  * @returns {jQueryObject}
  */
-jQueryObject.andSelf = function() {};
+jQueryObject.prototype.andSelf = function() {};
 /**
  * Get the siblings of each element in the set of matched elements, optionally filtered by a selector.
  * @since 1.0
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.siblings = function(selector) {};
+jQueryObject.prototype.siblings = function(selector) {};
 /**
  * Perform a custom animation of a set of CSS properties.
  * @since 1.0
@@ -583,21 +583,21 @@ jQueryObject.siblings = function(selector) {};
  * @param {Function} [complete] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.animate = function(properties, duration, easing, complete) {};
+jQueryObject.prototype.animate = function(properties, duration, easing, complete) {};
 /**
  * Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.
  * @since 1.2
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.prevAll = function(selector) {};
+jQueryObject.prototype.prevAll = function(selector) {};
 /**
  * Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.
  * @since 1.0
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.prev = function(selector) {};
+jQueryObject.prototype.prev = function(selector) {};
 /**
  * Adjust the opacity of the matched elements.
  * @since 1.0
@@ -606,7 +606,7 @@ jQueryObject.prev = function(selector) {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.fadeTo = function(duration, opacity, callback) {};
+jQueryObject.prototype.fadeTo = function(duration, opacity, callback) {};
 /**
  * Hide the matched elements by fading them to transparent.
  * @since 1.0
@@ -614,14 +614,14 @@ jQueryObject.fadeTo = function(duration, opacity, callback) {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.fadeOut = function(duration, callback) {};
+jQueryObject.prototype.fadeOut = function(duration, callback) {};
 /**
  * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
  * @since 1.0
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.parents = function(selector) {};
+jQueryObject.prototype.parents = function(selector) {};
 /**
  * Display the matched elements by fading them to opaque.
  * @since 1.0
@@ -629,20 +629,20 @@ jQueryObject.parents = function(selector) {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.fadeIn = function(duration, callback) {};
+jQueryObject.prototype.fadeIn = function(duration, callback) {};
 /**
  * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.
  * @since 1.0
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.parent = function(selector) {};
+jQueryObject.prototype.parent = function(selector) {};
 /**
  * Get the closest ancestor element that is positioned.
  * @since 1.2
  * @returns {jQueryObject}
  */
-jQueryObject.offsetParent = function() {};
+jQueryObject.prototype.offsetParent = function() {};
 /**
  * Display or hide the matched elements with a sliding motion.
  * @since 1.0
@@ -650,7 +650,7 @@ jQueryObject.offsetParent = function() {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.slideToggle = function(duration, callback) {};
+jQueryObject.prototype.slideToggle = function(duration, callback) {};
 /**
  * Hide the matched elements with a sliding motion.
  * @since 1.0
@@ -658,21 +658,21 @@ jQueryObject.slideToggle = function(duration, callback) {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.slideUp = function(duration, callback) {};
+jQueryObject.prototype.slideUp = function(duration, callback) {};
 /**
  * Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.
  * @since 1.2
  * @param {String} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.nextAll = function(selector) {};
+jQueryObject.prototype.nextAll = function(selector) {};
 /**
  * Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.
  * @since 1.0
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.next = function(selector) {};
+jQueryObject.prototype.next = function(selector) {};
 /**
  * Display the matched elements with a sliding motion.
  * @since 1.0
@@ -680,27 +680,27 @@ jQueryObject.next = function(selector) {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.slideDown = function(duration, callback) {};
+jQueryObject.prototype.slideDown = function(duration, callback) {};
 /**
  * Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.
  * @since 1.0
  * @param {Selector} selector A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.find = function(selector) {};
+jQueryObject.prototype.find = function(selector) {};
 /**
  * Get the children of each element in the set of matched elements, including text and comment nodes.
  * @since 1.2
  * @returns {jQueryObject}
  */
-jQueryObject.contents = function() {};
+jQueryObject.prototype.contents = function() {};
 /**
  * Get the first element that matches the selector, beginning at the current element and progressing up through the DOM tree.
  * @since 1.3
  * @param {Selector} selector A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.closest = function(selector) {};
+jQueryObject.prototype.closest = function(selector) {};
 /**
  * Gets an array of all the elements and selectors matched against the current element up through the DOM tree.
  * @since 1.4
@@ -708,7 +708,7 @@ jQueryObject.closest = function(selector) {};
  * @param {Element} [context] A DOM element within which a matching element may be found. If no context is passed in then the context of the jQuery set will be used instead.
  * @returns {Array}
  */
-jQueryObject.closest = function(selectors, context) {};
+jQueryObject.prototype.closest = function(selectors, context) {};
 /**
  * Load data from the server and place the returned HTML into the matched element.
  * @since 1.0
@@ -717,52 +717,52 @@ jQueryObject.closest = function(selectors, context) {};
  * @param {Function} [complete] A callback function that is executed when the request completes.
  * @returns {jQueryObject}
  */
-jQueryObject.load = function(url, data, complete) {};
+jQueryObject.prototype.load = function(url, data, complete) {};
 /**
  * The number of elements in the jQuery object.
  * @type {Number}
  */
-jQueryObject.length = 1;
+jQueryObject.prototype.length = 1;
 /**
  * Get the children of each element in the set of matched elements, optionally filtered by a selector.
  * @since 1.0
  * @param {Selector} [selector] A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.children = function(selector) {};
+jQueryObject.prototype.children = function(selector) {};
 /**
  * Add elements to the set of matched elements.
  * @since 1.0
  * @param {Selector} selector A string representing a selector expression to find additional elements to add to the set of matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.add = function(selector) {};
+jQueryObject.prototype.add = function(selector) {};
 /**
  * The DOM node context originally passed to <code>jQuery()</code>; if none was passed then context will likely be the document.
  * @type {Element}
  */
-jQueryObject.context = null;
+jQueryObject.prototype.context = null;
 /**
  * Remove elements from the set of matched elements.
  * @since 1.0
  * @param {Selector} selector A string containing a selector expression to match elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.not = function(selector) {};
+jQueryObject.prototype.not = function(selector) {};
 /**
  * Get the current computed width for the first element in the set of matched elements, including padding and border.
  * @since 1.2
  * @param {Boolean} [includeMargin] A Boolean indicating whether to include the element's margin in the calculation.
  * @returns {Integer}
  */
-jQueryObject.outerWidth = function(includeMargin) {};
+jQueryObject.prototype.outerWidth = function(includeMargin) {};
 /**
  * Get the current computed height for the first element in the set of matched elements, including padding, border, and optionally margin. Returns an integer (without "px") representation of the value or null if called on an empty set of elements.
  * @since 1.2
  * @param {Boolean} [includeMargin] A Boolean indicating whether to include the element's margin in the calculation.
  * @returns {Integer}
  */
-jQueryObject.outerHeight = function(includeMargin) {};
+jQueryObject.prototype.outerHeight = function(includeMargin) {};
 /**
  * Display or hide the matched elements.
  * @since 1.0
@@ -770,109 +770,109 @@ jQueryObject.outerHeight = function(includeMargin) {};
  * @param {Callback} [callback] A function to call once the animation is complete.
  * @returns {jQueryObject}
  */
-jQueryObject.toggle = function(duration, callback) {};
+jQueryObject.prototype.toggle = function(duration, callback) {};
 /**
  * Get the current computed width for the first element in the set of matched elements, including padding but not border.
  * @since 1.2
  * @returns {Integer}
  */
-jQueryObject.innerWidth = function() {};
+jQueryObject.prototype.innerWidth = function() {};
 /**
  * Get the current computed height for the first element in the set of matched elements, including padding but not border.
  * @since 1.2
  * @returns {Integer}
  */
-jQueryObject.innerHeight = function() {};
+jQueryObject.prototype.innerHeight = function() {};
 /**
  * Hide the matched elements.
  * @since 1.0
  * @returns {jQueryObject}
  */
-jQueryObject.hide = function() {};
+jQueryObject.prototype.hide = function() {};
 /**
  * Get the current computed width for the first element in the set of matched elements.
  * @since 1.0
  * @returns {Integer}
  */
-jQueryObject.width = function() {};
+jQueryObject.prototype.width = function() {};
 /**
  * Set the CSS width of each element in the set of matched elements.
  * @since 1.0
  * @param {String} value An integer representing the number of pixels, or an integer along with an optional unit of measure appended (as a string).
  * @returns {jQueryObject}
  */
-jQueryObject.width = function(value) {};
+jQueryObject.prototype.width = function(value) {};
 /**
  * Get the current computed height for the first element in the set of matched elements.
  * @since 1.0
  * @returns {Integer}
  */
-jQueryObject.height = function() {};
+jQueryObject.prototype.height = function() {};
 /**
  * Set the CSS height of every matched element.
  * @since 1.0
  * @param {String} value An integer representing the number of pixels, or an integer with an optional unit of measure appended (as a string).
  * @returns {jQueryObject}
  */
-jQueryObject.height = function(value) {};
+jQueryObject.prototype.height = function(value) {};
 /**
  * Display the matched elements.
  * @since 1.0
  * @returns {jQueryObject}
  */
-jQueryObject.show = function() {};
+jQueryObject.prototype.show = function() {};
 /**
  * Get the current horizontal position of the scroll bar for the first element in the set of matched elements.
  * @since 1.2
  * @returns {Integer}
  */
-jQueryObject.scrollLeft = function() {};
+jQueryObject.prototype.scrollLeft = function() {};
 /**
  * Set the current horizontal position of the scroll bar for each of the set of matched elements.
  * @since 1.2
  * @param {Number} value An integer indicating the new position to set the scroll bar to.
  * @returns {jQueryObject}
  */
-jQueryObject.scrollLeft = function(value) {};
+jQueryObject.prototype.scrollLeft = function(value) {};
 /**
  * Get the current vertical position of the scroll bar for the first element in the set of matched elements.
  * @since 1.2
  * @returns {Integer}
  */
-jQueryObject.scrollTop = function() {};
+jQueryObject.prototype.scrollTop = function() {};
 /**
  * Set the current vertical position of the scroll bar for each of the set of matched elements.
  * @since 1.2
  * @param {Number} value An integer indicating the new position to set the scroll bar to.
  * @returns {jQueryObject}
  */
-jQueryObject.scrollTop = function(value) {};
+jQueryObject.prototype.scrollTop = function(value) {};
 /**
  * Get the current coordinates of the first element in the set of matched elements, relative to the offset parent.
  * @since 1.2
  * @returns {Object}
  */
-jQueryObject.position = function() {};
+jQueryObject.prototype.position = function() {};
 /**
  * Get the current coordinates of the first element in the set of matched elements, relative to the document.
  * @since 1.2
  * @returns {Object}
  */
-jQueryObject.offset = function() {};
+jQueryObject.prototype.offset = function() {};
 /**
  * Set the current coordinates of every element in the set of matched elements, relative to the document.
  * @since 1.4
  * @param {Object} coordinates An object containing the properties <code>top</code> and <code>left</code>, which are integers indicating the new top and left coordinates for the elements.
  * @returns {jQueryObject}
  */
-jQueryObject.offset = function(coordinates) {};
+jQueryObject.prototype.offset = function(coordinates) {};
 /**
  * Get the value of a style property for the first element in the set of matched elements.
  * @since 1.0
  * @param {String} propertyName A CSS property.
  * @returns {String}
  */
-jQueryObject.css = function(propertyName) {};
+jQueryObject.prototype.css = function(propertyName) {};
 /**
  * Set one or more CSS properties for the  set of matched elements.
  * @since 1.0
@@ -880,82 +880,82 @@ jQueryObject.css = function(propertyName) {};
  * @param {String} value A value to set for the property.
  * @returns {jQueryObject}
  */
-jQueryObject.css = function(propertyName, value) {};
+jQueryObject.prototype.css = function(propertyName, value) {};
 /**
  * Remove the parents of the set of matched elements from the DOM, leaving the matched elements in their place.
  * @since 1.4
  * @returns {jQueryObject}
  */
-jQueryObject.unwrap = function() {};
+jQueryObject.prototype.unwrap = function() {};
 /**
  * Remove the set of matched elements from the DOM.
  * @since 1.4
  * @param {Selector} [selector] A selector expression that filters the set of matched elements to be removed.
  * @returns {jQueryObject}
  */
-jQueryObject.detach = function(selector) {};
+jQueryObject.prototype.detach = function(selector) {};
 /**
  * Create a deep copy of the set of matched elements.
  * @since 1.0
  * @param {Boolean} [withDataAndEvents=false] A Boolean indicating whether event handlers should be copied along with the elements. As of jQuery 1.4, element data will be copied as well.
  * @returns {jQueryObject}
  */
-jQueryObject.clone = function(withDataAndEvents) {};
+jQueryObject.prototype.clone = function(withDataAndEvents) {};
 /**
  * Remove the set of matched elements from the DOM.
  * @since 1.0
  * @param {String} [selector] A selector expression that filters the set of matched elements to be removed.
  * @returns {jQueryObject}
  */
-jQueryObject.remove = function(selector) {};
+jQueryObject.prototype.remove = function(selector) {};
 /**
  * Remove all child nodes of the set of matched elements from the DOM.
  * @since 1.0
  * @returns {jQueryObject}
  */
-jQueryObject.empty = function() {};
+jQueryObject.prototype.empty = function() {};
 /**
  * Replace each target element with the set of matched elements.
  * @since 1.2
  * @param {Selector} target A selector expression indicating which element(s) to replace.
  * @returns {jQueryObject}
  */
-jQueryObject.replaceAll = function(target) {};
+jQueryObject.prototype.replaceAll = function(target) {};
 /**
  * Replace each element in the set of matched elements with the provided new content.
  * @since 1.2
  * @param {String} newContent The content to insert. May be an HTML string, DOM element, or jQuery object.
  * @returns {jQueryObject}
  */
-jQueryObject.replaceWith = function(newContent) {};
+jQueryObject.prototype.replaceWith = function(newContent) {};
 /**
  * Wrap an HTML structure around the content of each element in the set of matched elements.
  * @since 1.2
  * @param {String} wrappingElement An HTML snippet, selector expression, jQuery object, or DOM element specifying the structure to wrap around the content of the matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.wrapInner = function(wrappingElement) {};
+jQueryObject.prototype.wrapInner = function(wrappingElement) {};
 /**
  * Wrap an HTML structure around all elements in the set of matched elements.
  * @since 1.2
  * @param {String} wrappingElement An HTML snippet, selector expression, jQuery object, or DOM element specifying the structure to wrap around the matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.wrapAll = function(wrappingElement) {};
+jQueryObject.prototype.wrapAll = function(wrappingElement) {};
 /**
  * Wrap an HTML structure around each element in the set of matched elements.
  * @since 1.0
  * @param {String} wrappingElement An HTML snippet, selector expression, jQuery object, or DOM element specifying the structure to wrap around the matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.wrap = function(wrappingElement) {};
+jQueryObject.prototype.wrap = function(wrappingElement) {};
 /**
  * Insert every element in the set of matched elements before the target.
  * @since 1.0
  * @param {Selector} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted before the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
-jQueryObject.insertBefore = function(target) {};
+jQueryObject.prototype.insertBefore = function(target) {};
 /**
  * Insert content, specified by the parameter, before each element in the set of matched elements.
  * @since 1.0
@@ -963,14 +963,14 @@ jQueryObject.insertBefore = function(target) {};
  * @param {String} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert before each element in the set of matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.before = function(content, content) {};
+jQueryObject.prototype.before = function(content, content) {};
 /**
  * Insert every element in the set of matched elements after the target.
  * @since 1.0
  * @param {Selector} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted after the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
-jQueryObject.insertAfter = function(target) {};
+jQueryObject.prototype.insertAfter = function(target) {};
 /**
  * Insert content, specified by the parameter, after each element in the set of matched elements.
  * @since 1.0
@@ -978,14 +978,14 @@ jQueryObject.insertAfter = function(target) {};
  * @param {String} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert after each element in the set of matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.after = function(content, content) {};
+jQueryObject.prototype.after = function(content, content) {};
 /**
  * Insert every element in the set of matched elements to the beginning of the target.
  * @since 1.0
  * @param {Selector} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted at the beginning of the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
-jQueryObject.prependTo = function(target) {};
+jQueryObject.prototype.prependTo = function(target) {};
 /**
  * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
  * @since 1.0
@@ -993,14 +993,14 @@ jQueryObject.prependTo = function(target) {};
  * @param {String} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the beginning of each element in the set of matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.prepend = function(content, content) {};
+jQueryObject.prototype.prepend = function(content, content) {};
 /**
  * Insert every element in the set of matched elements to the end of the target.
  * @since 1.0
  * @param {Selector} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted at the end of the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
-jQueryObject.appendTo = function(target) {};
+jQueryObject.prototype.appendTo = function(target) {};
 /**
  * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
  * @since 1.0
@@ -1008,109 +1008,109 @@ jQueryObject.appendTo = function(target) {};
  * @param {String} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the end of each element in the set of matched elements.
  * @returns {jQueryObject}
  */
-jQueryObject.append = function(content, content) {};
+jQueryObject.prototype.append = function(content, content) {};
 /**
  * Get the current value of the first element in the set of matched elements.
  * @since 1.0
  * @returns {String|Number|Array}
  */
-jQueryObject.val = function() {};
+jQueryObject.prototype.val = function() {};
 /**
  * Set the value of each element in the set of matched elements.
  * @since 1.0
  * @param {String} value A string of text or an array of strings corresponding to the value of each matched element to set as selected/checked.
  * @returns {jQueryObject}
  */
-jQueryObject.val = function(value) {};
+jQueryObject.prototype.val = function(value) {};
 /**
  * Get the combined text contents of each element in the set of matched elements, including their descendants.
  * @since 1.0
  * @returns {String}
  */
-jQueryObject.text = function() {};
+jQueryObject.prototype.text = function() {};
 /**
  * Set the content of each element in the set of matched elements to the specified text.
  * @since 1.0
  * @param {String} textString A string of text to set as the content of each matched element.
  * @returns {jQueryObject}
  */
-jQueryObject.text = function(textString) {};
+jQueryObject.prototype.text = function(textString) {};
 /**
  * Get the HTML contents of the first element in the set of matched elements.
  * @since 1.0
  * @returns {String}
  */
-jQueryObject.html = function() {};
+jQueryObject.prototype.html = function() {};
 /**
  * Set the HTML contents of each element in the set of matched elements.
  * @since 1.0
  * @param {String} htmlString A string of HTML to set as the content of each matched element.
  * @returns {jQueryObject}
  */
-jQueryObject.html = function(htmlString) {};
+jQueryObject.prototype.html = function(htmlString) {};
 /**
  * Pass each element in the current matched set through a function, producing a new jQuery object containing the return values.
  * @since 1.2
  * @param {Function} callback A function object that will be invoked for each element in the current set.
  * @returns {jQueryObject}
  */
-jQueryObject.map = function(callback) {};
+jQueryObject.prototype.map = function(callback) {};
 /**
  * Check the current matched set of elements against a selector, element, or jQuery object and return <code>true</code> if at least one of these elements matches the given arguments.
  * @since 1.0
  * @param {Selector} selector A string containing a selector expression to match elements against.
  * @returns {Boolean}
  */
-jQueryObject.is = function(selector) {};
+jQueryObject.prototype.is = function(selector) {};
 /**
  * Reduce the set of matched elements to the one at the specified index.
  * @since 1.1
  * @param {Integer} index An integer indicating the 0-based position of the element. 
  * @returns {jQueryObject}
  */
-jQueryObject.eq = function(index) {};
+jQueryObject.prototype.eq = function(index) {};
 /**
  * Reduce the set of matched elements to those that match the selector or pass the function's test. 
  * @since 1.0
  * @param {Selector} selector A string containing a selector expression to match the current set of elements against.
  * @returns {jQueryObject}
  */
-jQueryObject.filter = function(selector) {};
+jQueryObject.prototype.filter = function(selector) {};
 /**
  * Add or remove one or more classes from each element in the set of matched elements, depending on either the class's presence or the value of the switch argument.
  * @since 1.0
  * @param {String} className One or more class names (separated by spaces) to be toggled for each element in the matched set.
  * @returns {jQueryObject}
  */
-jQueryObject.toggleClass = function(className) {};
+jQueryObject.prototype.toggleClass = function(className) {};
 /**
  * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
  * @since 1.0
  * @param {String} [className] One or more space-separated classes to be removed from the class attribute of each matched element.
  * @returns {jQueryObject}
  */
-jQueryObject.removeClass = function(className) {};
+jQueryObject.prototype.removeClass = function(className) {};
 /**
  * Determine whether any of the matched elements are assigned the given class.
  * @since 1.2
  * @param {String} className The class name to search for.
  * @returns {Boolean}
  */
-jQueryObject.hasClass = function(className) {};
+jQueryObject.prototype.hasClass = function(className) {};
 /**
  * Remove an attribute from each element in the set of matched elements.
  * @since 1.0
  * @param {String} attributeName An attribute to remove; as of version 1.7, it can be a space-separated list of attributes.
  * @returns {jQueryObject}
  */
-jQueryObject.removeAttr = function(attributeName) {};
+jQueryObject.prototype.removeAttr = function(attributeName) {};
 /**
  * Get the value of an attribute for the first element in the set of matched elements.
  * @since 1.0
  * @param {String} attributeName The name of the attribute to get.
  * @returns {String}
  */
-jQueryObject.attr = function(attributeName) {};
+jQueryObject.prototype.attr = function(attributeName) {};
 /**
  * Set one or more attributes for the set of matched elements.
  * @since 1.0
@@ -1118,14 +1118,14 @@ jQueryObject.attr = function(attributeName) {};
  * @param {String} value A value to set for the attribute.
  * @returns {jQueryObject}
  */
-jQueryObject.attr = function(attributeName, value) {};
+jQueryObject.prototype.attr = function(attributeName, value) {};
 /**
  * Adds the specified class(es) to each of the set of matched elements.
  * @since 1.0
  * @param {String} className One or more class names to be added to the class attribute of each matched element.
  * @returns {jQueryObject}
  */
-jQueryObject.addClass = function(className) {};
+jQueryObject.prototype.addClass = function(className) {};
 function jQueryEvent(){};
 jQueryEvent = new Object();
 /**

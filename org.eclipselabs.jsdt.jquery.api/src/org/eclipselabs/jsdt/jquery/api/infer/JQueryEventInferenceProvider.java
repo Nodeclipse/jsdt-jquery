@@ -9,9 +9,9 @@ import org.eclipse.wst.jsdt.core.infer.ResolutionConfiguration;
 public class JQueryEventInferenceProvider implements InferrenceProvider {
 
   private static final String ID = JQueryEventInferenceProvider.class.getName();
-  
+
   private final JQueryCallbackMethods callbackMethods;
-  
+
   public JQueryEventInferenceProvider() {
     this.callbackMethods = new JQueryCallbackMethodsGenerator().createCallbackMethods();
   }
@@ -29,8 +29,8 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
    */
   @Override
   public int applysTo(IInferenceFile scriptFile) {
-      //FIXME
-      return InferrenceProvider.MAYBE_THIS;
+    //FIXME
+    return InferrenceProvider.MAYBE_THIS;
   }
 
   /**

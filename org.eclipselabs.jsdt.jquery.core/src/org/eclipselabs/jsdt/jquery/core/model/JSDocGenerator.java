@@ -30,6 +30,8 @@ import org.eclipselabs.jsdt.jquery.core.api.MemberVisitor;
 
 public class JSDocGenerator extends WriterSupport {
 
+  private static final String JQUERY_OBJECT_PROTOTYPE = JQueryMember.JQUERY_OBJECT + ".prototype";
+
   private static final String JQUERY_EVENT_PROTOTYPE = JQueryMember.JQUERY_EVENT + ".prototype";
 
   private static final Map<String, String> DEFAULT_VALUES;
@@ -218,11 +220,11 @@ public class JSDocGenerator extends WriterSupport {
   }
 
   void visitJQueryInstanceSideFunction(Function function) {
-    this.writeFunction(function, JQueryMember.JQUERY_OBJECT);
+    this.writeFunction(function, JQUERY_OBJECT_PROTOTYPE);
   }
 
   void visitJQueryInstanceSideProperty(Property property) {
-    this.writeProperty(property, JQueryMember.JQUERY_OBJECT);
+    this.writeProperty(property, JQUERY_OBJECT_PROTOTYPE);
   }
 
   void visitJQueryClassSideFunction(Function function, String jQueryGlobal) {
@@ -361,10 +363,10 @@ public class JSDocGenerator extends WriterSupport {
       }
     }
   }
-  
+
 
   private static String extractArgumentName(JQueryArgument argument) {
-    
+
     String nameWithArguments = argument.getName();
     if (!"Function".equals(argument.getType())) {
       return nameWithArguments;

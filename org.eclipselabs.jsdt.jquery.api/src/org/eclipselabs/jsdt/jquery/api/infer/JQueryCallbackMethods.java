@@ -8,10 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JQueryCallbackMethods {
 
   public static final int NO_CALLBACK = -1;
-  
+
   private final Map<CallbackLocator, Set<Integer>> callbackFunctions;
   private final Set<String> callbackSelectors;
-  
+
   public JQueryCallbackMethods() {
     this.callbackFunctions = new ConcurrentHashMap<CallbackLocator, Set<Integer>>();
     // REVIEW ConcurrentHashSet?
@@ -23,8 +23,8 @@ public class JQueryCallbackMethods {
     CallbackLocator key = new CallbackLocator(selector, argumentAcount);
     Set<Integer> indices = this.callbackFunctions.get(key);
     if (indices == null) {
-        indices = new HashSet<Integer>(3);
-        this.callbackFunctions.put(key, indices);
+      indices = new HashSet<Integer>(3);
+      this.callbackFunctions.put(key, indices);
     }
     indices.add(eventIndex);
   }
@@ -48,10 +48,10 @@ public class JQueryCallbackMethods {
       this.selector = selector;
       this.argmentCount = argmentCount;
     }
-    
+
     @Override
     public String toString() {
-        return this.selector + ":(" + this.argmentCount + ')';
+      return this.selector + ":(" + this.argmentCount + ')';
     }
 
     @Override

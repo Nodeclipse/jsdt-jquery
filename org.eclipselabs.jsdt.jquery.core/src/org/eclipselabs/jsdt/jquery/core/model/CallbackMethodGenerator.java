@@ -95,17 +95,17 @@ public class CallbackMethodGenerator extends WriterSupport {
 
   }
 
-  
+
   private void writeHeader() {
-      this.writeLine("package org.eclipselabs.jsdt.jquery.api.infer;");
-      this.writeNewLine();
-      this.writeLine("import javax.annotation.Generated;");
-      this.writeNewLine();
-      this.writeLine("@Generated(\"" + this.getClass().getName() + "\")");
-      this.writeLine("public class JQueryCallbackMethodsGenerator {");
-      this.writeNewLine();
-      this.writeLine(" public JQueryCallbackMethods createCallbackMethods() {");
-      this.writeLine("   JQueryCallbackMethods callbacks = new JQueryCallbackMethods();");
+    this.writeLine("package org.eclipselabs.jsdt.jquery.api.infer;");
+    this.writeNewLine();
+    this.writeLine("import javax.annotation.Generated;");
+    this.writeNewLine();
+    this.writeLine("@Generated(\"" + this.getClass().getName() + "\")");
+    this.writeLine("public class JQueryCallbackMethodsGenerator {");
+    this.writeNewLine();
+    this.writeLine(" public JQueryCallbackMethods createCallbackMethods() {");
+    this.writeLine("   JQueryCallbackMethods callbacks = new JQueryCallbackMethods();");
   }
 
 
