@@ -34,7 +34,7 @@
   <distributionManagement>
     <repository>
     <id>google-code-local-repo</id>
-    <url>file:///Users/marschall/Documents/Netcetera/workspace/releases</url>
+    <url>file:///home/pmarscha/Documents/Netcetera/workspaces/jquery/releases</url>
     </repository>
   </distributionManagement>
 
