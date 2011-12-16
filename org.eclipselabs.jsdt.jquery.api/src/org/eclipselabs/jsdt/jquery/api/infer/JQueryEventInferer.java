@@ -100,7 +100,9 @@ public class JQueryEventInferer extends ASTVisitor {
   }
 
   private boolean isJQuery(char[] token) {
-    if (token.length == 1) {
+    if (token == null) {
+      return false;
+    } else if (token.length == 1) {
       return token[0] == '$';
     } else if (token.length == 6) {
       return token[0] == 'j'

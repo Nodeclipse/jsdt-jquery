@@ -1901,9 +1901,9 @@ obj.done(function( name ) {
   </signature>
     <desc>Hook directly into jQuery to override how particular CSS properties are retrieved or set, normalize CSS property naming, or create custom properties.</desc>
     <longdesc><p>The <code>$.cssHooks</code> object provides a way to define functions for getting and setting particular CSS values. It can also be used to create new cssHooks for normalizing CSS3 features such as box shadows and gradients. </p>
-<p>For example, some versions of Webkit-based browsers require <code>-webkit-border-radius</code> to set the <code>border-radius</code> on an element, while earlier Firefox versions require <code>-moz-border-radius</code>. A cssHook can normalize these vendor-prefixed properties to let <code>.css()</code> accept a single, standard property name (<code>border-radius</code>, or with DOM property syntax, <code>borderRadius</code>).</p>
+<p>For example, some versions of Webkit-based browsers require <code>-webkit-border-radius</code> to set the <code>border-radius</code> on an element, while earlier Firefox versions require <code>-moz-border-radius</code>. A css hook can normalize these vendor-prefixed properties to let <code>.css()</code> accept a single, standard property name (<code>border-radius</code>, or with DOM property syntax, <code>borderRadius</code>).</p>
 <p>In addition to providing fine-grained control over how specific style properties are handled, <code>$.cssHooks</code> also extends the set of properties available to the <code>.animate()</code> method.</p>
-  <p>Defining a new cssHook is straight-forward. The skeleton template below can serve as a guide to creating your own. </p>
+  <p>Defining a new css hook is straight-forward. The skeleton template below can serve as a guide to creating your own. </p>
 <pre class="prettyprint">(function($) {
   // first, check to see if cssHooks are supported
   if ( !$.cssHooks ) {
@@ -1962,8 +1962,8 @@ obj.done(function( name ) {
   styleSupport( "borderRadius" );
 })(jQuery);
 </pre>
-<h4 id="defining-complete-csshook">Defining a complete cssHook</h4>
-<p>To define a complete cssHook, combine the support test with a filled-out version of the skeleton template provided in the first example:</p>
+<h4 id="defining-complete-csshook">Defining a complete css hook</h4>
+<p>To define a complete css hook, combine the support test with a filled-out version of the skeleton template provided in the first example:</p>
 <pre class="prettyprint">(function($) {
   if ( !$.cssHooks ) {
     throw("jQuery 1.4.3+ is needed for this plugin to work");
@@ -1998,7 +1998,7 @@ obj.done(function( name ) {
   // Set cssHooks only for browsers that
   // support a vendor-prefixed border radius
   if ( borderRadius &amp;&amp; borderRadius !== "borderRadius" ) {
-    $.cssHook.borderRadius = {
+    $.cssHooks.borderRadius = {
       get: function( elem, computed, extra ) {
         return $.css( elem, borderRadius );
       },
@@ -2027,7 +2027,7 @@ $("#another").css("border-radius", "20px");
 
     // Set cssHooks for browsers that
     // support only a vendor-prefixed someCSSProp
-    $.cssHook.someCSSProp = {
+    $.cssHooks.someCSSProp = {
       get: function( elem, computed, extra ) {
         return $.css( elem, $.support.someCSSProp );
       },
@@ -2036,7 +2036,7 @@ $("#another").css("border-radius", "20px");
       }
     };
   } else if ( supportsProprietaryAlternative ) {
-    $.cssHook.someCSSProp = {
+    $.cssHooks.someCSSProp = {
       get: function( elem, computed, extra ) {
         // Handle crazy conversion from the proprietary alternative 
       },
@@ -2054,7 +2054,7 @@ $("#another").css("border-radius", "20px");
 <pre class="prettyprint">$.cssNumber["someCSSProp"] = true;</pre>
 
   <h4 id="animating">Animating with cssHooks</h4>
-  <p>A cssHook can also hook into jQuery's animation mechanism by adding a property to the <code>jQuery.fx.step</code> object:</p>
+  <p>A css hook can also hook into jQuery's animation mechanism by adding a property to the <code>jQuery.fx.step</code> object:</p>
 <pre class="prettyprint">$.fx.step["someCSSProp"] = function(fx){
   $.cssHooks["someCSSProp"].set( fx.elem, fx.now + fx.unit );
 };
@@ -2396,9 +2396,11 @@ $.get("test.php").then(
 <entry type='method' name="jQuery.sub" return="jQuery">
     <signature>
       <added>1.5</added>
+      <deprecated>1.7</deprecated>
     </signature>
     <desc>Creates a new copy of jQuery whose properties and methods can be modified without affecting the original jQuery object.</desc>
-    <longdesc><p>There are two specific use cases for which jQuery.sub() was created. The first was for providing a painless way of overriding jQuery methods without completely destroying the original methods and another was for helping to do encapsulation and basic namespacing for jQuery plugins.</p>
+    <longdesc><p><strong>This method is deprecated as of jQuery 1.7 and will be moved to a plugin in jQuery 1.8.</strong></p>
+<p>There are two specific use cases for which jQuery.sub() was created. The first was for providing a painless way of overriding jQuery methods without completely destroying the original methods and another was for helping to do encapsulation and basic namespacing for jQuery plugins.</p>
 <p>Note that jQuery.sub() doesn't attempt to do any sort of isolation - that's not its intention. All the methods on the sub'd version of jQuery will still point to the original jQuery (events bound and triggered will still be through the main jQuery, data will be bound to elements through the main jQuery, Ajax queries and events will run through the main jQuery, etc.).</p>
 <p>Note that if you're looking to use this for plugin development you should first <i>strongly</i> consider using something like the jQuery UI widget factory which manages both state and plugin sub-methods. <a href="http://blog.nemikor.com/2010/05/15/building-stateful-jquery-plugins/">Some examples of using the jQuery UI widget factory</a> to build a plugin.</p>
 <p>The particular use cases of this method can be best described through some examples.</p></longdesc>
@@ -2481,6 +2483,7 @@ $(document).ready(function() {
 });]]></code>
     </example>
 <category name="Core"/>
+<category name="Deprecated"/>
 <category name="Version 1.5"/>
 </entry>
 <entry type='method' name="fadeToggle" return="jQuery">
@@ -4777,6 +4780,7 @@ $('div').html('Index: ' + foobar);]]></code>
 <category name="Version 1.0"/>
 <category name="Version 1.4"/>
 </entry>
+
             <entry type='method' name="removeData" return="jQuery">
               <signature>
                 <added>1.2.3</added>
@@ -4790,12 +4794,13 @@ $('div').html('Index: ' + foobar);]]></code>
                     <desc>An array or space-separated string naming the pieces of data to delete.</desc>
                 </argument>
               </signature>
-              
+
               <desc>Remove a previously-stored piece of data.</desc>
               <longdesc><p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed. Removing data from jQuery's internal <code>.data()</code> cache does not effect any HTML5 <code>data-</code> attributes in a document; use <code>.removeAttr()</code> to remove those.</p>
+When using <code>.removeData("name")</code>, jQuery will attempt to locate a <code>data-</code> attribute on the element if no property by that name is in the internal data cache. To avoid a re-query of the <code>data-</code> attribute, set the name to a value of either <code>null</code> or <code>undefined</code> (e.g. <code>.data("name", undefined)</code>) rather than using <code>.removeData()</code>.
 <p><strong>As of jQuery 1.7</strong>, when called with an array of keys or a string of space-separated keys, <code>.removeData()</code> deletes the value of each key in that array or string.</p>
 <p><strong>As of jQuery 1.4.3</strong>, calling <code>.removeData()</code> will cause the value of the property being removed to revert to the value of the data attribute of the same name in the DOM, rather than being set to <code>undefined</code>.</p>
-              
+
               </longdesc>
                 <example>
                     <desc>Set a data store for 2 names then remove one of them.</desc>
@@ -9488,6 +9493,7 @@ $(document).on("click", "a.offsite", function(){ alert("Goodbye!"); });        /
         <li>jQuery attempts to retrieve the elements specified by the selector before calling the <code>.live()</code> method, which may be time-consuming on large documents.</li>
         <li>Chaining methods is not supported. For example, <code>$("a").find(".offsite, .external").live( ... ); </code> is <em>not</em> valid and does not work as expected.</li>
         <li>Since all <code>.live()</code> events are attached at the <code>document</code> element, events take the longest and slowest possible path before they are handled.</li>
+        <li>On mobile iOS (iPhone, iPad and iPod Touch) the <code>click</code> event does not bubble to the document body and cannot be used with <code>.live()</code> without applying the <code>cursor: pointer</code> style to the element. Be aware that this workaround has negative side effects such as disabling copy/paste.</li>
         <li>Calling <a href="http://api.jquery.com/event.stopPropagation"><code>event.stopPropagation()</code></a> in the event handler is ineffective in stopping event handlers attached lower in the document; the event has already propagated to <code>document</code>.</li>
         <li>The <code>.live()</code> method interacts with other event methods in ways that can be surprising, e.g., <code>$(document).unbind("click")</code> removes all click handlers attached by any call to <code>.live()</code>!</li>
 </ul>
@@ -12535,7 +12541,7 @@ $("span").click(function () {
       <desc>A callback function that is executed if the request succeeds.</desc>
     </argument>
     <argument name="dataType" optional="true" type="String">
-      <desc>The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).</desc>
+      <desc>The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).</desc>
     </argument>
   </signature>
   <desc>Load data from the server using a HTTP POST request.</desc>
@@ -13135,7 +13141,7 @@ $( "div.log" ).ajaxError(function(e, jqxhr, settings, exception) {
                 <example>
                     <desc>Load the <a href="http://github.com/jquery/jquery-color">official jQuery Color Animation plugin</a> dynamically and bind some color animations to occur once the new functionality is loaded.</desc>
                     <code><![CDATA[
-$.getScript("http://dev.jquery.com/view/trunk/plugins/color/jquery.color.js", function() {
+$.getScript("/scripts/jquery.color.js", function() {
   $("#go").click(function(){
     $(".block").animate( { backgroundColor: "pink" }, 1000)
       .delay(500)
@@ -13345,6 +13351,7 @@ $('li.item-a').closest('#one', listItemII)
 <entry type='method' name="closest" return="Array">
   <signature>
     <added>1.4</added>
+    <deprecated>1.7</deprecated>
     <argument name="selectors" type="Array">
       <desc>An array or string containing a selector expression to match elements against (can also be a jQuery object).</desc>
     </argument>
@@ -13353,7 +13360,7 @@ $('li.item-a').closest('#one', listItemII)
     </argument>
   </signature>
   <desc>Gets an array of all the elements and selectors matched against the current element up through the DOM tree.</desc>
-  <longdesc><p>This method is primarily meant to be used internally or by plugin authors.</p></longdesc>
+  <longdesc><p><strong>This signature (only!) is deprecated as of jQuery 1.7.</strong> This method is primarily meant to be used internally or by plugin authors.</p></longdesc>
 
 <example>
   <desc>Show how event delegation can be done with closest.</desc>
@@ -14977,7 +14984,10 @@ $(document).width(); // returns width of HTML document</pre>
 <pre>$(window).height();   // returns height of browser viewport
 $(document).height(); // returns height of HTML document</pre>
 
-<p>Note that <code>.height()</code> will always return the content height, regardless of the value of the CSS <code>box-sizing</code> property.</p></longdesc>
+<p>Note that <code>.height()</code> will always return the content height, regardless of the value of the CSS <code>box-sizing</code> property.</p>
+
+<blockquote><p><strong>Note:</strong> Although <code>style</code> and <code>script</code> tags will report a value for <code>.width()</code> or <code>height()</code> when absolutely positioned and given <code>display:block</code>, it is strongly discouraged to call those methods on these tags. In addition to being a bad practice, the results may also prove unreliable.</p></blockquote>
+</longdesc>
                 <example>
                     <desc>Show various heights.  Note the values are from the iframe so might be smaller than you expected.  The yellow highlight shows the iframe body.</desc>
                     <code><![CDATA[
@@ -15756,7 +15766,7 @@ $("span").text(arr.join(", "));
   <p>Keep in mind that the target object (first argument) will be modified, and will also be returned from <code>$.extend()</code>. If, however, we want to preserve both of the original objects, we can do so by passing an empty object as the target:</p>
   <pre>var object = $.extend({}, object1, object2);</pre>
 
-  <p>The merge performed by <code>$.extend()</code> is not recursive by default; if a property of the first object is itself an object or array, it will be completely overwritten by a property with the same key in the second object. The values are not merged. This can be seen in the example below by examining the value of banana. However, by passing <code>true</code> for the first function argument, objects will be recursively merged.</p>
+  <p>The merge performed by <code>$.extend()</code> is not recursive by default; if a property of the first object is itself an object or array, it will be completely overwritten by a property with the same key in the second object. The values are not merged. This can be seen in the example below by examining the value of banana. However, by passing <code>true</code> for the first function argument, objects will be recursively merged. (Passing <code>false</code> for the first argument is not supported.)</p>
   <p>Undefined properties are not copied. However, properties inherited from the object's prototype <em>will</em> be copied over. For performance reasons, properties that have values of built-in JavaScript types such as Date or RegExp are not re-constructed, and will appear as plain Objects in the resulting object or array.</p>
 <blockquote>
 <p><strong>Note:</strong> When performing a deep extend, Object and Array are extended, however primitive types such string, boolean and number are not. For specific needs that fall outside of this behaviour, it is recommended to write a custom extend method as this will be significantly faster from a performance perspective. </p>
@@ -22206,7 +22216,7 @@ $( "#dramaBtn" ).click( function() {
 <!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
 
 Page Caching using disk: basic (Requested URI is rejected)
-Database Caching 80/91 queries in 0.039 seconds using disk: basic
-Object Caching 4084/4106 objects using disk: basic
+Database Caching 79/143 queries in 0.087 seconds using disk: basic
+Object Caching 4034/4211 objects using disk: basic
 
-Served from: api.jquery.com @ 2011-12-04 13:11:59 -->
+Served from: api.jquery.com @ 2011-12-16 00:22:49 -->

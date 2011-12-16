@@ -726,6 +726,7 @@ jQueryObject.prototype.closest = function(selector) {};
 /**
  * Gets an array of all the elements and selectors matched against the current element up through the DOM tree.
  * @since 1.4
+ * @deprecated 1.7
  * @param {Array} selectors An array or string containing a selector expression to match elements against (can also be a jQuery object).
  * @param {Element} [context] A DOM element within which a matching element may be found. If no context is passed in then the context of the jQuery set will be used instead.
  * @returns {Array}
