@@ -20,6 +20,9 @@ public final class JQueryContainer {
 
   private static final char SEPARATOR = '_';
 
+  //REVIEW
+  //these two constants contain a typo
+  //fixing it would break every existing project
   private static final String NO_CONFLICT_CONTAINER_PREFIX = "org.eclipselabs.jsdt.jquery.core.NoCoflictLibrary";
 
   private static final String CONFLICT_CONTAINER_PREFIX = "org.eclipselabs.jsdt.jquery.core.CoflictLibrary";
