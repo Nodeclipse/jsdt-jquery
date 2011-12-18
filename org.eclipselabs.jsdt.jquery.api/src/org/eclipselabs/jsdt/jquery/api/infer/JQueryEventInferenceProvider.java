@@ -1,3 +1,15 @@
+/*
+ * *****************************************************************************
+ * Copyright (c) 2011 Philippe Marschall and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Philippe Marschall
+ * *****************************************************************************
+ */
 package org.eclipselabs.jsdt.jquery.api.infer;
 
 import org.eclipse.core.resources.IProject;
@@ -20,8 +32,9 @@ import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.core.infer.RefactoringSupport;
 import org.eclipse.wst.jsdt.core.infer.ResolutionConfiguration;
 import org.eclipselabs.jsdt.jquery.api.JQueryApiPlugin;
+import org.eclipselabs.jsdt.jquery.api.JQueryContainer;
 
-public class JQueryEventInferenceProvider implements InferrenceProvider {
+public abstract class JQueryEventInferenceProvider implements InferrenceProvider {
 
   private static final String ID = JQueryEventInferenceProvider.class.getName();
 
@@ -36,10 +49,12 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
    */
   @Override
   public IInferEngine getInferEngine() {
-    return new JQueryEventInferEngine(this.callbackMethods);
+    return new JQueryEventInferEngine(this.callbackMethods, this.getNoConflict());
   }
 
-  /**
+  abstract boolean getNoConflict();
+
+/**
    * {@inheritDoc}
    */
   @Override
@@ -76,6 +91,10 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
             if (includePathEntry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER
                     && includePathEntry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
                 IPath includePath = includePathEntry.getPath();
+                if (isHit(includePath)) {
+                    
+                    return InferrenceProvider.MAYBE_THIS;
+                }
             }
         }
     } catch (CoreException e) {
@@ -84,6 +103,11 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
     }
       return InferrenceProvider.NOT_THIS;
   }
+
+boolean isHit(IPath includePath) {
+    return JQueryContainer.isQueryNoConflict(includePath)
+            || (!this.getNoConflict() && JQueryContainer.isQueryConflict(includePath));
+}
 
 private void logException(String message, Exception cause) {
     JQueryApiPlugin plugin = JQueryApiPlugin.getDefault();

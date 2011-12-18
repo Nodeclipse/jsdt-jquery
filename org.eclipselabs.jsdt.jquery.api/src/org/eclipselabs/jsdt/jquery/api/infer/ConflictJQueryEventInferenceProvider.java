@@ -10,12 +10,17 @@
  *     Philippe Marschall
  * *****************************************************************************
  */
-package org.eclipselabs.jsdt.jquery.core.model;
+package org.eclipselabs.jsdt.jquery.api.infer;
 
-interface Predicate {
+public class ConflictJQueryEventInferenceProvider extends
+        JQueryEventInferenceProvider {
 
-  boolean isTrue(Function function);
-
-  boolean isTrue(Property property);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    boolean getNoConflict() {
+        return false;
+    }
 
 }

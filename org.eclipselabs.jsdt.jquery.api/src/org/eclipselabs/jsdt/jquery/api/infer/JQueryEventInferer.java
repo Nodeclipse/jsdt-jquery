@@ -1,16 +1,14 @@
 /*
- * @(#) $CVSHeader:  $
+ * *****************************************************************************
+ * Copyright (c) 2011 Philippe Marschall and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Copyright (C) 2011 by Netcetera AG.
- * All rights reserved.
- *
- * The copyright to the computer program(s) herein is the property of
- * Netcetera AG, Switzerland.  The program(s) may be used and/or copied
- * only with the written permission of Netcetera AG or in accordance
- * with the terms and conditions stipulated in the agreement/contract
- * under which the program(s) have been supplied.
- *
- * @(#) $Id: codetemplates.xml,v 1.5 2004/06/29 12:49:49 hagger Exp $
+ * Contributors:
+ *     Philippe Marschall
+ * *****************************************************************************
  */
 package org.eclipselabs.jsdt.jquery.api.infer;
 
@@ -31,13 +29,16 @@ public class JQueryEventInferer extends ASTVisitor {
 
   private final JQueryCallbackMethods callbackMethods;
 
+private final boolean noConflict;
+
   static {
     char[] selector = "jQueryEvent".toCharArray();
     jQueryEvent = new InferredType(selector);
   }
 
-  public JQueryEventInferer(JQueryCallbackMethods callbackMethods) {
+  public JQueryEventInferer(JQueryCallbackMethods callbackMethods, boolean noConflict) {
     this.callbackMethods = callbackMethods;
+    this.noConflict = noConflict;
   }
 
   @Override
@@ -102,7 +103,7 @@ public class JQueryEventInferer extends ASTVisitor {
   private boolean isJQuery(char[] token) {
     if (token == null) {
       return false;
-    } else if (token.length == 1) {
+    } else if (!this.noConflict && token.length == 1) {
       return token[0] == '$';
     } else if (token.length == 6) {
       return token[0] == 'j'
