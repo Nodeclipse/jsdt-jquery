@@ -4,19 +4,22 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
 import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.core.infer.RefactoringSupport;
 import org.eclipse.wst.jsdt.core.infer.ResolutionConfiguration;
+import org.eclipselabs.jsdt.jquery.api.JQueryApiPlugin;
 
 public class JQueryEventInferenceProvider implements InferrenceProvider {
 
@@ -58,10 +61,13 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
           return InferrenceProvider.NOT_THIS;
       }
       
-      //Platform.getAdapterManager().getAdapter(project, IJavaScriptProject.class);
-      IJavaScriptProject javaScriptProject = JavaScriptCore.create(project);
       try {
-        IIncludePathEntry[] resolvedIncludepath = javaScriptProject.getResolvedIncludepath(true);
+          if (!project.hasNature(JavaScriptCore.NATURE_ID)) {
+              return InferrenceProvider.NOT_THIS;
+          }
+          //Platform.getAdapterManager().getAdapter(project, IJavaScriptProject.class);
+          IJavaScriptProject javaScriptProject = JavaScriptCore.create(project);
+//        IIncludePathEntry[] resolvedIncludepath = javaScriptProject.getResolvedIncludepath(true);
         IIncludePathEntry[] rawIncludepath = javaScriptProject.getRawIncludepath();
         if (rawIncludepath == null) {
             return InferrenceProvider.NOT_THIS;
@@ -72,14 +78,20 @@ public class JQueryEventInferenceProvider implements InferrenceProvider {
                 IPath includePath = includePathEntry.getPath();
             }
         }
-    } catch (JavaScriptModelException e) {
-        // TODO Auto-generated catch block
+    } catch (CoreException e) {
+        logException("failed to determine whether project uses jQuery", e);
         return InferrenceProvider.NOT_THIS;
     }
-
-      //FIXME
-      return InferrenceProvider.MAYBE_THIS;
+      return InferrenceProvider.NOT_THIS;
   }
+
+private void logException(String message, Exception cause) {
+    JQueryApiPlugin plugin = JQueryApiPlugin.getDefault();
+    String pluginId = plugin.getBundle().getSymbolicName();
+    Status status = new Status(IStatus.ERROR, pluginId, message, cause);
+    ILog log = plugin.getLog();
+    log.log(status);
+}
 
   /**
    * {@inheritDoc}

@@ -62,7 +62,6 @@ public final class JQueryApiPlugin extends Plugin {
     return instance;
   }
 
-
   private static final JQuerySupport SUPPORT = new SimpleJQuerySupport();
 
   public static JQuerySupport getJQuerySupport() {
