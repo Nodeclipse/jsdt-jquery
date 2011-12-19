@@ -17,8 +17,8 @@ import javax.annotation.Generated;
 @Generated("org.eclipselabs.jsdt.jquery.core.model.CallbackMethodGenerator")
 public class JQueryCallbackMethodsGenerator {
 
- public JQueryCallbackMethods createCallbackMethods() {
-   JQueryCallbackMethods callbacks = new JQueryCallbackMethods();
+  public JQueryCallbackMethods createCallbackMethods() {
+    JQueryCallbackMethods callbacks = new JQueryCallbackMethods();
     callbacks.addCallbackMethod("toggle", 3, 0);
     callbacks.addCallbackMethod("toggle", 3, 1);
     callbacks.addCallbackMethod("toggle", 3, 2);
@@ -72,7 +72,7 @@ public class JQueryCallbackMethodsGenerator {
     callbacks.addCallbackMethod("load", 2, 1);
     callbacks.addCallbackMethod("unbind", 2, 1);
     callbacks.addCallbackMethod("bind", 3, 2);
-   return callbacks;
- }
+    return callbacks;
+  }
 
 }

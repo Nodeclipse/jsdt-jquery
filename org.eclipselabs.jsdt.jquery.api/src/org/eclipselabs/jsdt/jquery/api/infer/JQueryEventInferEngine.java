@@ -35,7 +35,7 @@ public class JQueryEventInferEngine implements IInferEngine {
    */
   @Override
   public void doInfer() {
-    ASTVisitor inferer = new JQueryEventInferer(this.callbackMethods, noConflict);
+    ASTVisitor inferer = new JQueryEventInferer(this.callbackMethods, this.noConflict);
     this.compilationUnit.traverse(inferer);
 
   }

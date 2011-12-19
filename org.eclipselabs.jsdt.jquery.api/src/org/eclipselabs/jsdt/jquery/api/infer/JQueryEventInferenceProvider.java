@@ -54,68 +54,68 @@ public abstract class JQueryEventInferenceProvider implements InferrenceProvider
 
   abstract boolean getNoConflict();
 
-/**
+  /**
    * {@inheritDoc}
    */
   @Override
   public int applysTo(IInferenceFile scriptFile) {
 
-      char[] fileName = scriptFile.getFileName();
-      if (fileName == null) {
-          return InferrenceProvider.NOT_THIS;
-      }
-      IPath path = new Path(new String(fileName));
-      IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-      IResource member = workspaceRoot.findMember(path);
-      if (member == null) {
-          return InferrenceProvider.NOT_THIS;
-      }
-          
-      IProject project = member.getProject();
-      if (project == null) {
-          return InferrenceProvider.NOT_THIS;
-      }
-      
-      try {
-          if (!project.hasNature(JavaScriptCore.NATURE_ID)) {
-              return InferrenceProvider.NOT_THIS;
-          }
-          //Platform.getAdapterManager().getAdapter(project, IJavaScriptProject.class);
-          IJavaScriptProject javaScriptProject = JavaScriptCore.create(project);
-//        IIncludePathEntry[] resolvedIncludepath = javaScriptProject.getResolvedIncludepath(true);
-        IIncludePathEntry[] rawIncludepath = javaScriptProject.getRawIncludepath();
-        if (rawIncludepath == null) {
-            return InferrenceProvider.NOT_THIS;
-        }
-        for (IIncludePathEntry includePathEntry : rawIncludepath) {
-            if (includePathEntry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER
-                    && includePathEntry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
-                IPath includePath = includePathEntry.getPath();
-                if (isHit(includePath)) {
-                    
-                    return InferrenceProvider.MAYBE_THIS;
-                }
-            }
-        }
-    } catch (CoreException e) {
-        logException("failed to determine whether project uses jQuery", e);
-        return InferrenceProvider.NOT_THIS;
-    }
+    char[] fileName = scriptFile.getFileName();
+    if (fileName == null) {
       return InferrenceProvider.NOT_THIS;
+    }
+    IPath path = new Path(new String(fileName));
+    IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+    IResource member = workspaceRoot.findMember(path);
+    if (member == null) {
+      return InferrenceProvider.NOT_THIS;
+    }
+
+    IProject project = member.getProject();
+    if (project == null) {
+      return InferrenceProvider.NOT_THIS;
+    }
+
+    try {
+      if (!project.hasNature(JavaScriptCore.NATURE_ID)) {
+        return InferrenceProvider.NOT_THIS;
+      }
+      //Platform.getAdapterManager().getAdapter(project, IJavaScriptProject.class);
+      IJavaScriptProject javaScriptProject = JavaScriptCore.create(project);
+      //        IIncludePathEntry[] resolvedIncludepath = javaScriptProject.getResolvedIncludepath(true);
+      IIncludePathEntry[] rawIncludepath = javaScriptProject.getRawIncludepath();
+      if (rawIncludepath == null) {
+        return InferrenceProvider.NOT_THIS;
+      }
+      for (IIncludePathEntry includePathEntry : rawIncludepath) {
+        if (includePathEntry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER
+            && includePathEntry.getContentKind() == IPackageFragmentRoot.K_SOURCE) {
+          IPath includePath = includePathEntry.getPath();
+          if (this.isHit(includePath)) {
+
+            return InferrenceProvider.MAYBE_THIS;
+          }
+        }
+      }
+    } catch (CoreException e) {
+      this.logException("failed to determine whether project uses jQuery", e);
+      return InferrenceProvider.NOT_THIS;
+    }
+    return InferrenceProvider.NOT_THIS;
   }
 
-boolean isHit(IPath includePath) {
+  boolean isHit(IPath includePath) {
     return JQueryContainer.isQueryNoConflict(includePath)
-            || (!this.getNoConflict() && JQueryContainer.isQueryConflict(includePath));
-}
+        || (!this.getNoConflict() && JQueryContainer.isQueryConflict(includePath));
+  }
 
-private void logException(String message, Exception cause) {
+  private void logException(String message, Exception cause) {
     JQueryApiPlugin plugin = JQueryApiPlugin.getDefault();
     String pluginId = plugin.getBundle().getSymbolicName();
     Status status = new Status(IStatus.ERROR, pluginId, message, cause);
     ILog log = plugin.getLog();
     log.log(status);
-}
+  }
 
   /**
    * {@inheritDoc}

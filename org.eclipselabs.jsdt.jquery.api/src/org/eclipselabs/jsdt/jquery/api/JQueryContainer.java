@@ -44,25 +44,25 @@ public final class JQueryContainer {
     String versionString = container.substring(separatorIndex + 1); // skip separator
     return SimpleVersion.fromString(versionString);
   }
-  
+
   public static boolean isQueryConflict(IPath path) {
-      return isContainer(path, CONFLICT_CONTAINER_PREFIX);
-  }
-  
-  public static boolean isQueryNoConflict(IPath path) {
-      return isContainer(path, NO_CONFLICT_CONTAINER_PREFIX);
+    return isContainer(path, CONFLICT_CONTAINER_PREFIX);
   }
 
-private static boolean isContainer(IPath path, String containerId) {
+  public static boolean isQueryNoConflict(IPath path) {
+    return isContainer(path, NO_CONFLICT_CONTAINER_PREFIX);
+  }
+
+  private static boolean isContainer(IPath path, String containerId) {
     if (path == null) {
-        return false;
+      return false;
     }
     if (path.segmentCount() != 1) {
-        return false;
+      return false;
     }
     String segment = path.segment(0);
     return segment.startsWith(containerId);
-}
+  }
 
   public static boolean extractNoConflict(IPath path) {
     String container = path.segment(0);

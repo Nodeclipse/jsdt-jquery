@@ -29,7 +29,7 @@ public class JQueryEventInferer extends ASTVisitor {
 
   private final JQueryCallbackMethods callbackMethods;
 
-private final boolean noConflict;
+  private final boolean noConflict;
 
   static {
     char[] selector = "jQueryEvent".toCharArray();

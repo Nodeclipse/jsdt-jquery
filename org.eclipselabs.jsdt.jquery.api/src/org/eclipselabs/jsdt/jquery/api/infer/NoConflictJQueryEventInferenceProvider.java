@@ -13,14 +13,14 @@
 package org.eclipselabs.jsdt.jquery.api.infer;
 
 public class NoConflictJQueryEventInferenceProvider extends
-        JQueryEventInferenceProvider {
+JQueryEventInferenceProvider {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    boolean getNoConflict() {
-        return true;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  boolean getNoConflict() {
+    return true;
+  }
 
 }
