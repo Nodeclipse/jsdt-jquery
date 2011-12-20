@@ -80,9 +80,13 @@ public abstract class JQueryEventInferenceProvider implements InferrenceProvider
       if (!project.hasNature(JavaScriptCore.NATURE_ID)) {
         return InferrenceProvider.NOT_THIS;
       }
-      //Platform.getAdapterManager().getAdapter(project, IJavaScriptProject.class);
+//      Object adapter1 = Platform.getAdapterManager().getAdapter(project, IJavaScriptProject.class);
+//      Object adapter2 = project.getAdapter(IJavaScriptProject.class);
       IJavaScriptProject javaScriptProject = JavaScriptCore.create(project);
-      //        IIncludePathEntry[] resolvedIncludepath = javaScriptProject.getResolvedIncludepath(true);
+      if (!javaScriptProject.exists()) {
+        return InferrenceProvider.NOT_THIS;
+      }
+//      IIncludePathEntry[] resolvedIncludepath = javaScriptProject.getResolvedIncludepath(true);
       IIncludePathEntry[] rawIncludepath = javaScriptProject.getRawIncludepath();
       if (rawIncludepath == null) {
         return InferrenceProvider.NOT_THIS;
