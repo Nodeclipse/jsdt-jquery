@@ -7,6 +7,13 @@
   <packaging>pom</packaging>
   <inceptionYear>2011</inceptionYear>
   <name>JSDT jQuery</name>
+  <description>A plugin for JSDT that adds jQuery support</description>
+  <url>http://code.google.com/a/eclipselabs.org/p/jsdt-jquery</url>
+  
+  <organization>
+    <name>Eclipse Labs</name>
+    <url>http://code.google.com/a/eclipselabs.org/hosting/</url>
+  </organization>
 
   <prerequisites>
     <maven>3.0</maven>
@@ -34,7 +41,7 @@
   <distributionManagement>
     <repository>
     <id>google-code-local-repo</id>
-    <url>file:///home/pmarscha/Documents/Netcetera/workspaces/jquery/releases</url>
+    <url>file:///Users/marschall/Documents/Netcetera/workspace/releases</url>
     </repository>
   </distributionManagement>
 
