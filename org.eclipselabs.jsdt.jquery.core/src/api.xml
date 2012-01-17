@@ -839,7 +839,7 @@ callbacks.fireWith( window, ['foo','bar']);
     <argument name="selector" type="String" optional="true">
       <desc>A selector which should match the one originally passed to <code>.on()</code> when attaching event handlers.</desc>
     </argument>
-    <argument name="handler" type="Function" optional="true">
+    <argument name="handler(eventObject)" type="Function" optional="true">
       <desc>A handler function previously attached for the event(s), or the special value <code>false</code>.</desc>
     </argument>
   </signature>
@@ -959,7 +959,7 @@ $("form").off(".validator");]]></code>
     <argument name="data" type="Anything" optional="true">
       <desc>Data to be passed to the handler in <a href="http://api.jquery.com/event.data/"><code>event.data</code></a> when an event is triggered.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute when the event is triggered. The value <code>false</code> is also allowed as a shorthand for a function that simply does <code>return false</code>.</desc>
     </argument>
   </signature>
@@ -1121,10 +1121,16 @@ span { color:blue; }
 <span style="display:none;"></span>]]></html>
 </example>
 <example>
-<desc>Attach multiple event handlers simultaneously using a map.</desc>
-<code><![CDATA[$("div.test").on({
+  <desc>Attach multiple event handlers simultaneously using a map.</desc>
+  <html><![CDATA[<div class="test">test div</div>]]></html>
+  <css><![CDATA[
+.test { color: #000; padding: .5em; border: 1px solid #444; }
+.active { color: #900;}
+.inside { background-color: aqua; }
+]]></css>
+  <code><![CDATA[$("div.test").on({
   click: function(){
-    $(this).addClass("active");
+    $(this).toggleClass("active");
   },
   mouseenter: function(){
     $(this).addClass("inside");
@@ -1165,7 +1171,6 @@ span { color:blue; }
 });]]></code>
 </example>
 <category name="Event Handler Attachment"/>
-<category name="Events"/>
 <category name="Version 1.7"/>
 </entry>
 <entry type='method' name="jQuery.isNumeric" return="Boolean">
@@ -2535,8 +2540,7 @@ $("button:last").click(function () {
 <category name="Effects"/>
 <category name="Fading"/>
 <category name="Version 1.4.4"/>
-<note type="additional">All jQuery effects, including <code>.fadeToggle()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.fadeToggle()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
   <entry type='method' name="jQuery.type" return="String">
                 <signature>
                   <added>1.4.3</added>
@@ -2748,7 +2752,7 @@ $("button").click(function(event) {
     <argument name="eventType" type="String">
       <desc>A string containing a JavaScript event type, such as "click" or "keydown"</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
@@ -2846,7 +2850,7 @@ $("form").undelegate(".whatever");]]></code>
     <argument name="eventType" type="String">
       <desc>A string containing one or more space-separated JavaScript event types, such as "click" or "keydown," or custom event names.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
@@ -2861,7 +2865,7 @@ $("form").undelegate(".whatever");]]></code>
     <argument name="eventData" type="Object">
       <desc>A map of data that will be passed to the event handler.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
@@ -4780,7 +4784,6 @@ $('div').html('Index: ' + foobar);]]></code>
 <category name="Version 1.0"/>
 <category name="Version 1.4"/>
 </entry>
-
             <entry type='method' name="removeData" return="jQuery">
               <signature>
                 <added>1.2.3</added>
@@ -4796,11 +4799,11 @@ $('div').html('Index: ' + foobar);]]></code>
               </signature>
 
               <desc>Remove a previously-stored piece of data.</desc>
-              <longdesc><p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed. Removing data from jQuery's internal <code>.data()</code> cache does not effect any HTML5 <code>data-</code> attributes in a document; use <code>.removeAttr()</code> to remove those.</p>
-When using <code>.removeData("name")</code>, jQuery will attempt to locate a <code>data-</code> attribute on the element if no property by that name is in the internal data cache. To avoid a re-query of the <code>data-</code> attribute, set the name to a value of either <code>null</code> or <code>undefined</code> (e.g. <code>.data("name", undefined)</code>) rather than using <code>.removeData()</code>.
+              <longdesc>
+                <p>The <code>.removeData()</code> method allows us to remove values that were previously set using <code>.data()</code>. When called with the name of a key, <code>.removeData()</code> deletes that particular value; when called with no arguments, all values are removed. Removing data from jQuery's internal <code>.data()</code> cache does not effect any HTML5 <code>data-</code> attributes in a document; use <code>.removeAttr()</code> to remove those.</p>
+<p>When using <code>.removeData("name")</code>, jQuery will attempt to locate a <code>data-</code> attribute on the element if no property by that name is in the internal data cache. To avoid a re-query of the <code>data-</code> attribute, set the name to a value of either <code>null</code> or <code>undefined</code> (e.g. <code>.data("name", undefined)</code>) rather than using <code>.removeData()</code>.</p>
 <p><strong>As of jQuery 1.7</strong>, when called with an array of keys or a string of space-separated keys, <code>.removeData()</code> deletes the value of each key in that array or string.</p>
 <p><strong>As of jQuery 1.4.3</strong>, calling <code>.removeData()</code> will cause the value of the property being removed to revert to the value of the data attribute of the same name in the DOM, rather than being set to <code>undefined</code>.</p>
-
               </longdesc>
                 <example>
                     <desc>Set a data store for 2 names then remove one of them.</desc>
@@ -4873,8 +4876,8 @@ $("span:last").text($("div").data("test").last);
   div { color:blue; }
   span { color:red; }
   ]]></css>
-                    <html><![CDATA[<div>
-    The values stored were 
+<html><![CDATA[<div>
+    The values stored were
     <span></span>
     and
     <span></span>
@@ -4909,7 +4912,8 @@ alert( $("body").data("foo")); //undefined
 $("body").data("bar", "foobar");
 alert( $("body").data("bar")); //foobar
 </pre>
-<p><strong>HTML 5 data- Attributes</strong></p>
+
+<h4 id="data-html5"><a href="#data-html5">HTML5 data-* Attributes</a></h4>
 <p>As of jQuery 1.4.3 <a href="http://ejohn.org/blog/html-5-data-attributes/">HTML 5 data- attributes</a> will be automatically pulled in to jQuery's data object. The treatment of attributes with embedded dashes was changed in jQuery 1.6 to conform to the <a href="http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes">W3C HTML5 specification</a>.</p>
 
 <p>For example, given the following HTML:</p>
@@ -8061,6 +8065,7 @@ $('#target').blur(function() {
 <li>The <code>focus</code> event is sent to an element when it gains focus. This event is implicitly applicable to a limited set of elements, such as  form elements (<code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, etc.) and links (<code>&lt;a href&gt;</code>). In recent browser versions, the event can be extended to include all element types by explicitly setting the element's <code>tabindex</code> property. An element can gain focus via keyboard commands, such as the Tab key, or by mouse clicks on the element.</li>
 <li>Elements with focus are usually highlighted in some way by the browser, for example with a dotted line surrounding the element. The focus is used to determine which element is the first to receive keyboard-related events.</li>
 </ul>
+<blockquote><p>Attempting to set focus to a hidden element causes an error in Internet Explorer. Take care to only use <code>.focus()</code> on elements that are visible. To run an element's focus event handlers without setting focus to the element, use <code>.triggerHandler("focus")</code> instead of <code>.focus()</code>.</p></blockquote>
 <p>For example, consider the HTML:</p>
 <pre>&lt;form&gt;
   &lt;input id="target" type="text" value="Field 1" /&gt;
@@ -8082,7 +8087,6 @@ $('#target').blur(function() {
 });</pre>
 <p>After this code executes, clicks on <span class="output">Trigger the handler</span> will also alert the message.</p>
 <p>The <code>focus</code> event does not bubble in Internet Explorer. Therefore, scripts that rely on event delegation with the <code>focus</code> event will not work consistently across browsers. As of version 1.4.2, however, jQuery works around this limitation by mapping <code>focus</code> to the <code>focusin</code> event in its event delegation methods, <a href="http://api.jquery.com/live/"><code>.live()</code></a> and <a href="http://api.jquery.com/delegate/"><code>.delegate()</code></a>.</p>
-<blockquote><p>Triggering the focus on hidden elements causes an error in Internet Explorer. Take care to only call <code>.focus()</code> without parameters on elements that are visible.</p></blockquote>
 </longdesc>
                 <example>
                     <desc>Fire focus.</desc>
@@ -9445,7 +9449,7 @@ if ( $.browser.msie ) {
     <argument name="events" type="String">
       <desc>A string containing a JavaScript event type, such as "click" or "keydown." As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
@@ -9457,7 +9461,7 @@ if ( $.browser.msie ) {
     <argument name="data" type="Object">
       <desc>A map of data that will be passed to the event handler.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
@@ -9490,10 +9494,16 @@ $(document).on("click", "a.offsite", function(){ alert("Goodbye!"); });        /
 
 <p>Use of the <code>.live()</code> method is no longer recommended since later versions of jQuery offer better methods that do not have its drawbacks. In particular, the following issues arise with the use of <code>.live()</code>:</p>
 <ul>
-        <li>jQuery attempts to retrieve the elements specified by the selector before calling the <code>.live()</code> method, which may be time-consuming on large documents.</li>
-        <li>Chaining methods is not supported. For example, <code>$("a").find(".offsite, .external").live( ... ); </code> is <em>not</em> valid and does not work as expected.</li>
-        <li>Since all <code>.live()</code> events are attached at the <code>document</code> element, events take the longest and slowest possible path before they are handled.</li>
-        <li>On mobile iOS (iPhone, iPad and iPod Touch) the <code>click</code> event does not bubble to the document body and cannot be used with <code>.live()</code> without applying the <code>cursor: pointer</code> style to the element. Be aware that this workaround has negative side effects such as disabling copy/paste.</li>
+  <li>jQuery attempts to retrieve the elements specified by the selector before calling the <code>.live()</code> method, which may be time-consuming on large documents.</li>
+  <li>Chaining methods is not supported. For example, <code>$("a").find(".offsite, .external").live( ... ); </code> is <em>not</em> valid and does not work as expected.</li>
+  <li>Since all <code>.live()</code> events are attached at the <code>document</code> element, events take the longest and slowest possible path before they are handled.</li>
+  <li>On mobile iOS (iPhone, iPad and iPod Touch) the <code>click</code> event does not bubble to the document body for most elements and cannot be used with <code>.live()</code> without applying one of the following workarounds:
+<ol>
+    <li>Use natively clickable elements such as <code>a</code> or <code>button</code>, as both of these do bubble to <code>document</code>.</li>
+    <li>Use <code>.on()</code> or <code>.delegate()</code> attached to an element below the level of <code>document.body</code>, since mobile iOS does bubble within the body.</li>
+    <li>Apply the CSS style <code>cursor:pointer</code> to the element that needs to bubble clicks (or a parent including <code>document.documentElement</code>). Note however, this will disable copy\paste on the element and cause it to be highlighted when touched.</li>
+</ol>
+</li>
         <li>Calling <a href="http://api.jquery.com/event.stopPropagation"><code>event.stopPropagation()</code></a> in the event handler is ineffective in stopping event handlers attached lower in the document; the event has already propagated to <code>document</code>.</li>
         <li>The <code>.live()</code> method interacts with other event methods in ways that can be surprising, e.g., <code>$(document).unbind("click")</code> removes all click handlers attached by any call to <code>.live()</code>!</li>
 </ul>
@@ -9591,7 +9601,7 @@ $("p").live({
     <argument name="eventType" type="String">
       <desc>A string containing a JavaScript event type, such as <code>click</code> or <code>submit</code>.</desc>
     </argument>
-    <argument name="extraParameters" type="Array">
+    <argument name="extraParameters" optional="true" type="Array">
       <desc>An array of additional parameters to pass along to the event handler.</desc>
     </argument>
   </signature>
@@ -9636,7 +9646,7 @@ $("<span>Focused!</span>").appendTo("body").fadeOut(1000);
     <argument name="eventType" type="String">
       <desc>A string containing a JavaScript event type, such as <code>click</code> or <code>submit</code>.</desc>
     </argument>
-    <argument name="extraParameters" type="Object">
+    <argument name="extraParameters" optional="true" type="Object">
       <desc>Additional parameters to pass along to the event handler.</desc>
     </argument>
   </signature>
@@ -9756,7 +9766,7 @@ pass:"bar"
 				<pre>$('.trigger').click(function() {
   $('.result').load('ajax/test.html');
 });</pre>
-				<p>When the user clicks the button and the Ajax request completes, the log message is displayed.</p>
+				<p>When the user clicks the element with class <code>trigger</code> and the Ajax request completes, the log message is displayed.</p>
 
 				<p><strong>Note:</strong> Because <code>.ajaxComplete()</code> is implemented as a method of jQuery object instances, we can use the <code>this</code> keyword as we do here to refer to the selected elements within the callback function.</p>
 
@@ -9789,7 +9799,7 @@ pass:"bar"
     <argument name="data" type="Object" optional="true">
       <desc>A map of data that will be passed to the event handler.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute at the time the event is triggered.</desc>
     </argument>
   </signature>
@@ -9804,7 +9814,7 @@ pass:"bar"
     <argument name="data" type="Anything" optional="true">
       <desc>Data to be passed to the handler in <a href="/event.data"><code>event.data</code></a> when an event is triggered.</desc>
     </argument>
-    <argument name="handler" type="Function">
+    <argument name="handler(eventObject)" type="Function">
       <desc>A function to execute when the event is triggered. The value <code>false</code> is also allowed as a shorthand for a function that simply does <code>return false</code>.</desc>
     </argument>
   </signature>
@@ -10132,19 +10142,19 @@ alert( $(this).text() );
     <pre>$('.trigger').click(function() {
   $('.result').load('ajax/test.html');
 });</pre>
-		<p>When the user clicks the button and the Ajax request completes successfully, the log message is displayed.</p>
+		<p>When the user clicks the element with class <code>trigger</code> and the Ajax request completes successfully, the log message is displayed.</p>
 
 
     <p><strong>Note:</strong> Because <code>.ajaxSuccess()</code> is implemented as a method of jQuery object instances, we can use the <code>this</code> keyword as we do here to refer to the selected elements within the callback function.</p>
 
 		<p>All <code>ajaxSuccess</code> handlers are invoked, regardless of what Ajax request was completed. If we must differentiate between the requests, we can use the parameters passed to the handler. Each time an <code>ajaxSuccess</code> handler is executed, it is passed the event object, the <code>XMLHttpRequest</code> object, and the settings object that was used in the creation of the request. For example, we can restrict our callback to only handling events dealing with a particular URL:</p>
 
-<p><strong>Note:</strong> You can get the returned ajax contents by looking at <code>xhr.responseXML</code> or <code>xhr.responseHTML</code> for xml and html respectively.</p>
+<p><strong>Note:</strong> You can get the returned ajax contents by looking at <code>xhr.responseXML</code> or <code>xhr.responseText</code> for xml and html respectively.</p>
 
 	  <pre>$('.log').ajaxSuccess(function(e, xhr, settings) {
   if (settings.url == 'ajax/test.html') {
     $(this).text('Triggered ajaxSuccess handler. The ajax response was:' 
-                     + xhr.responseHTML );
+                     + xhr.responseText );
   }
 });</pre>
   </longdesc>
@@ -10158,7 +10168,6 @@ alert( $(this).text() );
 <category name="Global Ajax Event Handlers"/>
 <category name="Version 1.0"/>
 </entry>
-
 
 <entry type='method' name="ajaxStop" return="jQuery">
   <desc>Register a handler to be called when all Ajax requests have completed. This is an <a href='http://docs.jquery.com/Ajax_Events'>Ajax Event</a>.</desc>
@@ -10182,14 +10191,14 @@ alert( $(this).text() );
     <pre>$('.trigger').click(function() {
   $('.result').load('ajax/test.html');
 });</pre>
-    <p>When the user clicks the button and the Ajax request completes, the log message is displayed.</p>
+    <p>When the user clicks the element with class <code>trigger</code> and the Ajax request completes, the log message is displayed.</p>
   	<p>Because <code>.ajaxStop()</code> is implemented as a method of jQuery object instances, we can use the <code>this</code> keyword as we do here to refer to the selected elements within the callback function.</p>
   </longdesc>
   <example>
     <desc>Hide a loading message after all the Ajax requests have stopped.</desc>
     <code><![CDATA[$("#loading").ajaxStop(function(){
       $(this).hide();
-      });]]></code>
+});]]></code>
   </example>
 <category name="Global Ajax Event Handlers"/>
 <category name="Version 1.0"/>
@@ -10215,7 +10224,7 @@ alert( $(this).text() );
 				<pre>$('.trigger').click(function() {
   $('.result').load('ajax/test.html');
 });</pre>
-				<p>When the user clicks the button and the Ajax request is sent, the log message is displayed.</p>
+				<p>When the user clicks the element with class <code>trigger</code> and the Ajax request is sent, the log message is displayed.</p>
 
 				<p><strong>Note:</strong> Because <code>.ajaxStart()</code> is implemented as a method of jQuery object instances, we can use the <code>this</code> keyword as we do here to refer to the selected elements within the callback function.</p>
 </longdesc>
@@ -10250,7 +10259,7 @@ alert( $(this).text() );
     <pre>$('.trigger').click(function() {
   $('.result').load('ajax/test.html');
 });</pre>
-    <p>When the user clicks the button and the Ajax request is about to begin, the log message is displayed.</p>
+    <p>When the user clicks the element with class <code>trigger</code> and the Ajax request is about to begin, the log message is displayed.</p>
 
     <p><strong>Note:</strong> Because <code>.ajaxSend()</code> is implemented as a method of jQuery instances, we can use the <code>this</code> keyword as we do here to refer to the selected elements within the callback function.</p>
 
@@ -11694,8 +11703,7 @@ div {
   </example>
 <category name="Custom"/>
 <category name="Version 1.0"/>
-<note type="additional">All jQuery effects, including <code>.animate()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.animate()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
             <entry type='method' name="prevAll" return="jQuery">
               <signature>
                 <added>1.2</added>
@@ -11935,8 +11943,7 @@ div { background:blue; }
 <category name="Fading"/>
 <category name="Version 1.0"/>
 <category name="Version 1.4.3"/>
-<note type="additional">All jQuery effects, including <code>.fadeTo()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.fadeTo()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
 
 <entry type='method' name="fadeOut" return="jQuery">
   <desc>Hide the matched elements by fading them to transparent.</desc>
@@ -12073,8 +12080,7 @@ button { float:left; margin:5px 10px 5px 0; }
 <category name="Fading"/>
 <category name="Version 1.0"/>
 <category name="Version 1.4.3"/>
-<note type="additional">All jQuery effects, including <code>.fadeOut()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.fadeOut()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
 <entry type='method' name="parents" return="jQuery">
   <signature>
     <added>1.0</added>
@@ -12278,8 +12284,7 @@ $("span").click(function () {
 <category name="Fading"/>
 <category name="Version 1.0"/>
 <category name="Version 1.4.3"/>
-<note type="additional">All jQuery effects, including <code>.fadeIn()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.fadeIn()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
             <entry type='method' name="parent" return="jQuery">
               <signature>
                 <added>1.0</added>
@@ -12526,8 +12531,7 @@ $("span").click(function () {
 <category name="Sliding"/>
 <category name="Version 1.0"/>
 <category name="Version 1.4.3"/>
-<note type="additional">All jQuery effects, including <code>.slideToggle()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.slideToggle()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
 <entry type='method' name="jQuery.post" return="jqXHR">
   <signature>
     <added>1.0</added>
@@ -12769,8 +12773,7 @@ $("span").click(function () {
 <category name="Sliding"/>
 <category name="Version 1.0"/>
 <category name="Version 1.4.3"/>
-<note type="additional">All jQuery effects, including <code>.slideUp()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.slideUp()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
             <entry type='method' name="nextAll" return="jQuery">
               <signature>
                 <added>1.2</added>
@@ -12982,8 +12985,7 @@ margin:10px; }
 <category name="Sliding"/>
 <category name="Version 1.0"/>
 <category name="Version 1.4.3"/>
-<note type="additional">All jQuery effects, including <code>.slideDown()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note><note type="additional">Because of the nature of <a href="https://developer.mozilla.org/en/DOM/window.mozRequestAnimationFrame"><code>requestAnimationFrame()</code></a>, you should never queue animations using a <code>setInterval</code> or <code>setTimeout</code> loop. In order to preserve CPU resources, browsers that support <code>requestAnimationFrame</code> will not update animations when the window/tab is not displayed. If you continue to queue animations via <code>setInterval</code> or <code>setTimeout</code> while animation is paused, all of the queued animations will begin playing when the window/tab regains focus. To avoid this potential problem, use the callback of your last animation in the loop, or append a function to the elements <a href="http://api.jquery.com/queue"><code>.queue()</code></a> to set the timeout to start the next animation.
-</note></entry>
+<note type="additional">All jQuery effects, including <code>.slideDown()</code>, can be turned off globally by setting  <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="http://api.jquery.com/jquery.fx.off">jQuery.fx.off</a>.</note></entry>
 <entry type='method' name="find" return="jQuery">
   <signature>
     <added>1.0</added>
@@ -14339,6 +14341,12 @@ The value of this property is typically equal to <code>document</code>, as this 
                 <added>1.4</added>
                 <argument name="function(index)" type="Function">
                     <desc>A function used as a test for each element in the set. <code>this</code> is the current DOM element.</desc>
+                </argument>
+              </signature>
+              <signature>
+                <added>1.4</added>
+                <argument name="jQuery object" type="Object">
+                  <desc>An existing jQuery object to match the current set of elements against.</desc>
                 </argument>
               </signature>
               <desc>Remove elements from the set of matched elements.</desc>
@@ -16646,6 +16654,7 @@ $('#copy-correct')
 &lt;/div&gt;</pre>
 <p>If we had any number of nested elements inside <code>&lt;div class="hello"&gt;</code>, they would be removed, too. </p>
   <p>To avoid memory leaks, jQuery removes other constructs such as data and event handlers from the child elements before removing the elements themselves.</p>
+  <p>If you want to remove elements without destroying their data or event handlers (so they can be re-added later), use .detach() instead.</p>
   </longdesc>
   <example>
     <desc>Removes all child nodes (including text nodes) from all paragraphs</desc>
@@ -22213,10 +22222,6 @@ $( "#dramaBtn" ).click( function() {
   </plugins>
   </api>
 
-<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
-
-Page Caching using disk: basic (Requested URI is rejected)
-Database Caching 79/143 queries in 0.087 seconds using disk: basic
-Object Caching 4034/4211 objects using disk: basic
-
-Served from: api.jquery.com @ 2011-12-16 00:22:49 -->
+<!-- Dynamic page generated in 0.623 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2012-01-11 09:40:22 -->
+<!-- Compression = gzip -->

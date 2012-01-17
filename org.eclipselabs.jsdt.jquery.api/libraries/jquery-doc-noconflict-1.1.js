@@ -220,7 +220,7 @@ jQueryObject.prototype.ready = function(handler) {};
  * Execute all handlers and behaviors attached to the matched elements for the given event type.
  * @since 1.0
  * @param {String} eventType A string containing a JavaScript event type, such as <code>click</code> or <code>submit</code>.
- * @param {Object} extraParameters Additional parameters to pass along to the event handler.
+ * @param {Object} [extraParameters] Additional parameters to pass along to the event handler.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.trigger = function(eventType, extraParameters) {};

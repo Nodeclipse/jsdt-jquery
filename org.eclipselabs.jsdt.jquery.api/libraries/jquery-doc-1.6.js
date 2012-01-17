@@ -412,7 +412,7 @@ jQueryObject.prototype.live = function(events, handler) {};
  * Execute all handlers attached to an element for an event.
  * @since 1.2
  * @param {String} eventType A string containing a JavaScript event type, such as <code>click</code> or <code>submit</code>.
- * @param {Array} extraParameters An array of additional parameters to pass along to the event handler.
+ * @param {Array} [extraParameters] An array of additional parameters to pass along to the event handler.
  * @returns {Object}
  */
 jQueryObject.prototype.triggerHandler = function(eventType, extraParameters) {};
@@ -420,7 +420,7 @@ jQueryObject.prototype.triggerHandler = function(eventType, extraParameters) {};
  * Execute all handlers and behaviors attached to the matched elements for the given event type.
  * @since 1.0
  * @param {String} eventType A string containing a JavaScript event type, such as <code>click</code> or <code>submit</code>.
- * @param {Object} extraParameters Additional parameters to pass along to the event handler.
+ * @param {Object} [extraParameters] Additional parameters to pass along to the event handler.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.trigger = function(eventType, extraParameters) {};

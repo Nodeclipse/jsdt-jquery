@@ -17,11 +17,16 @@ import javax.annotation.Generated;
 @Generated("org.eclipselabs.jsdt.jquery.core.model.CallbackMethodGenerator")
 public class JQueryCallbackMethodsGenerator {
 
-  public JQueryCallbackMethods createCallbackMethods() {
-    JQueryCallbackMethods callbacks = new JQueryCallbackMethods();
+ public JQueryCallbackMethods createCallbackMethods() {
+   JQueryCallbackMethods callbacks = new JQueryCallbackMethods();
+    callbacks.addCallbackMethod("off", 3, 2);
+    callbacks.addCallbackMethod("on", 4, 3);
     callbacks.addCallbackMethod("toggle", 3, 0);
     callbacks.addCallbackMethod("toggle", 3, 1);
     callbacks.addCallbackMethod("toggle", 3, 2);
+    callbacks.addCallbackMethod("undelegate", 3, 2);
+    callbacks.addCallbackMethod("delegate", 3, 2);
+    callbacks.addCallbackMethod("delegate", 4, 3);
     callbacks.addCallbackMethod("focusout", 1, 0);
     callbacks.addCallbackMethod("focusout", 2, 1);
     callbacks.addCallbackMethod("focusin", 1, 0);
@@ -70,9 +75,13 @@ public class JQueryCallbackMethodsGenerator {
     callbacks.addCallbackMethod("unload", 2, 1);
     callbacks.addCallbackMethod("load", 1, 0);
     callbacks.addCallbackMethod("load", 2, 1);
+    callbacks.addCallbackMethod("live", 2, 1);
+    callbacks.addCallbackMethod("live", 3, 2);
+    callbacks.addCallbackMethod("one", 3, 2);
+    callbacks.addCallbackMethod("one", 4, 3);
     callbacks.addCallbackMethod("unbind", 2, 1);
     callbacks.addCallbackMethod("bind", 3, 2);
-    return callbacks;
-  }
+   return callbacks;
+ }
 
 }
