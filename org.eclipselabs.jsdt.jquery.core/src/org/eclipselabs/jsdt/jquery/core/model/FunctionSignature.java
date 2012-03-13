@@ -13,6 +13,7 @@
  */
 package org.eclipselabs.jsdt.jquery.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +29,20 @@ class FunctionSignature extends Signature {
 
   List<FunctionArgument> getArguments() {
     return this.arguments;
+  }
+  
+  List<List<FunctionArgument>> getArgumentCombinations() {
+      List<List<FunctionArgument>> combinations = new ArrayList<List<FunctionArgument>>(1);
+      combinations.add(this.arguments);
+      for (int i = this.arguments.size() - 1; i >= 0; --i) {
+          if (this.arguments.get(i).isOptional()) {
+            List<FunctionArgument> last = combinations.get(combinations.size() - 1);
+            List<FunctionArgument> current = new ArrayList<FunctionArgument>(last);
+            current.remove(i);
+            combinations.add(current);
+        }
+      }
+      return combinations;
   }
 
 }

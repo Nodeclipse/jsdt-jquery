@@ -45,24 +45,25 @@ public class CallbackMethodGenerator extends WriterSupport {
 
     List<FunctionSignature> signatures = function.getSignaturesInVersion(JQueryApiPlugin.MAX_VERSION);
     for (FunctionSignature signature : signatures) {
+        for (List<FunctionArgument> functionArguments : signature.getArgumentCombinations()) {
+            List<Integer> callbackIndices = null;
+            int argumentCount = functionArguments.size();
+            for (int i = 0; i < argumentCount; ++i) {
+                FunctionArgument argument = functionArguments.get(i);
+                if (this.isEventCallback(argument)) {
+                    if (callbackIndices == null) {
+                        callbackIndices = new ArrayList<Integer>(3);
+                    }
+                    callbackIndices.add(i);
+                }
+            }
+            if (callbackIndices != null) {
+                for (Integer callbackIndex : callbackIndices) {
+                    this.writeLine("    callbacks.addCallbackMethod(\"" + function.getName() + "\", " + argumentCount + ", " + callbackIndex + ");");
+                }
+            }
 
-      List<Integer> callbackIndices = null;
-      List<FunctionArgument> functionArguments = signature.getArguments();
-      int argumentCount = functionArguments.size();
-      for (int i = 0; i < argumentCount; ++i) {
-        FunctionArgument argument = functionArguments.get(i);
-        if (this.isEventCallback(argument)) {
-          if (callbackIndices == null) {
-            callbackIndices = new ArrayList<Integer>(3);
-          }
-          callbackIndices.add(i);
         }
-      }
-      if (callbackIndices != null) {
-        for (Integer callbackIndex : callbackIndices) {
-          this.writeLine("    callbacks.addCallbackMethod(\"" + function.getName() + "\", " + argumentCount + ", " + callbackIndex + ");");
-        }
-      }
     }
 
   }

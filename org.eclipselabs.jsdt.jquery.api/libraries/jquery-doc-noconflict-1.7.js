@@ -1206,7 +1206,7 @@ jQueryEvent.prototype.timeStamp = 1;
  */
 jQueryEvent.prototype.result = {};
 /**
- *  For key or button events, this attribute indicates the specific button or key that was pressed.  
+ *  For key or mouse events, this property indicates the specific key or button that was pressed.  
  * @type {Number}
  */
 jQueryEvent.prototype.which = 1;
@@ -1231,8 +1231,7 @@ jQueryEvent.prototype.currentTarget = null;
  */
 jQueryEvent.prototype.relatedTarget = null;
 /**
- *  The optional data passed to jQuery.fn.bind when the current executing handler was bound.  
- * @type {Anything}
+ * An optional data map passed to an event method when the current executing handler is bound.  
  */
 jQueryEvent.prototype.data = {};
 /**
