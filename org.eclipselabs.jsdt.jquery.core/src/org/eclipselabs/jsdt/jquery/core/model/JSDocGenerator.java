@@ -436,11 +436,11 @@ public class JSDocGenerator extends WriterSupport {
 
     String defaultValue = DEFAULT_VALUES.get(returnType);
     if (defaultValue == null) {
-        if (property.getName().equals("data") && property.getOwner().endsWith("event")) {
-            defaultValue = DEFAULT_VALUES.get("Object");
-        } else {
-            throw new RuntimeException("no known default type for: " + returnType);
-        }
+      if (property.getName().equals("data") && property.getOwner().endsWith("event")) {
+        defaultValue = DEFAULT_VALUES.get("Object");
+      } else {
+        throw new RuntimeException("no known default type for: " + returnType);
+      }
     }
     this.write(defaultValue);
 

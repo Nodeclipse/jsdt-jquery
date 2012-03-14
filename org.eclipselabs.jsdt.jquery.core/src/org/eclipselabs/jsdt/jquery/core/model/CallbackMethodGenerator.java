@@ -45,25 +45,25 @@ public class CallbackMethodGenerator extends WriterSupport {
 
     List<FunctionSignature> signatures = function.getSignaturesInVersion(JQueryApiPlugin.MAX_VERSION);
     for (FunctionSignature signature : signatures) {
-        for (List<FunctionArgument> functionArguments : signature.getArgumentCombinations()) {
-            List<Integer> callbackIndices = null;
-            int argumentCount = functionArguments.size();
-            for (int i = 0; i < argumentCount; ++i) {
-                FunctionArgument argument = functionArguments.get(i);
-                if (this.isEventCallback(argument)) {
-                    if (callbackIndices == null) {
-                        callbackIndices = new ArrayList<Integer>(3);
-                    }
-                    callbackIndices.add(i);
-                }
+      for (List<FunctionArgument> functionArguments : signature.getArgumentCombinations()) {
+        List<Integer> callbackIndices = null;
+        int argumentCount = functionArguments.size();
+        for (int i = 0; i < argumentCount; ++i) {
+          FunctionArgument argument = functionArguments.get(i);
+          if (this.isEventCallback(argument)) {
+            if (callbackIndices == null) {
+              callbackIndices = new ArrayList<Integer>(3);
             }
-            if (callbackIndices != null) {
-                for (Integer callbackIndex : callbackIndices) {
-                    this.writeLine("    callbacks.addCallbackMethod(\"" + function.getName() + "\", " + argumentCount + ", " + callbackIndex + ");");
-                }
-            }
-
+            callbackIndices.add(i);
+          }
         }
+        if (callbackIndices != null) {
+          for (Integer callbackIndex : callbackIndices) {
+            this.writeLine("    callbacks.addCallbackMethod(\"" + function.getName() + "\", " + argumentCount + ", " + callbackIndex + ");");
+          }
+        }
+
+      }
     }
 
   }
@@ -111,17 +111,17 @@ public class CallbackMethodGenerator extends WriterSupport {
 
   private void writeHeader() {
     // TODO read file instead of hard code
-    this.writeLine("/*"); 
-    this.writeLine(" * *****************************************************************************"); 
+    this.writeLine("/*");
+    this.writeLine(" * *****************************************************************************");
     this.writeLine(" * Copyright (c) 2011 Philippe Marschall and others.");
-    this.writeLine(" * All rights reserved. This program and the accompanying materials"); 
-    this.writeLine(" * are made available under the terms of the Eclipse Public License v1.0"); 
+    this.writeLine(" * All rights reserved. This program and the accompanying materials");
+    this.writeLine(" * are made available under the terms of the Eclipse Public License v1.0");
     this.writeLine(" * which accompanies this distribution, and is available at");
     this.writeLine(" * http://www.eclipse.org/legal/epl-v10.html");
     this.writeLine(" *");
-    this.writeLine(" * Contributors:"); 
-    this.writeLine(" *     Philippe Marschall"); 
-    this.writeLine(" * *****************************************************************************"); 
+    this.writeLine(" * Contributors:");
+    this.writeLine(" *     Philippe Marschall");
+    this.writeLine(" * *****************************************************************************");
     this.writeLine(" */");
     this.writeLine("package org.eclipselabs.jsdt.jquery.api.infer;");
     this.writeNewLine();
