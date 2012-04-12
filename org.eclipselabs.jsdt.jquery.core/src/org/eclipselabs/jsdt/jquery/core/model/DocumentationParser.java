@@ -534,7 +534,9 @@ public class DocumentationParser {
           this.consumeElement("height", reader);
         } else {
           String message = "unexpected element \"" + localName + "\" expected one of: "
-              +" \"desc\", \"code\", \"html\", \"css\", \"results\"";
+              + " \"desc\", \"code\", \"html\", \"css\", \"results\" context("
+              + " description " + description + " code " + code + " css " + css
+              + " results " + results + " html " + html;
           throw new DocumentationValidationException(message);
         }
       } else if (event == END_ELEMENT) {
