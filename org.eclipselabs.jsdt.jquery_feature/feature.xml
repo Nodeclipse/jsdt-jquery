@@ -2,7 +2,7 @@
 <feature
       id="org.eclipselabs.jsdt.jquery_feature"
       label="%feature.name"
-      version="1.4.1.qualifier"
+      version="1.5.0.qualifier"
       provider-name="%feature.provider">
 
    <description url="http://code.google.com/a/eclipselabs.org/p/jsdt-jquery/">
