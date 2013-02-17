@@ -68,9 +68,9 @@ abstract class DocumentationEntry implements Documented {
   @Override
   public boolean isPresentIn(Version version) {
     if (this.removed == null) {
-      return false;
+      return true;
     } else if (SimpleVersion.isVersionString(this.removed)) {
-      return version.compareTo(SimpleVersion.fromString(this.removed)) >= 0;
+      return version.compareTo(SimpleVersion.fromString(this.removed)) < 0;
     } else {
       return true;
     }
