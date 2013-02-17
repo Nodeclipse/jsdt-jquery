@@ -56,9 +56,6 @@ public class Property extends DocumentedMember implements JQueryMember {
   }
 
   boolean isIncludedIn(Version version) {
-    if (version == JQueryApiPlugin.MAX_VERSION) {
-      return true;
-    }
     for (Signature signature : this.signatures) {
       if (signature.isIncludedIn(version)) {
         return true;

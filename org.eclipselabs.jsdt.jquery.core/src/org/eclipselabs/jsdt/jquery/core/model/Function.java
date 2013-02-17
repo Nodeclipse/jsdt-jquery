@@ -55,17 +55,13 @@ public class Function extends DocumentedMember implements JQueryMember {
   }
 
   public List<FunctionSignature> getSignaturesInVersion(Version maximumVersion) {
-    if (maximumVersion == JQueryApiPlugin.MAX_VERSION) {
-      return Collections.unmodifiableList(this.signatures);
-    } else {
-      List<FunctionSignature> signaturesInVersion = new ArrayList<FunctionSignature>(this.signatures.size());
-      for (FunctionSignature signature : this.signatures) {
-        if (signature.isIncludedIn(maximumVersion)) {
-          signaturesInVersion.add(signature);
-        }
+    List<FunctionSignature> signaturesInVersion = new ArrayList<FunctionSignature>(this.signatures.size());
+    for (FunctionSignature signature : this.signatures) {
+      if (signature.isIncludedIn(maximumVersion)) {
+        signaturesInVersion.add(signature);
       }
-      return signaturesInVersion;
     }
+    return signaturesInVersion;
   }
 
 }
