@@ -69,7 +69,7 @@ public class CallbackMethodGenerator extends WriterSupport {
   }
 
   private boolean isEventCallback(FunctionArgument argument) {
-    return "Function".equals(argument.getType())
+    return argument.getTypes().contains("Function")
         && "handler(eventObject)".equals(argument.getName());
   }
 

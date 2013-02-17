@@ -15,17 +15,19 @@ package org.eclipselabs.jsdt.jquery.core.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 import org.eclipselabs.jsdt.jquery.core.api.JQueryArgument;
 
 
 
+// TODO rename to property
 class Option extends Argument {
 
   private final String added;
 
-  Option(String name, String type, String added, String defaultValue, String description) {
-    super(name, type, description, defaultValue);
+  Option(String name, Set<String> types, String added, String defaultValue, String description) {
+    super(name, types, description, defaultValue);
     this.added = added;
   }
 

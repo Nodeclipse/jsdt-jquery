@@ -16,8 +16,8 @@ package org.eclipselabs.jsdt.jquery.core.model;
 
 public class PropertySignature extends Signature {
 
-  PropertySignature(String added, String deprecated) {
-    super(added, deprecated);
+  PropertySignature(String added, String removed, String deprecated) {
+    super(added, removed, deprecated);
   }
 
 }

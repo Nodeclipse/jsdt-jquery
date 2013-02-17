@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
@@ -237,6 +238,10 @@ public class JSDocGenerator extends WriterSupport {
   }
 
   private void writeFunction(Function function, String owner) {
+    if (!function.isPresentIn(this.maximumVersion)) {
+      return;
+    }
+    
     List<FunctionSignature> signatures = function.getSignaturesInVersion(this.maximumVersion);
     if (!signatures.isEmpty()) {
       this.writeStart();
@@ -313,17 +318,11 @@ public class JSDocGenerator extends WriterSupport {
     StringBuilder buffer = new StringBuilder();
 
     //type
-    String type = argument.getType();
-    if (!StringUtils.isEmpty(type)) {
+    Set<String> types = argument.getTypes();
+    if (!types.isEmpty()) {
       buffer.append('{');
-      //buffer.append(StringUtils.replaceChars(type, ',', '|')); // different types may be allowed eg. String,Number
-      int commaIndex = type.indexOf(',');
-      if (commaIndex == -1) {
-        buffer.append(type);
-      } else {
-        //FIXME hax for JSDT bug, can't have multiple types
-        buffer.append(type.substring(0, commaIndex));
-      }
+      //FIXME hax for JSDT bug, can't have multiple types
+      buffer.append(types.iterator().next());
       buffer.append('}');
       buffer.append(' ');
     }
@@ -354,7 +353,7 @@ public class JSDocGenerator extends WriterSupport {
 
     this.writeTag("param", buffer.toString());
 
-    if ("Map".equals(type)) {
+    if (types.contains("Map")) {
       Collection<? extends JQueryArgument> options = argument.getOptions();
       if (!options.isEmpty()) {
         String subPrefix = argumentName + '.';
@@ -369,7 +368,7 @@ public class JSDocGenerator extends WriterSupport {
   private static String extractArgumentName(JQueryArgument argument) {
 
     String nameWithArguments = argument.getName();
-    if (!"Function".equals(argument.getType())) {
+    if (!argument.getTypes().contains("Function")) {
       return nameWithArguments;
     }
     int parenIndex = nameWithArguments.indexOf('(');
@@ -417,7 +416,9 @@ public class JSDocGenerator extends WriterSupport {
   }
 
   private void writeProperty(Property property, String owner) {
-
+    if (!property.isPresentIn(this.maximumVersion)) {
+      return;
+    }
 
     this.writeStart();
     this.writeCommentLine(property.getDescription());

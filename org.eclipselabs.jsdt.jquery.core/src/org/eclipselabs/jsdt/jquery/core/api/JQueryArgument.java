@@ -14,11 +14,12 @@
 package org.eclipselabs.jsdt.jquery.core.api;
 
 import java.util.Collection;
+import java.util.Set;
 
 
 public interface JQueryArgument {
 
-  String getType();
+  Set<String> getTypes();
 
   boolean isOptional();
 

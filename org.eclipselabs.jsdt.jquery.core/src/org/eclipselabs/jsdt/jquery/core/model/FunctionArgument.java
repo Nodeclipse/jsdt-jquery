@@ -14,6 +14,7 @@
 package org.eclipselabs.jsdt.jquery.core.model;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.eclipselabs.jsdt.jquery.core.api.JQueryArgument;
 
@@ -24,8 +25,8 @@ class FunctionArgument extends Argument {
   private final boolean optional;
   private final Collection<Option> options;
 
-  FunctionArgument(String name, String type, String description, boolean optional, String defaultValue, Collection<Option> options) {
-    super(name, type, description, defaultValue);
+  FunctionArgument(String name, Set<String> types, String description, boolean optional, String defaultValue, Collection<Option> options) {
+    super(name, types, description, defaultValue);
     this.optional = optional;
     this.options = options;
   }
@@ -37,6 +38,7 @@ class FunctionArgument extends Argument {
 
   @Override
   public Collection<? extends JQueryArgument> getOptions() {
+    // TODO Auto-generated method stub
     return this.options;
   }
 

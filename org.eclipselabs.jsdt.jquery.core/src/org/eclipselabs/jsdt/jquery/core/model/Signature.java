@@ -20,12 +20,23 @@ import org.eclipselabs.jsdt.jquery.api.Version;
 public class Signature {
 
   private final Version added;
+  
+  private final Version removed;
 
   private final String deprecated;
 
-  Signature(String added, String deprecated) {
+  Signature(String added, String removed, String deprecated) {
     this.added = SimpleVersion.fromString(added);
+    this.removed = toVersionSafe(removed);
     this.deprecated = deprecated;
+  }
+  
+  private static Version toVersionSafe(String s) {
+    if (s == null) {
+      return null;
+    } else {
+      return SimpleVersion.fromString(s);
+    }
   }
 
   public Version getAdded() {
@@ -47,7 +58,9 @@ public class Signature {
   }
 
   boolean isIncludedIn(Version version) {
-    return this.added == null || this.added.compareTo(version) <= 0;
+    boolean isAddes = this.added == null || this.added.compareTo(version) <= 0;
+    boolean isRemoved = this.removed != null && this.removed.compareTo(version) <= 0;
+    return isAddes && !isRemoved;
   }
 
 }

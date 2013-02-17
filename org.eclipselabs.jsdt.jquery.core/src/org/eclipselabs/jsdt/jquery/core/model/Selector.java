@@ -30,8 +30,9 @@ public class Selector extends DocumentationEntry {
       Collection<Example> examples,
       Set<String> categories,
       String sample,
-      String deprecated) {
-    super(name, description, longDescription, examples, categories, deprecated);
+      String deprecated,
+      String removed) {
+    super(name, description, longDescription, examples, categories, deprecated, removed);
     this.sample = sample;
   }
 

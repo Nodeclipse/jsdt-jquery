@@ -21,6 +21,7 @@ public interface Documented {
   String getDescription();
 
   boolean isDeprecatedIn(Version version);
+  boolean isPresentIn(Version version);
 
   String getDeprecated();
 

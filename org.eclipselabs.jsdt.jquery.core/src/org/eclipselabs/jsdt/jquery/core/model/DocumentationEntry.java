@@ -31,19 +31,22 @@ abstract class DocumentationEntry implements Documented {
   private final Set<String> categories;
   private final String name;
   private final String deprecated;
+  private final String removed;
 
   DocumentationEntry(String name,
       String description,
       String longDescription,
       Collection<Example> examples,
       Set<String> categories,
-      String deprecated) {
+      String deprecated,
+      String removed) {
     this.name = name;
     this.description = description;
     this.longDescription = longDescription;
     this.examples = examples;
     this.categories = categories;
     this.deprecated = deprecated;
+    this.removed = removed;
   }
 
   @Override
@@ -61,6 +64,17 @@ abstract class DocumentationEntry implements Documented {
       return true;
     }
   }
+  
+  @Override
+  public boolean isPresentIn(Version version) {
+    if (this.removed == null) {
+      return false;
+    } else if (SimpleVersion.isVersionString(this.removed)) {
+      return version.compareTo(SimpleVersion.fromString(this.removed)) >= 0;
+    } else {
+      return true;
+    }
+  }
 
   @Override
   public String getDeprecated() {
@@ -73,7 +87,5 @@ abstract class DocumentationEntry implements Documented {
   }
 
   public abstract <P> P accept(DocumentationEntryVisitor<P> visitor);
-
-
 
 }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -188,7 +189,7 @@ public class DocumentationParser {
 
   private DocumentationEntry parseEntry(XMLStreamReader reader) throws XMLStreamException {
     int attributeCount = reader.getAttributeCount();
-    String name = null, type = null, returnType = null;
+    String name = null, type = null, returnType = null, removed = null, deprecated = null;
     for (int i = 0; i < attributeCount; ++i) {
       String attributeName = reader.getAttributeLocalName(i);
       if ("type".equals(attributeName)) {
@@ -197,12 +198,15 @@ public class DocumentationParser {
         returnType = reader.getAttributeValue(i);
       }  else if ("name".equals(attributeName)) {
         name = reader.getAttributeValue(i);
+      }  else if ("removed".equals(attributeName)) {
+        removed = reader.getAttributeValue(i);
+      }  else if ("deprecated".equals(attributeName)) {
+        deprecated = reader.getAttributeValue(i);
       }
     }
 
     String sample = null, longDescription = null, description = null;
     Set<String> categories = new HashSet<String>();
-    String deprecated = null;
     //TODO optimize
     List<SignatureInfo> signatures = new ArrayList<SignatureInfo>();
     //TODO optimize
@@ -232,7 +236,7 @@ public class DocumentationParser {
         String localName = reader.getLocalName();
         if ("entry".equals(localName)) {
           DocumentationEntryInstantiator instantiator = DocumentationEntryInstantiator.forType(type);
-          return instantiator.instantiate(name, returnType, description, longDescription, signatures, sample, examples, categories, deprecated);
+          return instantiator.instantiate(name, returnType, description, longDescription, signatures, sample, examples, categories, deprecated, removed);
         }
       }
     }
@@ -253,16 +257,17 @@ public class DocumentationParser {
           String sample,
           Collection<Example> examples,
           Set<String> categories,
-          String deprecated) {
+          String deprecated,
+          String removed) {
         return new Function(name, description, longDescription, examples, categories,
-            this.toMethodSignatures(signatures), returnType, deprecated);
+            this.toMethodSignatures(signatures), returnType, deprecated, removed);
       }
 
 
       private List<FunctionSignature> toMethodSignatures(List<SignatureInfo> signatures) {
         List<FunctionSignature> methodSignatures = new ArrayList<FunctionSignature>(signatures.size());
         for (SignatureInfo each : signatures) {
-          methodSignatures.add(new FunctionSignature(each.added, each.deprecated, each.arguments));
+          methodSignatures.add(new FunctionSignature(each.added, each.removed, each.deprecated, each.arguments));
         }
         return methodSignatures;
       }
@@ -279,16 +284,17 @@ public class DocumentationParser {
           String sample,
           Collection<Example> examples,
           Set<String> categories,
-          String deprecated) {
+          String deprecated,
+          String removed) {
         return new Property(name, description, longDescription, examples, categories,
-            this.toPropertySignatures(signatures), returnType, deprecated);
+            this.toPropertySignatures(signatures), returnType, deprecated, removed);
       }
 
 
       private List<PropertySignature> toPropertySignatures(List<SignatureInfo> signatures) {
         List<PropertySignature> propertySignatures = new ArrayList<PropertySignature>(signatures.size());
         for (SignatureInfo each : signatures) {
-          propertySignatures.add(new PropertySignature(each.added, each.deprecated));
+          propertySignatures.add(new PropertySignature(each.added, each.removed, each.deprecated));
         }
         return propertySignatures;
       }
@@ -305,8 +311,9 @@ public class DocumentationParser {
           String sample,
           Collection<Example> examples,
           Set<String> categories,
-          String deprecated) {
-        return new Selector(name, description, longDescription, examples, categories, sample, deprecated);
+          String deprecated,
+          String removed) {
+        return new Selector(name, description, longDescription, examples, categories, sample, deprecated, removed);
       }
     };
 
@@ -336,7 +343,8 @@ public class DocumentationParser {
         String sample,
         Collection<Example> examples,
         Set<String> categories,
-        String deprecated);
+        String deprecated,
+        String removed);
 
     private final String type;
 
@@ -347,8 +355,7 @@ public class DocumentationParser {
   }
 
   private SignatureInfo parseSignature(XMLStreamReader reader) throws XMLStreamException {
-    String added = null;
-    String deprecated = null;
+    String added = null, deprecated = null, removed = null, sample = null;
     //TODO optimize
     List<FunctionArgument> arguments = new ArrayList<FunctionArgument>();
     while (reader.hasNext()) {
@@ -361,9 +368,14 @@ public class DocumentationParser {
           arguments.add(this.parseArgument(reader));
         } else if ("deprecated".equals(localName)) {
           deprecated = this.parseStringContent("deprecated", reader);
+        } else if ("removed".equals(localName)) {
+          removed = this.parseStringContent("removed", reader);
+        } else if ("sample".equals(localName)) {
+          // only for selectors
+          sample = this.parseStringContent("sample", reader);
         } else {
           String message = "unexpected element \"" + localName + "\" expected one of: "
-              +" \"added\", \"argument\"";
+              +" \"added\", \"removed\", \"argument\", \"sample\"";
           throw new DocumentationValidationException(message);
         }
       } else if (event == END_ELEMENT) {
@@ -372,14 +384,15 @@ public class DocumentationParser {
           String message = "unexpected end element \"" + localName + "\" expected: \"signature\"";
           throw new DocumentationValidationException(message);
         }
-        return new SignatureInfo(added, arguments, deprecated);
+        return new SignatureInfo(added, removed, arguments, deprecated);
       }
     }
     throw new DocumentationValidationException("end element missing for \"example\"");
   }
 
   private FunctionArgument parseArgument(XMLStreamReader reader) throws XMLStreamException {
-    String name = null, type = null, defaultValue = null;
+    String name = null, defaultValue = null;
+    Set<String> types = new HashSet<String>(1);
     boolean optional = false;
     for (int i = 0; i < reader.getAttributeCount(); i++) {
       String attributeName = reader.getAttributeLocalName(i);
@@ -387,7 +400,7 @@ public class DocumentationParser {
       if ("name".equals(attributeName)) {
         name = attributeValue;
       } else if ("type".equals(attributeName)) {
-        type = attributeValue;
+        types.add(attributeValue);
       } else if ("optional".equals(attributeName)) {
         optional = Boolean.parseBoolean(attributeValue);
       } else if ("default".equals(attributeName)) {
@@ -408,8 +421,13 @@ public class DocumentationParser {
         String localName = reader.getLocalName();
         if ("desc".equals(localName)) {
           description = this.parseStringContent("desc", reader);
-        } else if ("option".equals(localName)) {
-          options.add(this.parseOption(reader));
+        } else if ("type".equals(localName)) {
+          types.add(this.parseType(reader));
+        } else if ("property".equals(localName)) {
+            options.add(this.parseProperty(reader));
+        } else if ("argument".equals(localName)) {
+          // TODO function argument
+          this.parseArgument(reader);
         } else {
           String message = "unexpected start of element \"" + localName +  "\" "
               + " expected one of: \"desc\", \"option\"";
@@ -418,7 +436,7 @@ public class DocumentationParser {
       } else if (event == END_ELEMENT) {
         String localName = reader.getLocalName();
         if ("argument".equals(localName)) {
-          return new FunctionArgument(name, type, description, optional, defaultValue, options);
+          return new FunctionArgument(name, types, description, optional, defaultValue, options);
         } else {
           String message = "unexpected start of element \"" + localName +  "\" "
               + " expected: \"argument\"";
@@ -431,15 +449,52 @@ public class DocumentationParser {
     throw new DocumentationValidationException(message);
   }
 
-  private Option parseOption(XMLStreamReader reader) throws XMLStreamException {
-    String name = null, type = null, added = null, defaultValue = null, description = null;
+  private String parseType(XMLStreamReader reader) throws XMLStreamException {
+    String name = null;
+    for (int i = 0; i < reader.getAttributeCount(); ++i) {
+      String attributeName = reader.getAttributeLocalName(i);
+      String attributeValue = reader.getAttributeValue(i);
+      if ("name".equals(attributeName)) {
+        name = attributeValue;
+      } else {
+        String message = "unexpected attribute \"" + attributeName +  "\" "
+            + " expected one of: \"name\", \"type\", \"default\", \"added\"";
+        throw new DocumentationValidationException(message);
+      }
+    }
+
+    while (reader.hasNext()) {
+      int event = reader.next();
+      if (event == START_ELEMENT) {
+        String localName = reader.getLocalName();
+          String message = "unexpected start of element \"" + localName +  "\" "
+              + " expected: \"desc\"";
+          throw new DocumentationValidationException(message);
+      } else if (event == END_ELEMENT) {
+        String localName = reader.getLocalName();
+        if ("type".equals(localName)) {
+          return name;
+        } else {
+          String message = "unexpected end of element \"" + localName +  "\" "
+              + " expected: \"category\"";
+          throw new DocumentationValidationException(message);
+        }
+      }
+    }
+    String message = "missing end of element \"option\"";
+    throw new DocumentationValidationException(message);
+  }
+  
+  private Option parseProperty(XMLStreamReader reader) throws XMLStreamException {
+    String name = null, added = null, defaultValue = null, description = null;
+    Set<String> types = new HashSet<String>(1);
     for (int i = 0; i < reader.getAttributeCount(); ++i) {
       String attributeName = reader.getAttributeLocalName(i);
       String attributeValue = reader.getAttributeValue(i);
       if ("name".equals(attributeName)) {
         name = attributeValue;
       } else if("type".equals(attributeName)) {
-        type = attributeValue;
+        types.add(attributeValue);
       } else if("default".equals(attributeName)) {
         defaultValue = attributeValue;
       } else if("added".equals(attributeName)) {
@@ -457,6 +512,14 @@ public class DocumentationParser {
         String localName = reader.getLocalName();
         if ("desc".equals(localName)) {
           description = this.parseStringContent("desc", reader);
+        } else if ("type".equals(localName)) {
+          types.add(this.parseType(reader));
+        } else if ("argument".equals(localName)) {
+          // TODO function argument
+          this.parseArgument(reader);
+        } else if ("return".equals(localName)) {
+          // TODO function return
+          this.consumeElement("return", reader);
         } else {
           String message = "unexpected start of element \"" + localName +  "\" "
               + " expected: \"desc\"";
@@ -464,8 +527,8 @@ public class DocumentationParser {
         }
       } else if (event == END_ELEMENT) {
         String localName = reader.getLocalName();
-        if ("option".equals(localName)) {
-          return new Option(name, type, added, defaultValue, description);
+        if ("property".equals(localName)) {
+          return new Option(name, types, added, defaultValue, description);
         } else {
           String message = "unexpected end of element \"" + localName +  "\" "
               + " expected: \"category\"";
@@ -475,16 +538,17 @@ public class DocumentationParser {
     }
     String message = "missing end of element \"option\"";
     throw new DocumentationValidationException(message);
-
-
   }
 
   private String parseCategory(XMLStreamReader reader) throws XMLStreamException {
     String name = null;
+    String slug = null;
     for (int i = 0; i < reader.getAttributeCount(); i++) {
       String attributeName = reader.getAttributeLocalName(i);
       if ("name".equals(attributeName)) {
         name = reader.getAttributeValue(i);
+      } else if ("slug".equals(attributeName)) {
+        slug = reader.getAttributeValue(i);
       }
     }
 
@@ -495,8 +559,10 @@ public class DocumentationParser {
         if ("category".equals(localName)) {
           if (name != null) {
             return name;
+          } else if (slug != null) {
+            return slug;
           } else {
-            String message = "unexpected attribute \"name\"";
+            String message = "missing attribute \"name\" or \"slug\"";
             throw new DocumentationValidationException(message);
           }
         } else {
@@ -509,8 +575,6 @@ public class DocumentationParser {
 
     String message = "missing end of element: \"category\"";
     throw new DocumentationValidationException(message);
-
-
   }
 
   private Example parseExample(XMLStreamReader reader) throws XMLStreamException {
@@ -641,13 +705,16 @@ public class DocumentationParser {
   static final class SignatureInfo {
 
     final String added;
+    
+    final String removed;
 
     final List<FunctionArgument> arguments;
 
     final String deprecated;
 
-    SignatureInfo(String added, List<FunctionArgument> arguments, String deprecated) {
+    SignatureInfo(String added, String removed, List<FunctionArgument> arguments, String deprecated) {
       this.added = added;
+      this.removed = removed;
       this.arguments = arguments;
       this.deprecated = deprecated;
     }

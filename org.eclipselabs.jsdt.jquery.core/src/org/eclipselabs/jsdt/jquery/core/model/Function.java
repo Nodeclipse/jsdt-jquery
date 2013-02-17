@@ -38,8 +38,9 @@ public class Function extends DocumentedMember implements JQueryMember {
       Set<String> categories,
       List<FunctionSignature> signatures,
       String returnType,
-      String deprecated) {
-    super(name, description, longDescription, examples, categories, returnType, deprecated);
+      String deprecated,
+      String removed) {
+    super(name, description, longDescription, examples, categories, returnType, deprecated, removed);
     this.signatures = signatures;
   }
 
