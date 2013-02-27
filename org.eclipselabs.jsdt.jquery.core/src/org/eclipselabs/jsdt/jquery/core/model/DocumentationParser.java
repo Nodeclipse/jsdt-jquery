@@ -228,8 +228,6 @@ public class DocumentationParser {
           categories.add(this.parseCategory(reader));
         } else if ("signature".equals(localName)) {
           signatures.add(this.parseSignature(reader));
-        } else if ("deprecated".equals(localName)) {
-          deprecated = this.parseStringContent("deprecated", reader);
         }
 
       } else if (event == END_ELEMENT) {
@@ -366,8 +364,6 @@ public class DocumentationParser {
           added = this.parseStringContent("added", reader);
         } else if ("argument".equals(localName)) {
           arguments.add(this.parseArgument(reader));
-        } else if ("deprecated".equals(localName)) {
-          deprecated = this.parseStringContent("deprecated", reader);
         } else if ("removed".equals(localName)) {
           removed = this.parseStringContent("removed", reader);
         } else if ("sample".equals(localName)) {
@@ -688,19 +684,6 @@ public class DocumentationParser {
     return factory;
   }
 
-
-  public static void main(String[] args) {
-    long start = System.currentTimeMillis();
-    DocumentationParser parser = new DocumentationParser();
-    InputStream input = DocumentationParser.class.getClassLoader().getResourceAsStream("api.xml");
-    try {
-      parser.parse(input);
-    } catch (DocumentationParseException e) {
-      e.printStackTrace();
-    }
-    long end = System.currentTimeMillis();
-    System.out.printf("finished after %dms%n", end - start);
-  }
 
   static final class SignatureInfo {
 
