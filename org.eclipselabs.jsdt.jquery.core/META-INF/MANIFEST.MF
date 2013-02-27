@@ -14,4 +14,3 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %providerName
 Export-Package: org.eclipselabs.jsdt.jquery.core,
  org.eclipselabs.jsdt.jquery.core.api
-Import-Package: org.apache.commons.lang;version="[2.0.0,3.0.0)"

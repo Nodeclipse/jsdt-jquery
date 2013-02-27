@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipselabs.jsdt.jquery.api.SimpleVersion;
 import org.eclipselabs.jsdt.jquery.api.Version;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryArgument;
@@ -257,7 +256,7 @@ public class JSDocGenerator extends WriterSupport {
         FunctionSignature signature = signatures.get(0);
         this.writeSignature(function, signature, null);
       }
-      if (!StringUtils.isEmpty(returnType)) {
+      if (!isEmpty(returnType)) {
         this.writeTag("returns", '{' + this.fixReturnTypes(returnType) + '}');
       }
       this.writeEnd();
@@ -333,14 +332,14 @@ public class JSDocGenerator extends WriterSupport {
       buffer.append('[');
     }
 
-    if (!StringUtils.isEmpty(prefix)) {
+    if (!isEmpty(prefix)) {
       buffer.append(prefix);
     }
     String argumentName = extractArgumentName(argument);
     buffer.append(argumentName);
     if (optional) {
       String defaultValue = argument.getDefaultValue();
-      if (!StringUtils.isEmpty(defaultValue)) {
+      if (!isEmpty(defaultValue)) {
         buffer.append('=');
         buffer.append(defaultValue);
       }
@@ -407,11 +406,11 @@ public class JSDocGenerator extends WriterSupport {
     if (commaIndex == -1) {
       return type;
     } else {
-      String[] types = StringUtils.split(type, ',');
+      String[] types = type.split(",");
       for (int i = 0; i < types.length; ++i) {
-        types[i] = StringUtils.trim(types[i]);
+        types[i] = types[i].trim();
       }
-      return StringUtils.join(types, '|');
+      return join(types, '|');
     }
   }
 
@@ -426,7 +425,7 @@ public class JSDocGenerator extends WriterSupport {
     this.writeDeprecated(property);
 
     String returnType = property.getReturnType();
-    if (!StringUtils.isEmpty(returnType)) {
+    if (!isEmpty(returnType)) {
       this.writeTag("type", '{' + this.fixPropertyTypes(returnType) + '}');
     }
     this.writeEnd();
@@ -504,6 +503,30 @@ public class JSDocGenerator extends WriterSupport {
     } catch (IOException e) {
       throw new RuntimeException("output failed", e);
     }
+  }
+  
+  private static boolean isEmpty(String s) {
+    return s == null || s.isEmpty(); 
+  }
+
+  private static String join(String[] strings, char delimeter) {
+    if (strings.length == 0) {
+      return "";
+    }
+    int size = strings.length - 1;
+    for (String string : strings) {
+      size += string.length();
+    }
+    StringBuilder buffer = new StringBuilder(size);
+    boolean first = true;
+    for (String string : strings) {
+      if (!first) {
+        buffer.append(delimeter);
+      }
+      buffer.append(string);
+      first = false;
+    }
+    return buffer.toString();
   }
 
   private void writeEnd() {
