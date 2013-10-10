@@ -16,7 +16,7 @@ jQueryObject.prototype.addClass = function(className) {};
 /**
  * Insert content, specified by the parameter, after each element in the set of matched elements.
  * @since 1.0
- * @param {htmlString} content HTML string, DOM element, or jQuery object to insert after each element in the set of matched elements.
+ * @param {Array} content HTML string, DOM element, array of elements, or jQuery object to insert after each element in the set of matched elements.
  * @param {Array} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert after each element in the set of matched elements.
  * @returns {jQueryObject}
  */
@@ -82,7 +82,7 @@ jQueryObject.prototype.animate = function(properties, duration, easing, complete
 /**
  * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
  * @since 1.0
- * @param {htmlString} content DOM element, HTML string, or jQuery object to insert at the end of each element in the set of matched elements.
+ * @param {Array} content DOM element, array of elements, HTML string, or jQuery object to insert at the end of each element in the set of matched elements.
  * @param {Array} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the end of each element in the set of matched elements.
  * @returns {jQueryObject}
  */
@@ -90,7 +90,7 @@ jQueryObject.prototype.append = function(content, content) {};
 /**
  * Insert every element in the set of matched elements to the end of the target.
  * @since 1.0
- * @param {jQuery} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted at the end of the element(s) specified by this parameter.
+ * @param {Array} target A selector, element, HTML string, array of elements, or jQuery object; the matched set of elements will be inserted at the end of the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.appendTo = function(target) {};
@@ -112,7 +112,7 @@ jQueryObject.prototype.attr = function(attributeName, value) {};
 /**
  * Insert content, specified by the parameter, before each element in the set of matched elements.
  * @since 1.0
- * @param {htmlString} content HTML string, DOM element, or jQuery object to insert before each element in the set of matched elements.
+ * @param {Array} content HTML string, DOM element, array of elements, or jQuery object to insert before each element in the set of matched elements.
  * @param {Array} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert before each element in the set of matched elements.
  * @returns {jQueryObject}
  */
@@ -169,6 +169,7 @@ jQueryObject.prototype.clone = function(withDataAndEvents) {};
 jQueryObject.prototype.contents = function() {};
 /**
  * The DOM node context originally passed to <code>jQuery()</code>; if none was passed then context will likely be the document.
+ * @deprecated 1.10
  * @type {Element}
  */
 jQueryObject.prototype.context = null;
@@ -296,12 +297,18 @@ jQueryObject.prototype.find = function(selector) {};
  */
 jQueryObject.prototype.focus = function(handler) {};
 /**
- * Retrieve the DOM elements matched by the jQuery object.
+ * Retrieve one of the DOM elements matched by the jQuery object.
  * @since 1.0
- * @param {Number} [index] A zero-based integer indicating which element to retrieve.
- * @returns {Element|Array}
+ * @param {Integer} index A zero-based integer indicating which element to retrieve.
+ * @returns {Element}
  */
 jQueryObject.prototype.get = function(index) {};
+/**
+ * Retrieve the DOM elements matched by the jQuery object.
+ * @since 1.0
+ * @returns {Array}
+ */
+jQueryObject.prototype.get = function() {};
 /**
  * Determine whether any of the matched elements are assigned the given class.
  * @since 1.2
@@ -371,14 +378,14 @@ jQueryObject.prototype.innerWidth = function() {};
 /**
  * Insert every element in the set of matched elements after the target.
  * @since 1.0
- * @param {jQuery} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted after the element(s) specified by this parameter.
+ * @param {Array} target A selector, element, array of elements, HTML string, or jQuery object; the matched set of elements will be inserted after the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.insertAfter = function(target) {};
 /**
  * Insert every element in the set of matched elements before the target.
  * @since 1.0
- * @param {jQuery} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted before the element(s) specified by this parameter.
+ * @param {Array} target A selector, element, array of elements, HTML string, or jQuery object; the matched set of elements will be inserted before the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.insertBefore = function(target) {};
@@ -392,7 +399,7 @@ jQueryObject.prototype.is = function(selector) {};
 /**
  * Accepts a string containing a CSS selector which is then used to match a set of elements.
  * @since 1.0
- * @param {selector} selector A string containing a selector expression
+ * @param {Selector} selector A string containing a selector expression
  * @param {Element} [context] A DOM Element, Document, or jQuery to use as context
  * @returns {jQueryObject}
  */
@@ -401,7 +408,7 @@ jQueryObject.prototype.jQuery = function(selector, context) {};
  * Creates DOM elements on the fly from the provided string of raw HTML.
  * @since 1.0
  * @param {htmlString} html A string of HTML to create on the fly. Note that this parses HTML, <strong>not</strong> XML.
- * @param {document} [ownerDocument] A document in which the new elements will be created
+ * @param {document} [ownerDocument] A document in which the new elements will be created.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.jQuery = function(html, ownerDocument) {};
@@ -440,7 +447,7 @@ jQueryObject.prototype.keypress = function(handler) {};
 jQueryObject.prototype.keyup = function(handler) {};
 /**
  * The number of elements in the jQuery object.
- * @type {Number}
+ * @type {Integer}
  */
 jQueryObject.prototype.length = 1;
 /**
@@ -594,15 +601,15 @@ jQueryObject.prototype.position = function() {};
 /**
  * Insert content, specified by the parameter, to the beginning of each element in the set of matched elements.
  * @since 1.0
- * @param {htmlString} content DOM element, array of elements, HTML string, or jQuery object to insert at the beginning of each element in the set of matched elements.
- * @param {htmlString} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the beginning of each element in the set of matched elements.
+ * @param {Array} content DOM element, array of elements, HTML string, or jQuery object to insert at the beginning of each element in the set of matched elements.
+ * @param {Array} [content] One or more additional DOM elements, arrays of elements, HTML strings, or jQuery objects to insert at the beginning of each element in the set of matched elements.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.prepend = function(content, content) {};
 /**
  * Insert every element in the set of matched elements to the beginning of the target.
  * @since 1.0
- * @param {jQuery} target A selector, element, HTML string, or jQuery object; the matched set of elements will be inserted at the beginning of the element(s) specified by this parameter.
+ * @param {Array} target A selector, element, HTML string, array of elements, or jQuery object; the matched set of elements will be inserted at the beginning of the element(s) specified by this parameter.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.prependTo = function(target) {};
@@ -680,14 +687,14 @@ jQueryObject.prototype.removeData = function(name) {};
 /**
  * Replace each target element with the set of matched elements.
  * @since 1.2
- * @param {Selector} target A selector expression indicating which element(s) to replace.
+ * @param {Array} target A selector string, jQuery object, DOM element, or array of elements indicating which element(s) to replace.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.replaceAll = function(target) {};
 /**
  * Replace each element in the set of matched elements with the provided new content and return the set of elements that was removed.
  * @since 1.2
- * @param {htmlString} newContent The content to insert. May be an HTML string, DOM element, or jQuery object.
+ * @param {Array} newContent The content to insert. May be an HTML string, DOM element, array of DOM elements, or jQuery object.
  * @returns {jQueryObject}
  */
 jQueryObject.prototype.replaceWith = function(newContent) {};
@@ -739,7 +746,7 @@ jQueryObject.prototype.scrollTop = function(value) {};
  */
 jQueryObject.prototype.select = function(handler) {};
 /**
- * A selector representing selector originally passed to jQuery().
+ * A selector representing selector passed to jQuery(), if any, when creating the original set.
  * @type {String}
  */
 jQueryObject.prototype.selector = "";
@@ -771,7 +778,7 @@ jQueryObject.prototype.siblings = function(selector) {};
 /**
  * Return the number of elements in the jQuery object.
  * @since 1.0
- * @returns {Number}
+ * @returns {Integer}
  */
 jQueryObject.prototype.size = function() {};
 /**
@@ -892,7 +899,6 @@ jQueryObject.prototype.unload = function(handler) {};
 /**
  * Get the current value of the first element in the set of matched elements.
  * @since 1.0
- * @returns {String|Number|Array}
  */
 jQueryObject.prototype.val = function() {};
 /**
@@ -959,23 +965,23 @@ jQueryEvent.prototype.delegateTarget = null;
  */
 jQueryEvent.prototype.namespace = "";
 /**
- * The mouse position relative to the left edge of the document. 
+ * The mouse position relative to the left edge of the document.
  * @type {Number}
  */
 jQueryEvent.prototype.pageX = 1;
 /**
- * The mouse position relative to the top edge of the document. 
+ * The mouse position relative to the top edge of the document.
  * @type {Number}
  */
 jQueryEvent.prototype.pageY = 1;
 /**
- *  If this method is called, the default action of the event will not be triggered. 
+ * If this method is called, the default action of the event will not be triggered.
  * @since 1.0
  * @returns {undefined}
  */
 jQueryEvent.prototype.preventDefault = function() {};
 /**
- * The other DOM element involved in the event, if any. 
+ * The other DOM element involved in the event, if any.
  * @type {Element}
  */
 jQueryEvent.prototype.relatedTarget = null;
@@ -985,7 +991,7 @@ jQueryEvent.prototype.relatedTarget = null;
  */
 jQueryEvent.prototype.result = {};
 /**
- * Prevents the event from bubbling up the DOM tree, preventing any parent handlers from being notified of the event.   
+ * Prevents the event from bubbling up the DOM tree, preventing any parent handlers from being notified of the event.
  * @since 1.0
  */
 jQueryEvent.prototype.stopPropagation = function() {};
@@ -1000,12 +1006,12 @@ jQueryEvent.prototype.target = null;
  */
 jQueryEvent.prototype.timeStamp = 1;
 /**
- *  Describes the nature of the event.  
+ * Describes the nature of the event.
  * @type {String}
  */
 jQueryEvent.prototype.type = "";
 /**
- *  For key or mouse events, this property indicates the specific key or button that was pressed.  
+ * For key or mouse events, this property indicates the specific key or button that was pressed.
  * @type {Number}
  */
 jQueryEvent.prototype.which = 1;

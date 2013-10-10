@@ -13,23 +13,25 @@
  */
 package org.eclipselabs.jsdt.jquery.api;
 
-import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.AssertionFailedException;
 
 
 public class SimpleVersion implements Version {
 
+  private final int major;
   private final int minor;
 
-  SimpleVersion(int minor) {
+  SimpleVersion(int major, int minor) {
+    this.major = major;
     this.minor = minor;
+  }
+
+  private int getMajor() {
+    return this.major;
   }
 
   private int getMinor() {
     return this.minor;
-  }
-
-  private int getMajor() {
-    return 1;
   }
 
   /**
@@ -38,7 +40,13 @@ public class SimpleVersion implements Version {
   @Override
   public int compareTo(Version other) {
     if (other instanceof SimpleVersion) {
-      return this.minor - ((SimpleVersion) other).minor;
+      SimpleVersion otherVersion = (SimpleVersion) other;
+      int majorDiff = this.major - otherVersion.major;
+      if (majorDiff != 0) {
+        return majorDiff;
+      } else {
+        return this.minor - otherVersion.minor;
+      }
     } else {
       throw new IllegalArgumentException();
     }
@@ -52,13 +60,21 @@ public class SimpleVersion implements Version {
   public static boolean isVersionString(String s) {
     return s != null
         && s.length() >= 3
-        && s.charAt(0) == '1'
+        && (s.charAt(0) == '1' || s.charAt(0) == '2')
         && s.charAt(1) == '.';
   }
 
   public static Version fromString(String s) {
-    Assert.isTrue(isVersionString(s));
-    return JQueryApiPlugin.ALL_VERSIONS.get(JQueryApiPlugin.MAX_MINOR + '0' - s.charAt(2));
+    String versionString = s;
+    if (versionString.length() > 3) {
+      // 1.3.2 -> 1.3
+      versionString = versionString.substring(0, 3);
+    }
+    Version version = JQueryApiPlugin.ALL_VERSIONS_MAP.get(versionString);
+    if (version == null) {
+      throw new AssertionFailedException("not version found for: " + s);
+    }
+    return version;
   }
 
 }

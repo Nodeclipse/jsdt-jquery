@@ -13,12 +13,21 @@
  */
 package org.eclipselabs.jsdt.jquery.core.model;
 
+import static javax.xml.stream.XMLInputFactory.IS_NAMESPACE_AWARE;
+import static javax.xml.stream.XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES;
+import static javax.xml.stream.XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES;
+import static javax.xml.stream.XMLInputFactory.IS_VALIDATING;
+import static javax.xml.stream.XMLInputFactory.SUPPORT_DTD;
+import static javax.xml.stream.XMLStreamConstants.CDATA;
+import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,16 +43,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipselabs.jsdt.jquery.core.api.DocumentationEntryVisitor;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryDocumentation;
 import org.eclipselabs.jsdt.jquery.core.api.JQueryMember;
-
-import static javax.xml.stream.XMLInputFactory.IS_NAMESPACE_AWARE;
-import static javax.xml.stream.XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES;
-import static javax.xml.stream.XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES;
-import static javax.xml.stream.XMLInputFactory.IS_VALIDATING;
-import static javax.xml.stream.XMLInputFactory.SUPPORT_DTD;
-import static javax.xml.stream.XMLStreamConstants.CDATA;
-import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 
 public class DocumentationParser {
@@ -65,7 +64,7 @@ public class DocumentationParser {
   private JQueryDocumentation parseProtected(InputStream input) throws XMLStreamException, IOException {
     try {
       XMLInputFactory factory = this.createInputFactory();
-      InputStream bufferedInput = new BufferedInputStream(input);
+      InputStream bufferedInput;
       if (input instanceof BufferedInputStream) {
         bufferedInput = input;
       } else {

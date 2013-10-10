@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipselabs.jsdt.jquery_feature_1.6.0.jar" id="org.eclipselabs.jsdt.jquery_feature" version="1.6.0">
+   <feature url="features/org.eclipselabs.jsdt.jquery_feature_1.7.0.jar" id="org.eclipselabs.jsdt.jquery_feature" version="1.7.0">
       <category name="org.eclipselabs.jsdt.category"/>
    </feature>
    <category-def name="org.eclipselabs.jsdt.category" label="JSDT jQuery"/>

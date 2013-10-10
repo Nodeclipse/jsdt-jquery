@@ -44,6 +44,7 @@ public class JSDocGenerator extends WriterSupport {
     DEFAULT_VALUES.put("Map", "{}");
     DEFAULT_VALUES.put("Boolean", "true");
     DEFAULT_VALUES.put("Number", "1");
+    DEFAULT_VALUES.put("Integer", "1");
     DEFAULT_VALUES.put("Element", "null");
     DEFAULT_VALUES.put("Anything", "{}");
   }
